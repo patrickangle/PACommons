@@ -1,0 +1,111 @@
+/*
+ * Patrick Angle Commons Library
+ * Copyright 2018 Patrick Angle
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.patrickangle.commons.playground;
+
+import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
+import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
+import java.awt.Color;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+/**
+ *
+ * @author patrickangle
+ */
+public class FunPojo extends BoringPojo implements PropertyChangeObservable {
+    protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    
+    public static final String USER_EDITABLE_PROPERTY_GROUP = "Fun Plain Old Java Object";
+    
+    @ObjectEditingProperty(name="My verbose boolean statement name goes here.") protected boolean option1 = true;
+    @ObjectEditingProperty(name="Integer with Help", help="This sets the thing for the other thing!") protected int option2 = 30;
+    @ObjectEditingProperty(name="Float Number", numberMinimumValue = 0, numberMaximumValue = 300, numberStepValue = 0.5) protected float option3 = 256.7f;
+    @ObjectEditingProperty(name="Double Slider", numberEditor = ObjectEditingProperty.NumberEditor.SLIDER_CONTROL) protected double option4 = 128.99999;
+    @ObjectEditingProperty protected String option5 = "This is a test";
+    @ObjectEditingProperty protected Color option6 = Color.BLUE;
+    
+    public FunPojo() {
+        
+    }
+
+    public boolean isOption1() {
+        return option1;
+    }
+
+    public void setOption1(boolean option1) {
+        this.option1 = option1;
+    }
+
+    public int getOption2() {
+        return option2;
+    }
+
+    public void setOption2(int option2) {
+        this.option2 = option2;
+    }
+
+    public float getOption3() {
+        return option3;
+    }
+
+    public void setOption3(float option3) {
+        this.option3 = option3;
+    }
+
+    public double getOption4() {
+        return option4;
+    }
+
+    public void setOption4(double option4) {
+        this.option4 = option4;
+    }
+
+    public String getOption5() {
+        return option5;
+    }
+
+    public void setOption5(String option5) {
+        String oldValue = this.option5;
+        this.option5 = option5;
+        this.pcs.firePropertyChange("option5", oldValue, this.option5);
+    }
+
+    public Color getOption6() {
+        return option6;
+    }
+
+    public void setOption6(Color option6) {
+        this.option6 = option6;
+    }
+
+    @Override
+    public String toString() {
+        return this.option5;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        pcs.addPropertyChangeListener(propertyChangeListener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        pcs.removePropertyChangeListener(propertyChangeListener);
+    }
+    
+    
+}
