@@ -31,10 +31,10 @@ import java.util.TimeZone;
 public class Time extends PropertyChangeObservableBase implements JsonableObject {
     @JsonProperty protected long milliseconds;
     
-    private static final SimpleDateFormat timeFormatA = new SimpleDateFormat("HH:mm:ss.SSS");
-    private static final SimpleDateFormat timeFormatB = new SimpleDateFormat("mm:ss.SSS");
-    private static final SimpleDateFormat timeFormatC = new SimpleDateFormat("ss.SSS");
-    private static final SimpleDateFormat timeFormatD = new SimpleDateFormat("ss");
+    private static final SimpleDateFormat TIME_FORMAT_A = new SimpleDateFormat("HH:mm:ss.SSS");
+    private static final SimpleDateFormat TIME_FORMAT_B = new SimpleDateFormat("mm:ss.SSS");
+    private static final SimpleDateFormat TIME_FORMAT_C = new SimpleDateFormat("ss.SSS");
+    private static final SimpleDateFormat TIME_FORMAT_D = new SimpleDateFormat("ss");
     
     public Time() {
         milliseconds = 0;
@@ -46,17 +46,17 @@ public class Time extends PropertyChangeObservableBase implements JsonableObject
     
     public Time(String time) {
         try {
-            this.milliseconds = timeFormatA.parse(time).getTime();
+            this.milliseconds = TIME_FORMAT_A.parse(time).getTime();
             this.milliseconds += TimeZone.getDefault().getRawOffset();
         } catch (ParseException exA) {
             try {
-                this.milliseconds = timeFormatB.parse(time).getTime();
+                this.milliseconds = TIME_FORMAT_B.parse(time).getTime();
             } catch (ParseException exB) {
                 try {
-                    this.milliseconds = timeFormatC.parse(time).getTime();
+                    this.milliseconds = TIME_FORMAT_C.parse(time).getTime();
                 } catch (ParseException exC) {
                     try {
-                        this.milliseconds = timeFormatD.parse(time).getTime();
+                        this.milliseconds = TIME_FORMAT_D.parse(time).getTime();
                     } catch (ParseException exD) {
                         milliseconds = 0;
                     }
@@ -67,7 +67,7 @@ public class Time extends PropertyChangeObservableBase implements JsonableObject
 
     @Override
     public String toString() {
-        return timeFormatA.format(new Date(milliseconds - TimeZone.getDefault().getRawOffset()));
+        return TIME_FORMAT_A.format(new Date(milliseconds - TimeZone.getDefault().getRawOffset()));
     }
     
     public void setMilliseconds(long milliseconds) {

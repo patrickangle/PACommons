@@ -16,14 +16,14 @@
  */
 package com.patrickangle.commons.beansbinding.interfaces;
 
+import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import com.patrickangle.commons.util.Primitives;
 
 /**
  *
  * @author Patrick Angle
  */
-public abstract class AbstractBoundField<C> implements BoundField {
-    
+public abstract class AbstractBoundField<C> extends PropertyChangeObservableBase implements BoundField {
     @Override
     public Class<C> getContainingClass() {
         return (Class<C>) this.getContainingObject().getClass();

@@ -19,10 +19,13 @@ package com.patrickangle.commons.playground;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.swing.JListBinding;
+import com.patrickangle.commons.beansbinding.swing.JListBoundField;
+import com.patrickangle.commons.beansbinding.swing.JSliderBoundField;
+import com.patrickangle.commons.beansbinding.swing.JTextComponentBoundField;
+import com.patrickangle.commons.beansbinding.swing.bindings.JListBinding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
-import com.patrickangle.commons.beansbinding.swing.JSliderBinding;
-import com.patrickangle.commons.beansbinding.swing.JTextComponentBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JSliderBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JTextComponentBinding;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
 import java.util.Arrays;
 import java.util.List;
@@ -43,19 +46,19 @@ public class BeansBinding extends javax.swing.JFrame {
         
         BindingGroup bindingGroup = new BindingGroup();
         
-        Binding binding1 = new JTextComponentBinding(jLabel1, "text", jTextField1, JTextComponentBinding.SYNTHETIC_FIELD_TEXT, Binding.UpdateStrategy.READ_WRITE);
+        Binding binding1 = new BasicBinding(jLabel1, "text", jTextField1, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding1);
         
-        Binding binding2 = new JTextComponentBinding(jLabel2, "text", jTextField1, JTextComponentBinding.SYNTHETIC_FIELD_TEXT_ON_FOCUS_LOST, Binding.UpdateStrategy.READ_WRITE);
+        Binding binding2 = new BasicBinding(jLabel2, "text", jTextField1, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_FOCUS_LOST, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding2);
         
-        Binding binding3 = new JTextComponentBinding(jLabel3, "text", jTextField1, JTextComponentBinding.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST, Binding.UpdateStrategy.READ_WRITE);
+        Binding binding3 = new BasicBinding(jLabel3, "text", jTextField1, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding3);
         
-        Binding binding4 = new JSliderBinding(jLabel4, "text", jSlider1, JSliderBinding.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
+        Binding binding4 = new BasicBinding(jLabel4, "text", jSlider1, JSliderBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
         bindingGroup.add(binding4);
         
-        Binding binding5 = new JSliderBinding(jLabel5, "text", jSlider1, JSliderBinding.SYNTHETIC_FIELD_VALUE_IGNORE_ADJUSTING, Binding.UpdateStrategy.WRITE_ONLY);
+        Binding binding5 = new BasicBinding(jLabel5, "text", jSlider1, JSliderBoundField.SYNTHETIC_FIELD_VALUE_IGNORE_ADJUSTING, Binding.UpdateStrategy.WRITE_ONLY);
         bindingGroup.add(binding5);
         
         Binding binding6 = new BasicBinding(jLabel6, "text", jComboBox1.getModel(), "selectedItem", Binding.UpdateStrategy.READ_WRITE);
@@ -64,13 +67,13 @@ public class BeansBinding extends javax.swing.JFrame {
         Binding binding7 = new BasicBinding(this, "binding6List", jComboBox1.getModel(), "items", Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding7);
         
-        Binding binding8 = new BasicBinding(jLabel8, "text", jList1, "selectedValue", Binding.UpdateStrategy.WRITE_ONLY);
+        Binding binding8 = new BasicBinding(jComboBox1.getModel(), "selectedItem", jList1, JListBoundField.SYNTHETIC_FIELD_SELECTED_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding8);
         
         Binding binding9 = new BasicBinding(this, "binding6List", jList1.getModel(), "items", Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding9);
         
-        Binding binding10 = new JListBinding(jLabel6, "text", jList1, JListBinding.SYNTHETIC_FIELD_SELECTED_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
+        Binding binding10 = new BasicBinding(jLabel6, "text", jList1, JListBoundField.SYNTHETIC_FIELD_SELECTED_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
         bindingGroup.add(binding10);
         
         bindingGroup.bind();

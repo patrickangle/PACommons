@@ -18,7 +18,7 @@ package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.swing.JListBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JListBinding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableListModel;
 import com.patrickangle.commons.objectediting.ObjectEditingDialog;
 import com.patrickangle.commons.observable.collections.ObservableCollections;

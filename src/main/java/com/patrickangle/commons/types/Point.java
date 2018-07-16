@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.swing.JSpinnerBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JSpinnerBinding;
 import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;

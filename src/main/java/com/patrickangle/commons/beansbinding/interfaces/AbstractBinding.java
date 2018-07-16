@@ -18,6 +18,7 @@ package com.patrickangle.commons.beansbinding.interfaces;
 
 import com.patrickangle.commons.beansbinding.BasicBindingConverter;
 import com.patrickangle.commons.beansbinding.BasicBoundField;
+import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.util.Classes;
 
@@ -46,8 +47,8 @@ public abstract class AbstractBinding<B, F> implements Binding {
     }
 
     public AbstractBinding(B backContainingObject, String backObjectFieldName, F frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
-        this(new BasicBoundField<>(backContainingObject, BindableFields.forClassWithName(Classes.classFor(backContainingObject), backObjectFieldName)),
-                new BasicBoundField<>(frontContainingObject, BindableFields.forClassWithName(Classes.classFor(frontContainingObject), frontObjectFieldName)),
+        this(BoundFields.boundField(backContainingObject, backObjectFieldName),
+                BoundFields.boundField(frontContainingObject, frontObjectFieldName),
                 updateStrategy,
                 converter);
     }

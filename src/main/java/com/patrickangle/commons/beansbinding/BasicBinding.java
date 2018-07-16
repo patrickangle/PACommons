@@ -72,8 +72,8 @@ public class BasicBinding<B, F> extends AbstractBinding<B, F> {
             }
         };
         
-        PropertyChangeObservable.addPropertyChangeListener(backBoundField.getContainingObject(), backObjectListener);
-        PropertyChangeObservable.addPropertyChangeListener(frontBoundField.getContainingObject(), frontObjectListener);
+        PropertyChangeObservable.addPropertyChangeListener(backBoundField, backObjectListener);
+        PropertyChangeObservable.addPropertyChangeListener(frontBoundField, frontObjectListener);
     }
     
     @Override

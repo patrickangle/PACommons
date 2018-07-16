@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.beansbinding.swing;
+package com.patrickangle.commons.beansbinding.swing.bindings;
 
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
@@ -32,6 +32,7 @@ import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 /**
  *
  * @author patrickangle
+ * @deprecated Use proper explicit BoundField to construct a binding exposing additional synthetic values.
  */
 public class JTextComponentBinding<E> extends BasicBinding<E, JTextComponent>{
     public static final String SYNTHETIC_FIELD_TEXT = "text";

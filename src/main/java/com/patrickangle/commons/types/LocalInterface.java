@@ -42,7 +42,7 @@ public class LocalInterface extends RemoteAddress {
 
     @Override
     public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
-        NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.getAvailableNetworkInterfaces();
+        NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
         ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.length);
         
         
@@ -94,7 +94,7 @@ public class LocalInterface extends RemoteAddress {
 
 //    @Override
 //    public JComponent getPropertyEditor() {
-//        NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.getAvailableNetworkInterfaces();
+//        NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
 //        ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.length);
 //        
 //        
@@ -160,7 +160,7 @@ public class LocalInterface extends RemoteAddress {
             }
             
             if (visibleName == null) {
-                NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.getAvailableNetworkInterfaces();
+                NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
                 for (NetworkInterfaces.CrossPlatformNetworkInterface networkInterface : networkInterfaces) {
                     for (InetAddress address : networkInterface.getInetAddresses()) {
                         if (address.getHostAddress().equals(ipAddress)) {

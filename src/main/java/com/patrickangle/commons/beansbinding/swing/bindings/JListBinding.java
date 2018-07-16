@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.beansbinding.swing;
+package com.patrickangle.commons.beansbinding.swing.bindings;
 
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BasicBindingConverter;
 import com.patrickangle.commons.beansbinding.BasicBoundField;
+import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.SyntheticBindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import java.beans.PropertyChangeSupport;
@@ -33,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
 /**
  *
  * @author patrickangle
+ * @deprecated Use proper explicit BoundField to construct a binding exposing additional synthetic values.
  */
 public class JListBinding<E> extends BasicBinding<E, JList> {
     public static final String SYNTHETIC_FIELD_SELECTED_VALUE = "selectedValue$";
@@ -51,14 +53,14 @@ public class JListBinding<E> extends BasicBinding<E, JList> {
 
     public JListBinding(E backContainingObject, String backObjectFieldName, JList frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
         super(
-                new BasicBoundField<>(
+                BoundFields.boundField(
                         backContainingObject,
                         BindableFields.forClassWithName(
                                 Classes.classFor(backContainingObject),
                                 backObjectFieldName
                         )
                 ),
-                new BasicBoundField<>(
+                BoundFields.boundField(
                         frontContainingObject,
                         new SyntheticBindableField<>(
                                 Classes.classFor(frontContainingObject),

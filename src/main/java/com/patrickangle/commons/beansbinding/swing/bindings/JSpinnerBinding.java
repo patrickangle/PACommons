@@ -14,49 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.beansbinding.swing;
+package com.patrickangle.commons.beansbinding.swing.bindings;
 
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import javax.swing.JSpinner;
 
 /**
  *
  * @author patrickangle
+ * @deprecated Use proper explicit BoundField to construct a binding exposing additional synthetic values.
  */
-public class JSliderBinding<E> extends BasicBinding<E, JSlider> {
+public class JSpinnerBinding<E> extends BasicBinding<E, JSpinner> {
     public static final String SYNTHETIC_FIELD_VALUE = "value$";
-    public static final String SYNTHETIC_FIELD_VALUE_IGNORE_ADJUSTING = "value$ignoreAdjusting";
     
     private PropertyChangeSupport propertyChangeSupport;
     
     protected ChangeListener changeListener;
-    protected PropertyChangeListener propertyChangeListener;
     
-    protected int cachedValue;
-    protected int cachedValueIgnoreAdjusting;
+    protected Object cachedValue;
     
-    public JSliderBinding(BoundField<E> backBoundField, BoundField<JSlider> frontBoundField, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
+    public JSpinnerBinding(BoundField<E> backBoundField, BoundField<JSpinner> frontBoundField, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
         super(backBoundField, frontBoundField, updateStrategy, converter);
         this.propertyChangeSupport = new PropertyChangeSupport(this);
 
     }
     
-    public JSliderBinding(BoundField<E> backBoundField, BoundField<JSlider> frontBoundField, Binding.UpdateStrategy updateStrategy) {
+    public JSpinnerBinding(BoundField<E> backBoundField, BoundField<JSpinner> frontBoundField, Binding.UpdateStrategy updateStrategy) {
         super(backBoundField, frontBoundField, updateStrategy);
         this.propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
-    public JSliderBinding(E backContainingObject, String backObjectFieldName, JSlider frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
+    public JSpinnerBinding(E backContainingObject, String backObjectFieldName, JSpinner frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
         super(backContainingObject, backObjectFieldName, frontContainingObject, frontObjectFieldName, updateStrategy, converter);
         this.propertyChangeSupport = new PropertyChangeSupport(this);
     }
     
-    public JSliderBinding(E backObject, String backObjectFieldName, JSlider frontObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy) {
+    public JSpinnerBinding(E backObject, String backObjectFieldName, JSpinner frontObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy) {
         super(backObject, backObjectFieldName, frontObject, frontObjectFieldName, updateStrategy);
         this.propertyChangeSupport = new PropertyChangeSupport(this);
     }
@@ -68,21 +66,10 @@ public class JSliderBinding<E> extends BasicBinding<E, JSlider> {
         // Binding for synthetic updates.
         if (changeListener == null) {
             changeListener = (changeEvent) -> {
-                //stateChanged
                 valueChanged();
-                if (!frontBoundField.getContainingObject().getValueIsAdjusting()) {
-                    valueChangedIgnoreAdjusting();
-                }
             };
         }
         frontBoundField.getContainingObject().addChangeListener(changeListener);
-        
-        if (propertyChangeListener == null) {
-            propertyChangeListener = (propertyChangeEvent) -> {
-                valueChanged();
-            };
-        }
-        frontBoundField.getContainingObject().addPropertyChangeListener(propertyChangeListener);
         
         this.propertyChangeSupport.addPropertyChangeListener(frontObjectListener);
     }
@@ -92,20 +79,13 @@ public class JSliderBinding<E> extends BasicBinding<E, JSlider> {
         super.unbind();
         
         frontBoundField.getContainingObject().removeChangeListener(changeListener);
-        frontBoundField.getContainingObject().removePropertyChangeListener(propertyChangeListener);
         
         this.propertyChangeSupport.removePropertyChangeListener(frontObjectListener);
     }
     
     protected void valueChanged() {
-        int oldValue = cachedValue;
+        Object oldValue = cachedValue;
         cachedValue = frontBoundField.getContainingObject().getValue();
         propertyChangeSupport.firePropertyChange(SYNTHETIC_FIELD_VALUE, oldValue, cachedValue);
-    }
-    
-    protected void valueChangedIgnoreAdjusting() {
-        int oldValue = cachedValueIgnoreAdjusting;
-        cachedValueIgnoreAdjusting = frontBoundField.getContainingObject().getValue();
-        propertyChangeSupport.firePropertyChange(SYNTHETIC_FIELD_VALUE_IGNORE_ADJUSTING, oldValue, cachedValueIgnoreAdjusting);
     }
 }

@@ -19,11 +19,12 @@ package com.patrickangle.commons.objectediting.util;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BasicBoundField;
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
-import com.patrickangle.commons.beansbinding.swing.JSpinnerBinding;
-import com.patrickangle.commons.beansbinding.swing.JTextComponentBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JSpinnerBinding;
+import com.patrickangle.commons.beansbinding.swing.bindings.JTextComponentBinding;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
@@ -62,7 +63,7 @@ public class ObjectFieldEditorFactory {
     }
     
     public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup) {
-        BoundField objectField = new BasicBoundField(containingObject, bindableField);
+        BoundField objectField = BoundFields.boundField(containingObject, bindableField);
         Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
 
         if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {

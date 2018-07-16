@@ -26,7 +26,7 @@ public class NetworkInterfaces {
     public static void updateAvailableNetworkInterfaces() {
         availableNetworkInterfaces = new ArrayList<>();
         
-        WindowsNetworkInterface[] windowsInterfaces = getWindowsNetworkInterfaces();
+        WindowsNetworkInterface[] windowsInterfaces = windowsNetworkInterfaces();
         
         try {
             for (NetworkInterface netint : Collections.list(NetworkInterface.getNetworkInterfaces())) {
@@ -50,7 +50,7 @@ public class NetworkInterfaces {
         }
     }
     
-    public static CrossPlatformNetworkInterface[] getAvailableNetworkInterfaces() {
+    public static CrossPlatformNetworkInterface[] availableNetworkInterfaces() {
         if (availableNetworkInterfaces == null) {
             updateAvailableNetworkInterfaces();
         }
@@ -69,7 +69,7 @@ public class NetworkInterfaces {
         return sb.toString();
     }
     
-    private static WindowsNetworkInterface[] getWindowsNetworkInterfaces() {
+    private static WindowsNetworkInterface[] windowsNetworkInterfaces() {
         ArrayList<WindowsNetworkInterface> returnInterfaces = new ArrayList<>();
         
         if (OperatingSystems.current() == OperatingSystems.Windows) {

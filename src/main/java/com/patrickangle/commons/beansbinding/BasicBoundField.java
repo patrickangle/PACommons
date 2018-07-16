@@ -19,24 +19,37 @@ package com.patrickangle.commons.beansbinding;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.AbstractBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
+import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.util.Classes;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
  * @author Patrick Angle
  */
-public class BasicBoundField<C> extends AbstractBoundField<C>{
+public class BasicBoundField<C> extends AbstractBoundField<C> {
     protected C containingObject;
     protected BindableField<C> bindableField;
     
     public BasicBoundField(C containingObject, BindableField<C> bindableField) {
         this.containingObject = containingObject;
         this.bindableField = bindableField;
+        
+        commonInit();
     }
     
     public BasicBoundField(C containingObject, String fieldName) {
         this.containingObject = containingObject;
         this.bindableField = BindableFields.forClassWithName(Classes.classFor(containingObject), fieldName);
+        
+        commonInit();
+    }
+    
+    private void commonInit() {
+        PropertyChangeObservable.addPropertyChangeListener(containingObject, (PropertyChangeEvent propertyChangeEvent) -> {
+            BasicBoundField.this.propertyChangeSupport.firePropertyChange(propertyChangeEvent);
+        });
     }
     
     public C getContainingObject() {
