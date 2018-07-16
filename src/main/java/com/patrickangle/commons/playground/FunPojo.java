@@ -18,6 +18,8 @@ package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
+import com.patrickangle.commons.types.Display;
+import com.patrickangle.commons.types.LocalInterface;
 import com.patrickangle.commons.types.Point;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
@@ -41,6 +43,8 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
     @ObjectEditingProperty(name="Int Point") protected Point.IntegerPoint intPoint = new Point.IntegerPoint(7, 14);
     @ObjectEditingProperty(name="Float Point") protected Point.FloatPoint floatPoint = new Point.FloatPoint(99.08f, 777.122324f);
     @ObjectEditingProperty(name="Double Point") protected Point.DoublePoint doublePoint = new Point.DoublePoint(7.0000045, 13.99862);
+    @ObjectEditingProperty(name="Display") protected Display display = new Display(3);
+    @ObjectEditingProperty(name="NIC") protected LocalInterface localInterface = new LocalInterface();
     
     public FunPojo() {
         
@@ -123,6 +127,22 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
 
     public void setDoublePoint(Point.DoublePoint doublePoint) {
         this.doublePoint = doublePoint;
+    }
+
+    public Display getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
+
+    public LocalInterface getLocalInterface() {
+        return localInterface;
+    }
+
+    public void setLocalInterface(LocalInterface localInterface) {
+        this.localInterface = localInterface;
     }
     
     

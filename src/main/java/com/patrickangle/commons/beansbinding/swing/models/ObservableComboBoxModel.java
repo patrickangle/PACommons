@@ -39,6 +39,7 @@ public class ObservableComboBoxModel<E> extends ObservableListModel<E> implement
         E oldSelectedItem = this.selectedItem;
         this.selectedItem = (E) selectedItem;
         this.propertyChangeSupport.firePropertyChange("selectedItem", oldSelectedItem, this.selectedItem);
+        this.listDataSupport.fireContentsChanged(-1, -1);
     }
 
     @Override

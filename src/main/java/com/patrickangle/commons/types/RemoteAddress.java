@@ -16,10 +16,12 @@
  */
 package com.patrickangle.commons.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.JSpinnerBinding;
+import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
@@ -36,9 +38,9 @@ import javax.swing.SpinnerNumberModel;
  *
  * @author patrickangle
  */
-public class RemoteAddress extends PropertyChangeObservableBase implements CustomObjectEditingComponent {
-    protected String address;
-    protected int port;
+public class RemoteAddress extends PropertyChangeObservableBase implements CustomObjectEditingComponent, JsonableObject {
+    @JsonProperty protected String address;
+    @JsonProperty protected int port;
     
     public RemoteAddress() {
         this.address = "127.0.0.1";
