@@ -18,6 +18,7 @@ package com.patrickangle.commons.beansbinding;
 
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.AbstractBoundField;
+import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.util.Classes;
 
 /**
@@ -35,7 +36,7 @@ public class BasicBoundField<C> extends AbstractBoundField<C>{
     
     public BasicBoundField(C containingObject, String fieldName) {
         this.containingObject = containingObject;
-        this.bindableField = new BeanBindableField<>(Classes.classFor(containingObject), fieldName);
+        this.bindableField = BindableFields.forClassWithName(Classes.classFor(containingObject), fieldName);
     }
     
     public C getContainingObject() {

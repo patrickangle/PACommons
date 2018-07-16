@@ -17,6 +17,7 @@
 package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
+import com.patrickangle.commons.types.RemoteAddress;
 
 /**
  *
@@ -27,6 +28,7 @@ public class BoringPojo {
     
     @ObjectEditingProperty(name="My verbose boolean statement name goes here.") protected boolean option11 = true;
     @ObjectEditingProperty(name="Integer with Help", help="This sets the thing for the other thing!") protected int option12 = 30;
+    @ObjectEditingProperty(name="Remote Address") protected RemoteAddress option13 = new RemoteAddress("10.10.10.101", 53535);
 
     public boolean isOption11() {
         return option11;
@@ -42,6 +44,14 @@ public class BoringPojo {
 
     public void setOption12(int option12) {
         this.option12 = option12;
+    }
+
+    public RemoteAddress getOption13() {
+        return option13;
+    }
+
+    public void setOption13(RemoteAddress option13) {
+        this.option13 = option13;
     }
     
     

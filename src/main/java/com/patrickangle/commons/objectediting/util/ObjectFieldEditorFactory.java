@@ -22,6 +22,7 @@ import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import com.patrickangle.commons.beansbinding.swing.JSpinnerBinding;
 import com.patrickangle.commons.beansbinding.swing.JTextComponentBinding;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
@@ -63,10 +64,10 @@ public class ObjectFieldEditorFactory {
     public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup) {
         BoundField objectField = new BasicBoundField(containingObject, bindableField);
         Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
-        System.out.println(fieldClass.getName());
-        if (CustomObjectEditingComponent.class.isAssignableFrom(objectField.getFieldClass())) {
+
+        if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
-            return ((CustomObjectEditingComponent) containingObject).getCustomObjectEditingComponent(bindingGroup);
+            return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
             return createBoundComponentForBoolean(objectField, bindingGroup);
         } else if (fieldClass == Integer.TYPE) {
@@ -108,7 +109,7 @@ public class ObjectFieldEditorFactory {
                 spinnerNumberEditor.getFormat().setGroupingUsed(false);
                 spinner.setEditor(spinnerNumberEditor);
                 
-                BasicBinding binding = new BasicBinding(objectField, new BasicBoundField(spinner, "value"), Binding.UpdateStrategy.READ_WRITE);
+                BasicBinding binding = new JSpinnerBinding(objectField, new BasicBoundField(spinner, JSpinnerBinding.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
                 bindingGroup.add(binding);
                 
                 return new ComponentReturn(spinner, false);
@@ -136,7 +137,7 @@ public class ObjectFieldEditorFactory {
                 spinnerNumberEditor.getFormat().setDecimalSeparatorAlwaysShown(true);
                 spinner.setEditor(spinnerNumberEditor);
                 
-                BasicBinding binding = new BasicBinding(objectField, new BasicBoundField(spinner, "value"), Binding.UpdateStrategy.READ_WRITE);
+                BasicBinding binding = new JSpinnerBinding(objectField, new BasicBoundField(spinner, JSpinnerBinding.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
                 bindingGroup.add(binding);
                 
                 return new ComponentReturn(spinner, false);

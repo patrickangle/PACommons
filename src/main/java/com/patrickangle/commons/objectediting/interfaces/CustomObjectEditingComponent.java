@@ -24,10 +24,10 @@ import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
  * @author patrickangle
  */
 public interface CustomObjectEditingComponent {
-    public ObjectFieldEditorFactory.ComponentReturn getCustomObjectEditingComponent(BindingGroup bindingGroup);
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup);
     
-    public default ObjectFieldEditorFactory.ComponentReturn getCustomObjectEditingComponentRenderer(BindingGroup bindingGroup) {
-        return this.getCustomObjectEditingComponent(bindingGroup);
+    public default ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponentRenderer(BindingGroup bindingGroup) {
+        return this.customObjectEditingComponent(bindingGroup);
     }
     
 }

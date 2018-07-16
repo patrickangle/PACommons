@@ -112,9 +112,6 @@ public class BeanBindableField<C> implements BindableField<C> {
             try {
                 this.setter.invoke(object, value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                System.out.println(this.toString());
-                System.out.println(value);
-                System.out.println(value.getClass().getName());
                 throw new RuntimeException("Setter could not be invoked", ex);
             }
         } else {
