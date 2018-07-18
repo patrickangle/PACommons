@@ -22,7 +22,7 @@ import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.util.Classes;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  *
@@ -47,6 +47,9 @@ public class BasicBoundField<C> extends AbstractBoundField<C> {
     }
     
     private void commonInit() {
+        // Declare the source of events to be from the contained object, not ourselves.
+        this.propertyChangeSupport = new PropertyChangeSupport(this.containingObject);
+        
         PropertyChangeObservable.addPropertyChangeListener(containingObject, (PropertyChangeEvent propertyChangeEvent) -> {
             BasicBoundField.this.propertyChangeSupport.firePropertyChange(propertyChangeEvent);
         });

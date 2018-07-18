@@ -23,20 +23,32 @@ import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
-import com.patrickangle.commons.beansbinding.swing.bindings.JSpinnerBinding;
-import com.patrickangle.commons.beansbinding.swing.bindings.JTextComponentBinding;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
+import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListCellRenderer;
+import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListTableModel;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
+import com.patrickangle.commons.util.legacy.ListUtils;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.util.List;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -47,10 +59,17 @@ public class ObjectFieldEditorFactory {
     public static final class ComponentReturn {
         public JComponent component;
         public boolean selfLabeled;
+        public boolean multiLineEditor;
 
         public ComponentReturn(JComponent component, boolean selfLabeled) {
             this.component = component;
             this.selfLabeled = selfLabeled;
+        }
+        
+        public ComponentReturn(JComponent component, boolean selfLabeled, boolean multiLineEditor) {
+            this.component = component;
+            this.selfLabeled = selfLabeled;
+            this.multiLineEditor = multiLineEditor;
         }
 
         public JComponent getComponent() {
@@ -77,6 +96,16 @@ public class ObjectFieldEditorFactory {
             return createBoundComponentForFloatingPointNumber(objectField, bindingGroup);
         } else if (Color.class.isAssignableFrom(objectField.getFieldClass())) {
             return createBoundComponentForColor(objectField, bindingGroup);
+        } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
+            int depth = ListUtils.depthOfMultiDimensionList(objectField.getValue());
+            switch(depth) {
+                case 1:
+                    return createBoundComponentForList(objectField, bindingGroup);
+                case 2:
+                    return createBoundComponentFor2dList(objectField, bindingGroup);
+                default:
+                    return new ComponentReturn(new JLabel("List too deep."), false);
+            }
         } else {
             return createBoundComponentForString(objectField, bindingGroup);
         }
@@ -110,7 +139,7 @@ public class ObjectFieldEditorFactory {
                 spinnerNumberEditor.getFormat().setGroupingUsed(false);
                 spinner.setEditor(spinnerNumberEditor);
                 
-                BasicBinding binding = new JSpinnerBinding(objectField, new BasicBoundField(spinner, JSpinnerBinding.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
+                BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(spinner, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
                 bindingGroup.add(binding);
                 
                 return new ComponentReturn(spinner, false);
@@ -138,7 +167,7 @@ public class ObjectFieldEditorFactory {
                 spinnerNumberEditor.getFormat().setDecimalSeparatorAlwaysShown(true);
                 spinner.setEditor(spinnerNumberEditor);
                 
-                BasicBinding binding = new JSpinnerBinding(objectField, new BasicBoundField(spinner, JSpinnerBinding.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
+                BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(spinner, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE), Binding.UpdateStrategy.READ_WRITE);
                 bindingGroup.add(binding);
                 
                 return new ComponentReturn(spinner, false);
@@ -148,7 +177,7 @@ public class ObjectFieldEditorFactory {
     private static ComponentReturn createBoundComponentForString(BoundField objectField, BindingGroup bindingGroup) {
         JTextField textField = new JTextField();
         
-        BasicBinding binding = new JTextComponentBinding(objectField, new BasicBoundField(textField, JTextComponentBinding.SYNTHETIC_FIELD_TEXT), Binding.UpdateStrategy.READ_WRITE);
+        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
 
         return new ComponentReturn(textField, false);
@@ -169,5 +198,74 @@ public class ObjectFieldEditorFactory {
         bindingGroup.add(binding);
         
         return new ComponentReturn(colorButton, false);
+    }
+    
+    public static ComponentReturn createBoundComponentForList(BoundField<List> objectField, BindingGroup bindingGroup) {
+        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
+
+        JPanel listEditor = new JPanel(new BorderLayout());
+        
+        JTable table = new JTable(new ObjectEditingListTableModel(objectField.getFieldClass()));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setTableHeader(null);
+        table.getColumnModel().getColumn(0).setCellEditor(new ObjectEditingListCellRenderer());
+        table.getColumnModel().getColumn(0).setCellRenderer(new ObjectEditingListCellRenderer());
+        
+        table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
+        table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
+        
+        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setMinimumSize(new Dimension(0, 100));
+        listEditor.add(scrollPane, BorderLayout.CENTER);
+        
+        Binding listBinding = new BasicBinding(objectField, BoundFields.boundField(table.getModel(), "items"), Binding.UpdateStrategy.READ_WRITE);
+        bindingGroup.add(listBinding);
+        
+        if (configInfo.listNewItemClass() != Object.class) {
+            JToolBar toolbar = new JToolBar();
+            toolbar.setFloatable(false);
+            toolbar.add(Box.createHorizontalGlue());
+            
+            JButton addButton = new JButton("+");
+            addButton.addActionListener((actionEvent) -> {
+                ((ObjectEditingListTableModel) table.getModel()).getItems().add(Classes.newInstance(configInfo.listNewItemClass()));
+            });
+            toolbar.add(addButton);
+            
+            JButton removeButton = new JButton("−");
+            removeButton.addActionListener((actionEvent) -> {
+                int row = table.getSelectedRow();
+                ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
+            });
+            toolbar.add(removeButton);
+
+            JButton moveUpButton= new JButton("▲");
+            moveUpButton.addActionListener((actionEvent) -> {
+                int row = table.getSelectedRow();
+                if (row > 0) {
+                    Object o = ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
+                    ((ObjectEditingListTableModel) table.getModel()).getItems().add(row - 1, o);
+                }
+            });
+            toolbar.add(moveUpButton);
+            
+            JButton moveDownButton= new JButton("▼");
+            moveDownButton.addActionListener((actionEvent) -> {
+                int row = table.getSelectedRow();
+                if (row < table.getRowCount() - 1) {
+                    Object o = ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
+                    ((ObjectEditingListTableModel) table.getModel()).getItems().add(row + 1, o);
+                }
+            });
+            toolbar.add(moveDownButton);
+
+            listEditor.add(toolbar, BorderLayout.PAGE_END);
+        }
+        
+        return new ComponentReturn(listEditor, false, true);
+    }
+    
+    public static ComponentReturn createBoundComponentFor2dList(BoundField<List<List>> boundField, BindingGroup bindingGroup) {
+        return new ComponentReturn(new JLabel("2d list support not implemented"), false);
     }
 }

@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.beansbinding.swing;
+package com.patrickangle.commons.beansbinding.swing.boundfields;
 
 import com.patrickangle.commons.beansbinding.interfaces.AbstractBoundField;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
-import static com.patrickangle.commons.beansbinding.swing.bindings.JSliderBinding.SYNTHETIC_FIELD_VALUE;
-import static com.patrickangle.commons.beansbinding.swing.bindings.JSliderBinding.SYNTHETIC_FIELD_VALUE_IGNORE_ADJUSTING;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.util.Classes;

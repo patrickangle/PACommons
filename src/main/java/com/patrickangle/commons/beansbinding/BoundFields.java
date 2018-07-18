@@ -18,15 +18,17 @@ package com.patrickangle.commons.beansbinding;
 
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
-import com.patrickangle.commons.beansbinding.swing.JListBoundField;
-import com.patrickangle.commons.beansbinding.swing.JSliderBoundField;
-import com.patrickangle.commons.beansbinding.swing.JSpinnerBoundField;
-import com.patrickangle.commons.beansbinding.swing.JTextComponentBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JListBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JSliderBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JTableBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.util.Classes;
 import javax.swing.JList;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -43,6 +45,8 @@ public class BoundFields {
             return new JTextComponentBoundField((JTextComponent) object, (BindableField<JTextComponent>) bindableField);
         } else if (object instanceof JSlider) {
             return new JSliderBoundField((JSlider) object, (BindableField<JSlider>) bindableField);
+        } else if (object instanceof JTable) {
+            return new JTableBoundField((JTable) object, (BindableField<JTable>) bindableField);
         } else {
             return new BasicBoundField<C>(object, bindableField);
         }

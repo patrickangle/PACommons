@@ -88,8 +88,6 @@ public class SyntheticBindableField<C> implements BindableField<C> {
                 }
             } catch (NoSuchMethodException | SecurityException ex) {
             }
-        } else {
-            throw new RuntimeException("BindableField requires a get method for field '" + fieldName + "' with the signature '" + getterSignature + "' or, for booleans, '" + isSignature +"'");
         }
     }
     

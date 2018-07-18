@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.swing.bindings.JSpinnerBinding;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
@@ -29,14 +29,11 @@ import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBa
 import com.patrickangle.commons.util.Colors;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -94,7 +91,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
             ((JSpinner.DefaultEditor)spinnerX.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.RIGHT);
         }
         
-        Binding spinnerXBinding = new JSpinnerBinding(this, "x", spinnerX, JSpinnerBinding.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
+        Binding spinnerXBinding = new BasicBinding(this, "x", spinnerX, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(spinnerXBinding);
         
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -123,7 +120,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
             ((JSpinner.DefaultEditor)spinnerY.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.LEFT);
         }
         
-        Binding spinnerYBinding = new JSpinnerBinding(this, "y", spinnerY, JSpinnerBinding.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
+        Binding spinnerYBinding = new BasicBinding(this, "y", spinnerY, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(spinnerYBinding);
         
         gridBagConstraints = new java.awt.GridBagConstraints();

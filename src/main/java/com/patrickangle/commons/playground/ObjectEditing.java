@@ -18,7 +18,7 @@ package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.swing.bindings.JListBinding;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JListBoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableListModel;
 import com.patrickangle.commons.objectediting.ObjectEditingDialog;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
@@ -44,7 +44,7 @@ public class ObjectEditing extends javax.swing.JFrame {
         Binding binding1 = new BasicBinding(this, "funPojos", jList1.getModel(), "items", Binding.UpdateStrategy.READ_WRITE);
         binding1.setBound(true);
         
-        Binding binding2 = new JListBinding(objectEditingPanel1, "editingObject", jList1, JListBinding.SYNTHETIC_FIELD_SELECTED_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
+        Binding binding2 = new BasicBinding(objectEditingPanel1, "editingObject", jList1, JListBoundField.SYNTHETIC_FIELD_SELECTED_VALUE, Binding.UpdateStrategy.WRITE_ONLY);
         binding2.setBound(true);
         
 //        throw new RuntimeException("Just a harmless test, worry not!");

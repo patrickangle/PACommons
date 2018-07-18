@@ -26,6 +26,7 @@ import com.patrickangle.commons.util.Annotations;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -88,12 +89,14 @@ public class ObjectEditingPanel extends JPanel {
     }
     
     protected void build() {
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         LinkedHashMap<String, JPanel> sectionPanels = new LinkedHashMap<>();
         
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 6;
         c.ipady = 6;
+        c.insets = new Insets(1, 1, 1, 1);
         
         int runningGridY = 0;
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {

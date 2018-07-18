@@ -17,6 +17,7 @@
 package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
+import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.types.Display;
 import com.patrickangle.commons.types.LocalInterface;
@@ -24,6 +25,8 @@ import com.patrickangle.commons.types.Point;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -45,6 +48,8 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
     @ObjectEditingProperty(name="Double Point") protected Point.DoublePoint doublePoint = new Point.DoublePoint(7.0000045, 13.99862);
     @ObjectEditingProperty(name="Display") protected Display display = new Display(3);
     @ObjectEditingProperty(name="NIC") protected LocalInterface localInterface = new LocalInterface();
+    
+    @ObjectEditingProperty(name="Point List", listNewItemClass = Point.IntegerPoint.class) protected List<Point.IntegerPoint> pointList = ObservableCollections.concurrentObservableList(Arrays.asList(new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint()));
     
     public FunPojo() {
         
@@ -144,6 +149,16 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
     public void setLocalInterface(LocalInterface localInterface) {
         this.localInterface = localInterface;
     }
+
+    public List<Point.IntegerPoint> getPointList() {
+        return pointList;
+    }
+
+    public void setPointList(List<Point.IntegerPoint> pointList) {
+        this.pointList = pointList;
+    }
+    
+    
     
     
 

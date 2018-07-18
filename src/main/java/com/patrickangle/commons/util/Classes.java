@@ -16,6 +16,10 @@
  */
 package com.patrickangle.commons.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author patrickangle
@@ -57,5 +61,13 @@ public class Classes {
     
     public static Class primitaveClassFor(Object object) {
         return primitaveClassFor(object.getClass());
+    }
+    
+    public static <E extends Object> E newInstance(Class<E> clazz) {
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

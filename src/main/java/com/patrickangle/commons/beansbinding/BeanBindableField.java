@@ -70,8 +70,6 @@ public class BeanBindableField<C> implements BindableField<C> {
                 }
             } catch (NoSuchMethodException | SecurityException ex) {
             }
-        } else {
-            throw new RuntimeException("BindableField requires a get method for field '" + fieldName + "' with the signature '" + getterSignature + "' or, for booleans, '" + isSignature +"'");
         }
     }
 
@@ -112,7 +110,7 @@ public class BeanBindableField<C> implements BindableField<C> {
             try {
                 this.setter.invoke(object, value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                throw new RuntimeException("Setter could not be invoked", ex);
+                throw new RuntimeException(this + "Setter could not be invoked with value: " + value, ex);
             }
         } else {
             throw new RuntimeException("BindableField.setValue requires that a setter exist on the underlying class to mutate the field");
