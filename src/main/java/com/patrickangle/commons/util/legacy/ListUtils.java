@@ -21,8 +21,29 @@ public class ListUtils {
         return outerArrayList;
     }
     
+    public static <T extends Object> List<List<T>> create2dList(T initialItem) {
+        List<List<T>> outerArrayList = new ArrayList<>(1);
+        outerArrayList.add(new ArrayList<T>(1));
+        outerArrayList.get(0).add(initialItem);
+        return outerArrayList;
+    }
+    
     public static <T extends Object> ArrayList<ArrayList<T>> createArray2dList(T[][] initialItems) {
         ArrayList<ArrayList<T>> outerArray = new ArrayList<>(initialItems.length);
+        
+        for (T[] innerItems : initialItems) {
+            ArrayList<T> innerArray = new ArrayList<>(innerItems.length);
+            for (T item : innerItems) {
+                innerArray.add(item);
+            }
+            outerArray.add(innerArray);
+        }
+        
+        return outerArray;
+    }
+    
+    public static <T extends Object> List<List<T>> create2dList(T[][] initialItems) {
+        List<List<T>> outerArray = new ArrayList<>(initialItems.length);
         
         for (T[] innerItems : initialItems) {
             ArrayList<T> innerArray = new ArrayList<>(innerItems.length);
@@ -46,11 +67,11 @@ public class ListUtils {
         return depth;
     }
 
-    public static boolean isRectangularArray2dList(List<List<Object>> array) {
+    public static <T> boolean isRectangularArray2dList(List<List<T>> array) {
         if (array.size() > 0) {
             int expectedInnerLength = array.get(0).size();
 
-            for (List<Object> innerArray : array) {
+            for (List<T> innerArray : array) {
                 if (innerArray.size() != expectedInnerLength) {
                     return false;
                 }
@@ -74,14 +95,14 @@ public class ListUtils {
         return true;
     }
 
-    public static Dimension dimensionsOfArray2dList(List<List<Object>> array) {
+    public static <T> Dimension dimensionsOfArray2dList(List<List<T>> array) {
         if (array.size() > 0 && ListUtils.isRectangularArray2dList(array)) {
             return new Dimension(array.size(), array.get(0).size());
         } else if (array.size() == 0) {
             return new Dimension();
         } else {
             int tallestColumn = 0;
-            for (List<Object> innerArray : array) {
+            for (List<T> innerArray : array) {
                 tallestColumn = Math.max(tallestColumn, innerArray.size());
             }
 
@@ -115,11 +136,11 @@ public class ListUtils {
         return currentClass;
     }
 
-    public static void changeRowsInArray2dList(ArrayList<ArrayList<Object>> arrayList, int numberOfRows) {
+    public static void changeRowsInArray2dList(List<List<Object>> arrayList, int numberOfRows) {
         Dimension dimensions = dimensionsOfArray2dList(arrayList);
         
         if (dimensions.height > numberOfRows) {
-            for (ArrayList<Object> innerList : arrayList) {
+            for (List<Object> innerList : arrayList) {
                 for (int i = innerList.size() - 1; i >= numberOfRows; i--) {
                     innerList.remove(i);
                 }
@@ -131,7 +152,7 @@ public class ListUtils {
             Class memberClass = classOfObjectInMultiDimensionList(arrayList);
             try {
                 Constructor constructor = memberClass.getConstructor();
-                for (ArrayList<Object> innerList : arrayList) {
+                for (List<Object> innerList : arrayList) {
                     for (int i = 0; i < rowsToAdd; i++) {
                         
                             innerList.add(constructor.newInstance());
@@ -144,7 +165,7 @@ public class ListUtils {
         }
     }
     
-    public static void changeColumnsInArray2dList(ArrayList<ArrayList<Object>> arrayList, int numberOfColumns) {
+    public static void changeColumnsInArray2dList(List<List<Object>> arrayList, int numberOfColumns) {
         Dimension dimensions = dimensionsOfArray2dList(arrayList);
 
         if (dimensions.width > numberOfColumns) {

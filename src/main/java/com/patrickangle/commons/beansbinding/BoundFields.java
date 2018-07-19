@@ -23,8 +23,10 @@ import com.patrickangle.commons.beansbinding.swing.boundfields.JSliderBoundField
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTableBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.util.Classes;
+import javax.swing.AbstractButton;
 import javax.swing.JList;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -47,6 +49,8 @@ public class BoundFields {
             return new JSliderBoundField((JSlider) object, (BindableField<JSlider>) bindableField);
         } else if (object instanceof JTable) {
             return new JTableBoundField((JTable) object, (BindableField<JTable>) bindableField);
+        } else if (object instanceof AbstractButton) {
+            return new AbstractButtonBoundField((AbstractButton) object, (BindableField<AbstractButton>) bindableField);
         } else {
             return new BasicBoundField<C>(object, bindableField);
         }

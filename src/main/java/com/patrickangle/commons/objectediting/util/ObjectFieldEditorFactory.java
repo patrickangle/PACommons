@@ -25,9 +25,11 @@ import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
+import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingList2dTableEditorDialog;
 import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListCellRenderer;
 import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListTableModel;
 import com.patrickangle.commons.util.Annotations;
@@ -38,6 +40,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.List;
 import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -99,6 +102,8 @@ public class ObjectFieldEditorFactory {
         } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
             int depth = ListUtils.depthOfMultiDimensionList(objectField.getValue());
             switch(depth) {
+                case 0:
+                    // Zero is returned if the list is empty, so it really should be treated as a depth of one.
                 case 1:
                     return createBoundComponentForList(objectField, bindingGroup);
                 case 2:
@@ -114,7 +119,7 @@ public class ObjectFieldEditorFactory {
     private static ComponentReturn createBoundComponentForBoolean(BoundField objectField, BindingGroup bindingGroup) {
         JCheckBox checkBox = new JCheckBox(ObjectEditingBindings.nameForBindableField(objectField.getBindableField()));
         
-        BasicBinding binding = new BasicBinding(objectField, new BasicBoundField(checkBox, "selected"), Binding.UpdateStrategy.READ_WRITE);
+        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(checkBox, AbstractButtonBoundField.SYNTHETIC_FIELD_SELECTED), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
         
         return new ComponentReturn(checkBox, true);
@@ -208,11 +213,17 @@ public class ObjectFieldEditorFactory {
         JTable table = new JTable(new ObjectEditingListTableModel(objectField.getFieldClass()));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setTableHeader(null);
-        table.getColumnModel().getColumn(0).setCellEditor(new ObjectEditingListCellRenderer());
-        table.getColumnModel().getColumn(0).setCellRenderer(new ObjectEditingListCellRenderer());
         
-        table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
-        table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
+        if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
+            table.getColumnModel().getColumn(0).setCellEditor(new ObjectEditingListCellRenderer());
+            table.getColumnModel().getColumn(0).setCellRenderer(new ObjectEditingListCellRenderer());
+            
+            table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
+            table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
+        } else {
+            table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));            
+            table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
+        }
         
         JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setMinimumSize(new Dimension(0, 100));
@@ -235,7 +246,9 @@ public class ObjectFieldEditorFactory {
             JButton removeButton = new JButton("−");
             removeButton.addActionListener((actionEvent) -> {
                 int row = table.getSelectedRow();
-                ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
+                if (row != -1) {
+                    ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
+                }
             });
             toolbar.add(removeButton);
 
@@ -266,6 +279,12 @@ public class ObjectFieldEditorFactory {
     }
     
     public static ComponentReturn createBoundComponentFor2dList(BoundField<List<List>> boundField, BindingGroup bindingGroup) {
-        return new ComponentReturn(new JLabel("2d list support not implemented"), false);
+        JButton editButton = new JButton("Open Editor");
+        editButton.addActionListener((actionEvent) -> {
+            BindingGroup editorBindingGroup = new BindingGroup();
+            new ObjectEditingList2dTableEditorDialog(null, true, boundField, editorBindingGroup).setVisible(true);
+            editorBindingGroup.bind();
+        });
+        return new ComponentReturn(editButton, false);
     }
 }

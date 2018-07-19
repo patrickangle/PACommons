@@ -35,6 +35,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -85,7 +86,9 @@ public class ObjectEditingPanel extends JPanel {
         bindingGroup.clear();
         
         this.removeAll();
-        validate();
+        
+        this.revalidate();
+        this.repaint();
     }
     
     protected void build() {
@@ -100,6 +103,7 @@ public class ObjectEditingPanel extends JPanel {
         
         int runningGridY = 0;
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {
+            ObjectEditingProperty config = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(field), ObjectEditingProperty.class);
             String declaringClass = ObjectEditingBindings.getGroupNameForBindableField(field);
             sectionPanels.putIfAbsent(declaringClass, new JPanel(new GridBagLayout()));
             
@@ -113,10 +117,12 @@ public class ObjectEditingPanel extends JPanel {
                 c.weightx = 0.0;
                 
                 JLabel label = new JLabel(ObjectEditingBindings.nameForBindableField(field), JLabel.TRAILING);
+                if (componentReturn.multiLineEditor) {
+                    label.setVerticalAlignment(SwingConstants.TOP);
+                }
                 label.setLabelFor(componentReturn.getComponent());
-                String help = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(field), ObjectEditingProperty.class).help();
-                if (!help.equals("")) {
-                    label.setToolTipText(help);
+                if (!config.help().equals("")) {
+                    label.setToolTipText(config.help());
                 }
                 sectionPanels.get(declaringClass).add(label, c);
             }
@@ -143,6 +149,7 @@ public class ObjectEditingPanel extends JPanel {
         this.add(new Box.Filler(new Dimension(), new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)));
 //        SpringLayouts.makeCompactGrid(this, sectionPanels.size(), 1, 6, 6, 6, 6);
         bindingGroup.bind();
-        validate();
+        this.revalidate();
+        this.repaint();
     }
 }

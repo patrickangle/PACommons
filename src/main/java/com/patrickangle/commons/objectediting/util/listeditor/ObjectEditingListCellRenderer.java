@@ -56,11 +56,10 @@ public class ObjectEditingListCellRenderer extends AbstractCellEditor implements
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         this.object = object;
-        System.out.println("getting renderer");
         if (CustomObjectEditingComponent.class.isInstance(value)) {
             BindingGroup bindingGroup = new BindingGroup();
             
-            component = ((CustomObjectEditingComponent) value).customObjectEditingComponentRenderer(bindingGroup).getComponent();
+            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
             
             bindingGroup.bind();
             return component;
@@ -72,7 +71,6 @@ public class ObjectEditingListCellRenderer extends AbstractCellEditor implements
     @Override
     public Component getTableCellEditorComponent(JTable jtable, Object value, boolean isSelected, int row, int column) {
         this.object = object;
-        System.out.println("getting editor");
         if (CustomObjectEditingComponent.class.isInstance(value)) {
             BindingGroup bindingGroup = new BindingGroup();
             

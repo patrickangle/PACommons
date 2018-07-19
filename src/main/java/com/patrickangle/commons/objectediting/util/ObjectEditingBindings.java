@@ -36,7 +36,7 @@ public class ObjectEditingBindings {
      * A constant defining the field to search for to name groups in an
      * ObjectEditingPanel.
      */
-    private static final String OBJECT_EDITING_PROPERTY_GROUP_FIELD_NAME = "USER_EDITABLE_PROPERTY_GROUP";
+    private static final String OBJECT_EDITING_PROPERTY_GROUP_FIELD_NAME = "OBJECT_EDITING_PROPERTY_GROUP";
     
     /**
      * Get a list of BindableFields representing the properties of the provided

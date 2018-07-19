@@ -83,11 +83,13 @@ public abstract class AbstractUserBoundField extends PropertyChangeObservableBas
     
     protected void updateKnownTargetFields() {
         knownTargetFieldNames.clear();
+        if (this.classForTargetObjectNamed(this.targetObjectName) != null) {
+            List<BindableField> fields = BindableFields.forClass(this.classForTargetObjectNamed(this.targetObjectName));
+            fields.forEach((bindableField) -> {
+                knownTargetFieldNames.add(bindableField.getFieldName());
+            });
+        }
         
-        List<BindableField> fields = BindableFields.forClass(this.classForTargetObjectNamed(this.targetObjectName));
-        fields.forEach((bindableField) -> {
-            knownTargetFieldNames.add(bindableField.getFieldName());
-        });
     }
     
     protected abstract void updateBoundField();
