@@ -118,7 +118,9 @@ public class ObjectEditingListTableModel<E> extends ObservableListModel<E> imple
 
     @Override
     public void setValueAt(Object o, int i, int i1) {
-        //this.items.set(i, (E) o);
+        if (o != null) {
+            this.items.set(i, (E) o);
+        }
     }
 
     @Override

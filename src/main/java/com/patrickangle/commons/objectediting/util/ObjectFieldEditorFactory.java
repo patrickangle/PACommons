@@ -234,13 +234,16 @@ public class ObjectFieldEditorFactory {
             table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
             table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
         } else {
-            table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));            
+            table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));
             table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
         }
         
         JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setMinimumSize(new Dimension(0, 100));
         listEditor.add(scrollPane, BorderLayout.CENTER);
+        
+        table.setRowHeight(24);
+        table.setRowMargin(6);
         
         Binding listBinding = new BasicBinding(objectField, BoundFields.boundField(table.getModel(), "items"), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(listBinding);

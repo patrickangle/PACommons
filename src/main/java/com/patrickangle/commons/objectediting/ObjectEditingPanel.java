@@ -36,7 +36,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -148,14 +148,13 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             
             this.add(sectionPanel);
         });
-        
-        if (this.getParent() instanceof JScrollPane) {
+
+        if (this.getParent() instanceof JViewport) {
             
         } else {
             this.add(new Box.Filler(new Dimension(), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE)));
         }
         
-//        SpringLayouts.makeCompactGrid(this, sectionPanels.size(), 1, 6, 6, 6, 6);
         bindingGroup.bind();
         this.revalidate();
         this.repaint();

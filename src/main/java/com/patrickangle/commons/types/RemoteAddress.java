@@ -21,6 +21,7 @@ import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
@@ -92,7 +93,7 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
         
         JTextField addressField = new JTextField();
         
-        Binding addressFieldBinding = new BasicBinding(this, "address", addressField, "text", Binding.UpdateStrategy.READ_WRITE);
+        Binding addressFieldBinding = new BasicBinding(this, "address", addressField, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(addressFieldBinding);
         
         remoteAddressEditor.add(addressField);
