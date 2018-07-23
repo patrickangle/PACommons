@@ -32,6 +32,7 @@ public @interface ObjectEditingProperty {
     double numberStepValue() default 1;
     NumberEditor numberEditor() default NumberEditor.SPINNER_CONTROL;
     Class listNewItemClass() default Object.class;
+    boolean mutable() default true;
     
     public enum NumberEditor {
         TEXT_CONTROL,

@@ -103,10 +103,10 @@ public class AlgebraParser {
      * {@code ScriptException} will be thrown providing details of why
      * the script could not be executed.
      */
-    public static Number evaluate(String expression, Map<String, Object> variables) throws ScriptException {
+    public static Object evaluate(String expression, Map<String, Object> variables) throws ScriptException {
         Bindings bindings = engine.createBindings();
         bindings.putAll(variables);
-        return (Number) engine.eval(expression, bindings);
+        return engine.eval(expression, bindings);
     }
     
 //    private static String convertInferredMultiplication(String expression) {

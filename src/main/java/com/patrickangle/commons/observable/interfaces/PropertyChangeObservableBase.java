@@ -27,12 +27,12 @@ public class PropertyChangeObservableBase implements PropertyChangeObservable {
     protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+    public final void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
         propertyChangeSupport.addPropertyChangeListener(propertyChangeListener);
     }
 
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+    public final void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
         propertyChangeSupport.removePropertyChangeListener(propertyChangeListener);
     }
     

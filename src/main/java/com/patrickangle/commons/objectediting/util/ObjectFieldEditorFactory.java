@@ -85,10 +85,14 @@ public class ObjectFieldEditorFactory {
     }
     
     public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup) {
+        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(bindableField), ObjectEditingProperty.class);
+        
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
         Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
-
-        if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
+        
+        if (!configInfo.mutable()) {
+            return createBoundComponentForNonMutableObject(objectField, bindingGroup);
+        } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
             return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
@@ -114,6 +118,15 @@ public class ObjectFieldEditorFactory {
         } else {
             return createBoundComponentForString(objectField, bindingGroup);
         }
+    }
+    
+    private static ComponentReturn createBoundComponentForNonMutableObject(BoundField objectField, BindingGroup bindingGroup) {
+        JLabel label = new JLabel();
+        
+        Binding binding = new BasicBinding(objectField, BoundFields.boundField(label, "text"), Binding.UpdateStrategy.READ_ONLY);
+        bindingGroup.add(binding);
+        
+        return new ComponentReturn(label, false);
     }
     
     private static ComponentReturn createBoundComponentForBoolean(BoundField objectField, BindingGroup bindingGroup) {

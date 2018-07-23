@@ -27,8 +27,7 @@ import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import com.patrickangle.commons.util.Colors;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
+import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -89,32 +88,14 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
 
     @Override
     public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
-        JPanel remoteAddressEditor = new JPanel(new GridBagLayout());
-        remoteAddressEditor.setBackground(Colors.transparentColor());
-        remoteAddressEditor.setOpaque(true);
-        
-        GridBagConstraints gridBagConstraints;
+        JPanel remoteAddressEditor = new JPanel(new GridLayout(1, 2, 6, 0));
         
         JTextField addressField = new JTextField();
         
         Binding addressFieldBinding = new BasicBinding(this, "address", addressField, "text", Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(addressFieldBinding);
         
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.66;
-        remoteAddressEditor.add(addressField, gridBagConstraints);
-        
-        JLabel colonLabel = new JLabel(":");
-        
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
-        gridBagConstraints.weightx = 0.0;
-        remoteAddressEditor.add(colonLabel, gridBagConstraints);
+        remoteAddressEditor.add(addressField);
         
         JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
         
@@ -122,16 +103,10 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
         portSpinnerEditor.getFormat().setGroupingUsed(false);
         portSpinner.setEditor(portSpinnerEditor);
         
-        
         Binding portSpinnerBinding = new BasicBinding(this, "port", portSpinner, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(portSpinnerBinding);
-        
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.33;
-        remoteAddressEditor.add(portSpinner, gridBagConstraints);
+ 
+        remoteAddressEditor.add(portSpinner);
         
         return new ObjectFieldEditorFactory.ComponentReturn(remoteAddressEditor, false);
     }

@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -35,6 +36,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
@@ -42,7 +45,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author patrickangle
  */
-public class ObjectEditingPanel extends JPanel {
+public class ObjectEditingPanel extends JPanel implements Scrollable {
     protected Object editingObject;
     
     protected BindingGroup bindingGroup;
@@ -116,7 +119,7 @@ public class ObjectEditingPanel extends JPanel {
                 c.gridx = 0;
                 c.weightx = 0.0;
                 
-                JLabel label = new JLabel(ObjectEditingBindings.nameForBindableField(field), JLabel.TRAILING);
+                JLabel label = new JLabel(ObjectEditingBindings.nameForBindableField(field) + ": ", JLabel.TRAILING);
                 if (componentReturn.multiLineEditor) {
                     label.setVerticalAlignment(SwingConstants.TOP);
                 }
@@ -146,10 +149,40 @@ public class ObjectEditingPanel extends JPanel {
             this.add(sectionPanel);
         });
         
-        this.add(new Box.Filler(new Dimension(), new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)));
+        if (this.getParent() instanceof JScrollPane) {
+            
+        } else {
+            this.add(new Box.Filler(new Dimension(), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE)));
+        }
+        
 //        SpringLayouts.makeCompactGrid(this, sectionPanels.size(), 1, 6, 6, 6, 6);
         bindingGroup.bind();
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return this.getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 16;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 16;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return true;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
     }
 }

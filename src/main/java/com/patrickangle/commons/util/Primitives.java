@@ -34,7 +34,16 @@ public class Primitives {
      * @return 
      */
     public static Object convertObjectToType(Object object, Class wantedType) {
-        if (wantedType.isInstance(object)) {
+        if (wantedType == null) {
+            return object;
+        } else if (object == null) {
+            try {
+                return wantedType.getConstructor(String.class).newInstance();
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                // Last-ditch effort to convert type was unsucessful without a constructor accepting a no arguments. Return the original object instead.
+                return null;
+            }
+        } else if (wantedType.isInstance(object)) {
             return object;
         } else {
             String stringValue = object == null ? "" : object.toString();
