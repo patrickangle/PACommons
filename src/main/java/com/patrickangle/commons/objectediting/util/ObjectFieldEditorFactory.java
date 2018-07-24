@@ -82,6 +82,10 @@ public class ObjectFieldEditorFactory {
         public boolean isSelfLabeled() {
             return selfLabeled;
         }
+        
+        public boolean isMultiLineEditor() {
+            return multiLineEditor;
+        }
     }
     
     public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup) {
