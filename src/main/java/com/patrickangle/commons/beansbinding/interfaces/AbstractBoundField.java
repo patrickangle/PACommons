@@ -58,5 +58,12 @@ public abstract class AbstractBoundField<C> extends PropertyChangeObservableBase
     public void setValue(Object value) {
         this.getBindableField().setValue(this.getContainingObject(), Primitives.convertObjectToType(value, getFieldClass()));
     }
+
+    @Override
+    public String toString() {
+        return this.getContainingObject() + " {" + this.getBindableField() + "}";
+    }
+    
+    
     
 }

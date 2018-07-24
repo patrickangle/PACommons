@@ -125,12 +125,12 @@ public class ObjectFieldEditorFactory {
     }
     
     private static ComponentReturn createBoundComponentForNonMutableObject(BoundField objectField, BindingGroup bindingGroup) {
-        JLabel label = new JLabel();
+        JLabel labelComponent = new JLabel("");
         
-        Binding binding = new BasicBinding(objectField, BoundFields.boundField(label, "text"), Binding.UpdateStrategy.READ_ONLY);
+        Binding binding = new BasicBinding(objectField, BoundFields.boundField(labelComponent, "text"), Binding.UpdateStrategy.READ_ONLY);
         bindingGroup.add(binding);
         
-        return new ComponentReturn(label, false);
+        return new ComponentReturn(labelComponent, false);
     }
     
     private static ComponentReturn createBoundComponentForBoolean(BoundField objectField, BindingGroup bindingGroup) {
