@@ -22,6 +22,8 @@ import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.observable.support.ListDataSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
 
@@ -30,22 +32,33 @@ import javax.swing.event.ListDataListener;
  * @author patrickangle
  */
 public class ObservableListModel<E> implements ListModel<E>, PropertyChangeObservable {
+    protected List<E> specialItems;
     protected ObservableList<E> items;
     
     protected final PropertyChangeSupport propertyChangeSupport;
     protected final ListDataSupport listDataSupport;
     
-    public ObservableListModel(ObservableList<E> items) {
+    public ObservableListModel(ObservableList<E> items, List<E> specialItems) {
         this.items = items;
         
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.listDataSupport = new ListDataSupport(this);
         
+        this.specialItems = specialItems;
+        
         this.items.addObservableListListener(listDataSupport.getObservableListListener());
     }
     
+    public ObservableListModel(Class<E> itemClass, List<E> specialItems) {
+        this(ObservableCollections.concurrentObservableList(itemClass), specialItems);
+    }
+    
+    public ObservableListModel(ObservableList<E> items) {
+        this(items, new ArrayList<>());
+    }
+    
     public ObservableListModel(Class<E> itemClass) {
-        this(ObservableCollections.concurrentObservableList(itemClass));
+        this(itemClass, new ArrayList<>());
     }
     
     public void setItems(ObservableList<E> items) {
@@ -68,12 +81,17 @@ public class ObservableListModel<E> implements ListModel<E>, PropertyChangeObser
 
     @Override
     public int getSize() {
-        return items.size();
+        return specialItems.size() + items.size();
     }
 
     @Override
     public E getElementAt(int index) {
-        return items.get(index);
+        if (index < specialItems.size()) {
+            return specialItems.get(index);
+        } else {
+            return items.get(index - specialItems.size());
+        }
+        
     }
 
     @Override

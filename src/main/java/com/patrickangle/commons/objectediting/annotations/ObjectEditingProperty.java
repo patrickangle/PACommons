@@ -33,6 +33,7 @@ public @interface ObjectEditingProperty {
     NumberEditor numberEditor() default NumberEditor.SPINNER_CONTROL;
     Class listNewItemClass() default Object.class;
     boolean mutable() default true;
+    boolean stringMultilineEditor() default false;
     
     public enum NumberEditor {
         TEXT_CONTROL,

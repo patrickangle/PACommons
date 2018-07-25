@@ -50,6 +50,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
@@ -120,7 +121,11 @@ public class ObjectFieldEditorFactory {
                     return new ComponentReturn(new JLabel("List too deep."), false);
             }
         } else {
-            return createBoundComponentForString(objectField, bindingGroup);
+            if (configInfo.stringMultilineEditor()) {
+                return createBoundComponentForMultilineString(objectField, bindingGroup);
+            } else {
+                return createBoundComponentForString(objectField, bindingGroup);
+            }
         }
     }
     
@@ -203,6 +208,18 @@ public class ObjectFieldEditorFactory {
         bindingGroup.add(binding);
 
         return new ComponentReturn(textField, false);
+    }
+    
+    private static ComponentReturn createBoundComponentForMultilineString(BoundField objectField, BindingGroup bindingGroup) {
+        JTextArea textField = new JTextArea();
+        
+        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT), Binding.UpdateStrategy.READ_WRITE);
+        bindingGroup.add(binding);
+        
+        JScrollPane scrollPane = new JScrollPane(textField, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setMinimumSize(new Dimension(0, 100));
+
+        return new ComponentReturn(scrollPane, false, true);
     }
     
     private static ComponentReturn createBoundComponentForColor(BoundField objectField, BindingGroup bindingGroup) {

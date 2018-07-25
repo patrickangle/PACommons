@@ -17,14 +17,23 @@
 package com.patrickangle.commons.beansbinding.swing.models;
 
 import com.patrickangle.commons.observable.collections.ObservableList;
+import java.util.List;
 import javax.swing.ComboBoxModel;
 
 /**
  *
  * @author patrickangle
  */
-public class ObservableComboBoxModel<E> extends ObservableListModel<E> implements ComboBoxModel<E>{ 
+public class ObservableComboBoxModel<E> extends ObservableListModel<E> implements ComboBoxModel<E>{
     private E selectedItem;
+    
+    public ObservableComboBoxModel(ObservableList<E> items, List<E> specialItems) {
+        super(items, specialItems);
+    }
+    
+    public ObservableComboBoxModel(Class<E> itemClass, List<E> specialItems) {
+        super(itemClass, specialItems);
+    }
     
     public ObservableComboBoxModel(ObservableList<E> items) {
         super(items);

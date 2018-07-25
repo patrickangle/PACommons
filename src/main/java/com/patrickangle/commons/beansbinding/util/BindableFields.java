@@ -45,12 +45,12 @@ public class BindableFields {
         
         for (Method method : containingClass.getMethods()) {
             // A getter must start with get, take no parameters, be public, and not return void.
-            if (method.getName().startsWith("get")
+            if ((method.getName().startsWith("get") || method.getName().startsWith("is"))
                     && method.getParameterCount() == 0
                     && Modifier.isPublic(method.getModifiers())
                     && !method.getReturnType().equals(Void.TYPE)) {
                 // Reformat name to be in the proper case
-                String fieldName = method.getName().substring(3);
+                String fieldName = method.getName().substring((method.getName().startsWith("get") ? 3 : 2));
                 fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
 
                 // Try and create a BeanBindableField, but if that fails no further action is needed.
