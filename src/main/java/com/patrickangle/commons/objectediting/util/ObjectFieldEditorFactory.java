@@ -38,6 +38,7 @@ import com.patrickangle.commons.util.legacy.ListUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
@@ -212,7 +213,8 @@ public class ObjectFieldEditorFactory {
     
     private static ComponentReturn createBoundComponentForMultilineString(BoundField objectField, BindingGroup bindingGroup) {
         JTextArea textField = new JTextArea();
-        
+        textField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 11));
+        textField.setTabSize(4);
         BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
         
