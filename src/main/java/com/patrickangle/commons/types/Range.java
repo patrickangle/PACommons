@@ -63,10 +63,8 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
         this.propertyChangeSupport.firePropertyChange("maximum", oldMaximum, this.maximum);
     }
     
-    public abstract void setRange(E x, E y);
-    
-    public abstract Range pointOffset(E x, E y);
-    
+    public abstract void setRange(E minimum, E maximum);
+        
     protected abstract SpinnerNumberModel customObjectEditingSpinnerNumberModel();
     
     protected abstract boolean customObjectEditingSpinnerShowDecimalPoint();
@@ -91,7 +89,7 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
             ((JSpinner.DefaultEditor)spinnerX.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.RIGHT);
         }
         
-        Binding spinnerXBinding = new BasicBinding(this, "x", spinnerX, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
+        Binding spinnerXBinding = new BasicBinding(this, "minimum", spinnerX, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(spinnerXBinding);
         
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -101,7 +99,7 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
         gridBagConstraints.weightx = 1.0;
         pointEditor.add(spinnerX, gridBagConstraints);
         
-        JLabel commaLabel = new JLabel(",");
+        JLabel commaLabel = new JLabel("..");
         
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -120,7 +118,7 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
             ((JSpinner.DefaultEditor)spinnerY.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.LEFT);
         }
         
-        Binding spinnerYBinding = new BasicBinding(this, "y", spinnerY, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
+        Binding spinnerYBinding = new BasicBinding(this, "maximum", spinnerY, JSpinnerBoundField.SYNTHETIC_FIELD_VALUE, Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(spinnerYBinding);
         
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -133,12 +131,12 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
         return new ObjectFieldEditorFactory.ComponentReturn(pointEditor, false);
     }
     
-    public static class IntegerPoint extends Range<Integer> {
-        public IntegerPoint() {
+    public static class IntegerRange extends Range<Integer> {
+        public IntegerRange() {
             this(0, 0);
         }
         
-        public IntegerPoint(String value) {
+        public IntegerRange(String value) {
             String[] parts = value.split(",");
             if (parts.length == 2) {
                 this.minimum = Integer.parseInt(parts[0]);
@@ -148,20 +146,15 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
             }
         }
         
-        public IntegerPoint(int x, int y) {
-            this.minimum = x;
-            this.maximum = y;
+        public IntegerRange(int minimum, int maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
         
         @Override
-        public void setPoint(Integer x, Integer y) {
-            this.minimum = x;
-            this.maximum = y;
-        }
-
-        @Override
-        public Range pointOffset(Integer x, Integer y) {
-            return new Range.IntegerPoint(this.minimum + x, this.maximum + y);
+        public void setRange(Integer minimum, Integer maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
 
         @Override
@@ -175,12 +168,12 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
         }
     }
     
-    public static class FloatPoint extends Range<Float> {
-        public FloatPoint() {
+    public static class FloatRange extends Range<Float> {
+        public FloatRange() {
             this(0f, 0f);
         }
         
-        public FloatPoint(String value) {
+        public FloatRange(String value) {
             String[] parts = value.split(",");
             if (parts.length == 2) {
                 this.minimum = Float.parseFloat(parts[0]);
@@ -190,20 +183,15 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
             }
         }
         
-        public FloatPoint(float x, float y) {
-            this.minimum = x;
-            this.maximum = y;
+        public FloatRange(float minimum, float maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
         
         @Override
-        public void setPoint(Float x, Float y) {
-            this.minimum = x;
-            this.maximum = y;
-        }
-
-        @Override
-        public Range pointOffset(Float x, Float y) {
-            return new Range.FloatPoint(this.minimum + x, this.maximum + y);
+        public void setRange(Float minimum, Float maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
 
         @Override
@@ -217,12 +205,12 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
         }
     }
     
-    public static class DoublePoint extends Range<Double> {
-        public DoublePoint() {
+    public static class DoubleRange extends Range<Double> {
+        public DoubleRange() {
             this(0f, 0f);
         }
         
-        public DoublePoint(String value) {
+        public DoubleRange(String value) {
             String[] parts = value.split(",");
             if (parts.length == 2) {
                 this.minimum = Double.parseDouble(parts[0]);
@@ -232,21 +220,17 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
             }
         }
         
-        public DoublePoint(double x, double y) {
-            this.minimum = x;
-            this.maximum = y;
+        public DoubleRange(double minimum, double maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
         
         @Override
-        public void setPoint(Double x, Double y) {
-            this.minimum = x;
-            this.maximum = y;
+        public void setRange(Double minimum, Double maximum) {
+            this.minimum = minimum;
+            this.maximum = maximum;
         }
 
-        @Override
-        public Range pointOffset(Double x, Double y) {
-            return new Range.DoublePoint(this.minimum + x, this.maximum + y);
-        }
 
         @Override
         protected SpinnerNumberModel customObjectEditingSpinnerNumberModel() {
