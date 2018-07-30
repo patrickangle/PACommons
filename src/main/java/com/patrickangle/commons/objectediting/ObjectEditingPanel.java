@@ -29,6 +29,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -103,6 +104,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         c.ipadx = 6;
         c.ipady = 6;
         c.insets = new Insets(1, 1, 1, 1);
+        c.anchor = GridBagConstraints.NORTH;
         
         int runningGridY = 0;
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {
@@ -153,11 +155,8 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             this.add(sectionPanel);
         });
 
-        if (this.getParent() instanceof JViewport) {
-            
-        } else {
-            this.add(new Box.Filler(new Dimension(), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE), new Dimension(Short.MAX_VALUE, Short.MAX_VALUE)));
-        }
+        // This filler glue is needed when the panel is stretched taller than its contents.
+        this.add(Box.createVerticalGlue());
         
         bindingGroup.bind();
         this.revalidate();

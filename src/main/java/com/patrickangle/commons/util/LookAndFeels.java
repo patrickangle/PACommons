@@ -49,9 +49,9 @@ public class LookAndFeels {
         // Use Quartz2D for drawing arbitrary graphics.
         System.setProperty("apple.awt.graphics.UseQuartz", "true");
         
-        LookAndFeels.useGenericSystemLookAndFeel();
+//        LookAndFeels.useGenericSystemLookAndFeel();
         // We use VAqua here, which uses system renderers to draw components.
-        // UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
+        UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         // Disable split pane border by default, and make sure the pane updates continuously when dragged.
         UIManager.getDefaults().put("SplitPane.border", BorderFactory.createEmptyBorder());

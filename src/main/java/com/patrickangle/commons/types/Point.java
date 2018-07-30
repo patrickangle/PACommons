@@ -65,7 +65,11 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
     
     public abstract void setPoint(E x, E y);
     
-    public abstract Point pointOffset(E x, E y);
+    public abstract Point<E> pointOffset(E x, E y);
+    public abstract Point<E> pointOffset(Point<E> offset);
+    public void test() {
+        
+    }
     
     protected abstract SpinnerNumberModel customObjectEditingSpinnerNumberModel();
     
@@ -160,9 +164,15 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
 
         @Override
-        public Point pointOffset(Integer x, Integer y) {
+        public Point.IntegerPoint pointOffset(Integer x, Integer y) {
             return new Point.IntegerPoint(this.x + x, this.y + y);
         }
+        
+        @Override
+        public Point.IntegerPoint pointOffset(Point<Integer> offset) {
+            return new Point.IntegerPoint(this.x + offset.x, this.y + offset.y);
+        }
+
 
         @Override
         protected SpinnerNumberModel customObjectEditingSpinnerNumberModel() {
@@ -202,8 +212,13 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
 
         @Override
-        public Point pointOffset(Float x, Float y) {
+        public Point.FloatPoint pointOffset(Float x, Float y) {
             return new Point.FloatPoint(this.x + x, this.y + y);
+        }
+        
+        @Override
+        public Point.FloatPoint pointOffset(Point<Float> offset) {
+            return new Point.FloatPoint(this.x + offset.x, this.y + offset.y);
         }
 
         @Override
@@ -244,8 +259,13 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
 
         @Override
-        public Point pointOffset(Double x, Double y) {
+        public Point.DoublePoint pointOffset(Double x, Double y) {
             return new Point.DoublePoint(this.x + x, this.y + y);
+        }
+        
+        @Override
+        public Point.DoublePoint pointOffset(Point<Double> offset) {
+            return new Point.DoublePoint(this.x + offset.x, this.y + offset.y);
         }
 
         @Override

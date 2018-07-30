@@ -34,7 +34,9 @@ import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListC
 import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListTableModel;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
+import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.legacy.ListUtils;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -55,6 +57,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.StrokeBorder;
 
 /**
  *
@@ -261,8 +264,26 @@ public class ObjectFieldEditorFactory {
             table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
         }
         
-        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setMinimumSize(new Dimension(0, 100));
+        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
+            private static final int MIN_HEIGHT = 125;
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension newPreferredSize = super.getPreferredSize();
+                newPreferredSize.height = MIN_HEIGHT;
+                return newPreferredSize;
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                Dimension newMinimumSize = super.getMinimumSize();
+                newMinimumSize.height = MIN_HEIGHT;
+                return newMinimumSize;
+            }
+            
+            
+        };
+        
+        
         listEditor.add(scrollPane, BorderLayout.CENTER);
         
         table.setRowHeight(24);
