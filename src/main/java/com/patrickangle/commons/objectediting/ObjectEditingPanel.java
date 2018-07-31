@@ -117,12 +117,13 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             c.gridy = runningGridY;
             c.gridwidth = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() ? 2 : 1;
             
+            JLabel label = null;
             if (!componentReturn.isSelfLabeled()) {
                 c.gridx = 0;
                 c.weightx = 0.0;
                 
                 
-                JLabel label = new JLabel(ObjectEditingBindings.nameForBindableField(field) + ": ", JLabel.TRAILING);
+                label = new JLabel(ObjectEditingBindings.nameForBindableField(field) + ": ", JLabel.TRAILING);
                 if (componentReturn.multiLineEditor) {
                     label.setHorizontalAlignment(JLabel.LEADING);
                 }
@@ -139,6 +140,10 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             c.gridx = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() ? 0 : 1;
             c.weightx = 1.0;
             
+            Dimension preferredDimension = componentReturn.getComponent().getPreferredSize();
+            componentReturn.getComponent().setMinimumSize(new Dimension(preferredDimension.width, Math.max(preferredDimension.height, label != null ? label.getPreferredSize().height : 0)));
+            
+//            componentReturn.getComponent().setMinimumSize(componentReturn.getComponent().getPreferredSize());
             sectionPanels.get(declaringClass).add(componentReturn.getComponent(), c);
             
             runningGridY++;
