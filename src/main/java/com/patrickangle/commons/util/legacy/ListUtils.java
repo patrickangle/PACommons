@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -200,5 +201,25 @@ public class ListUtils {
             chunks.add(new CopyOnWriteArrayList<>(list.subList(i, Math.min(i + chunkSize, list.size()))));
         }
         return chunks;
+    }
+    
+    public static List<Object> flatten(List<?> list) {
+        List<Object> ret = new ArrayList<>();
+        flattenHelper(list, ret);
+        return ret;
+    }
+
+    public static void flattenHelper(List<?> nestedList, List<Object> flatList) {
+        for (Object item : nestedList) {
+            if (item instanceof List<?>) {
+                flattenHelper((List<?>) item, flatList);
+            } else {
+                flatList.add((Integer) item);
+            }
+        }
+    }
+
+    private static List<Object> lst(Object... objs) {
+        return new ArrayList<>(Arrays.asList(objs));
     }
 }
