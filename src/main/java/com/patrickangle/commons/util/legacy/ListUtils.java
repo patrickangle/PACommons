@@ -214,7 +214,7 @@ public class ListUtils {
             if (item instanceof List<?>) {
                 flattenHelper((List<?>) item, flatList);
             } else {
-                flatList.add((Integer) item);
+                flatList.add(item);
             }
         }
     }
