@@ -143,7 +143,7 @@ public final class ObservableCollections {
         }
     }
 
-    private static final class ObservableMapImpl<K,V> extends AbstractMap<K,V> 
+    public static final class ObservableMapImpl<K,V> extends AbstractMap<K,V> 
             implements ObservableMap<K,V> {
         private Map<K,V> map;
         private List<ObservableMapListener> listeners;
@@ -292,7 +292,7 @@ public final class ObservableCollections {
     }
     
 
-    private static final class ObservableListImpl<E> extends AbstractList<E>
+    public static final class ObservableListImpl<E> extends AbstractList<E>
             implements ObservableList<E> {
         private final boolean supportsElementPropertyChanged;
         private List<E> list;
@@ -302,6 +302,12 @@ public final class ObservableCollections {
             this.list = list;
             listeners = new CopyOnWriteArrayList<ObservableListListener>();
             this.supportsElementPropertyChanged = supportsElementPropertyChanged;
+        }
+        
+        public ObservableListImpl() {
+            this.list = new ArrayList<>();
+            listeners = new CopyOnWriteArrayList<ObservableListListener>();
+            this.supportsElementPropertyChanged = false;
         }
 
         public E get(int index) {
