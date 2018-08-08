@@ -18,6 +18,7 @@ package com.patrickangle.commons.observable.support;
 
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.collections.ObservableListListener;
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.event.ListDataEvent;
@@ -38,23 +39,23 @@ public class ListDataSupport {
         
         this.observableListListener = new ObservableListListener() {
             @Override
-            public void listElementsAdded(ObservableList list, int index, int length) {
-                fireIntervalAdded(index, index + length);
+            public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
+                fireIntervalAdded(startIndex, startIndex + length);
             }
 
             @Override
-            public void listElementsRemoved(ObservableList list, int index, List oldElements) {
-                fireIntervalRemoved(index, index + oldElements.size());
+            public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
+                fireIntervalRemoved(startIndex, startIndex + oldElements.size());
             }
 
             @Override
-            public void listElementReplaced(ObservableList list, int index, Object oldElement) {
+            public void elementReplaced(ObservableList list, int index, Object oldElement, Object newElement) {
                 fireContentsChanged(index, index + 1);
             }
 
             @Override
-            public void listElementPropertyChanged(ObservableList list, int index) {
-                fireContentsChanged(index, index + 1);
+            public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
     }

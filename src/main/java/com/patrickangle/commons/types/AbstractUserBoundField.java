@@ -28,6 +28,7 @@ import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
+import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import java.awt.GridBagConstraints;
@@ -49,8 +50,8 @@ public abstract class AbstractUserBoundField extends PropertyChangeObservableBas
     
     protected BoundField boundField;
     
-    protected ObservableList<String> knownTargetObjectNames = ObservableCollections.concurrentObservableList(String.class);
-    protected ObservableList<String> knownTargetFieldNames = ObservableCollections.concurrentObservableList(String.class);
+    protected ObservableList<String> knownTargetObjectNames = new ObservableCopyOnWriteArrayList<>();//ObservableCollections.concurrentObservableList(String.class);
+    protected ObservableList<String> knownTargetFieldNames = new ObservableCopyOnWriteArrayList<>();//ObservableCollections.concurrentObservableList(String.class);
 
     public String getTargetObjectName() {
         return targetObjectName;

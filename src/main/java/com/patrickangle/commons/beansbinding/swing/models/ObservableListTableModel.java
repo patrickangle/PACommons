@@ -23,6 +23,7 @@ import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.collections.ObservableListListener;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.observable.support.TableModelSupport;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,35 +65,33 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
         
         this.observableListListener = new ObservableListListener() {
             @Override
-            public void listElementsAdded(ObservableList list, int index, int length) {
-                for (int i = index; i < index + length; i++) {
+            public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
+                for (int i = startIndex; i < startIndex + length; i++) {
                     bindColumnsFor(ObservableListTableModel.this.items.get(i));
                 }
                 
-                tableModelSupport.fireInserted(index, index+ length, TableModelEvent.ALL_COLUMNS);
+                tableModelSupport.fireInserted(startIndex, startIndex+ length, TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementsRemoved(ObservableList list, int index, List oldElements) {
+            public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
                 oldElements.forEach((item) -> {
                     unbindColumnsFor((E) item);
                 });
                 
-                tableModelSupport.fireDeleted(index, index + oldElements.size(), TableModelEvent.ALL_COLUMNS);
+                tableModelSupport.fireDeleted(startIndex, startIndex + oldElements.size(), TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementReplaced(ObservableList list, int index, Object oldElement) {
+            public void elementReplaced(ObservableList list, int index, Object oldElement, Object newElement) {
                 unbindColumnsFor((E)oldElement);
                 bindColumnsFor(ObservableListTableModel.this.items.get(index));
                 tableModelSupport.fireUpdated(index, index, TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementPropertyChanged(ObservableList list, int index) {
-                // Currently no implementation supports this sub-event. Save for the synthetic
-                // property issue, this would be much easier than maintaining specific bindings
-                // to all elements.
+            public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
+                //
             }
         };
         
@@ -116,7 +115,7 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
     }
 
     @Override
-    public void setItems(ObservableList<E> items) {
+    public void setItems(List<E> items) {
         unbindAllColumns();
         this.items.removeObservableListListener(observableListListener);
         this.tableModelSupport.fireDeleted(0, this.items.size(), TableModelEvent.ALL_COLUMNS);

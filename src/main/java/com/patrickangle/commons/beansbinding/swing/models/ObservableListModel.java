@@ -17,6 +17,7 @@
 package com.patrickangle.commons.beansbinding.swing.models;
 
 import com.patrickangle.commons.observable.collections.ObservableCollections;
+import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.observable.support.ListDataSupport;
@@ -50,7 +51,7 @@ public class ObservableListModel<E> implements ListModel<E>, PropertyChangeObser
     }
     
     public ObservableListModel(Class<E> itemClass, List<E> specialItems) {
-        this(ObservableCollections.concurrentObservableList(itemClass), specialItems);
+        this(new ObservableCopyOnWriteArrayList<>(), specialItems);
     }
     
     public ObservableListModel(ObservableList<E> items) {
@@ -61,21 +62,20 @@ public class ObservableListModel<E> implements ListModel<E>, PropertyChangeObser
         this(itemClass, new ArrayList<>());
     }
     
-    public void setItems(ObservableList<E> items) {
+    public void setItems(List<E> items) {
         ObservableList oldItems = this.items;
         
         this.items.removeObservableListListener(listDataSupport.getObservableListListener());
-        this.items = (ObservableList<E>) ObservableCollections.concurrentObservableList(Object.class);
+        this.items = new ObservableCopyOnWriteArrayList<>(items);
         this.listDataSupport.fireIntervalRemoved(0, oldItems.size());
         
-        this.items = items;
         this.items.addObservableListListener(listDataSupport.getObservableListListener());
         
         this.listDataSupport.fireIntervalAdded(0, this.items.size());
         this.propertyChangeSupport.firePropertyChange("items", oldItems, this.items);
     }
     
-    public ObservableList<E> getItems() {
+    public List<E> getItems() {
         return items;
     }
 

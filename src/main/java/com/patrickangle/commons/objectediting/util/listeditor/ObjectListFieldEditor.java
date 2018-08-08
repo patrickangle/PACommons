@@ -16,9 +16,11 @@
  */
 package com.patrickangle.commons.objectediting.util.listeditor;
 
+import com.patrickangle.commons.observable.collections.ObservableArrayList;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.collections.ObservableListListener;
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -31,7 +33,7 @@ public class ObjectListFieldEditor<E> extends JPanel {
     protected ObservableListListener observableListListener;
     
     public ObjectListFieldEditor(Class<E> valueClass) {
-        backingList = ObservableCollections.observableList(valueClass);
+        backingList = new ObservableArrayList<>();
         commonInit();
     }
     
@@ -42,23 +44,25 @@ public class ObjectListFieldEditor<E> extends JPanel {
     
     private void commonInit() {
         observableListListener = new ObservableListListener() {
+            // @todo why did I not implement any of these handlers?
+
             @Override
-            public void listElementsAdded(ObservableList list, int index, int length) {
+            public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void listElementsRemoved(ObservableList list, int index, List oldElements) {
+            public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void listElementReplaced(ObservableList list, int index, Object oldElement) {
+            public void elementReplaced(ObservableList list, int index, Object oldElement, Object newElement) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void listElementPropertyChanged(ObservableList list, int index) {
+            public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };

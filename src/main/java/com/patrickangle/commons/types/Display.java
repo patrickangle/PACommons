@@ -16,6 +16,7 @@ import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxMode
 import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
+import com.patrickangle.commons.observable.collections.ObservableArrayList;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import com.patrickangle.commons.util.Displays;
@@ -71,7 +72,7 @@ public class Display extends PropertyChangeObservableBase implements CustomObjec
             displayItems.add(new DisplayComboBoxItem(display.number));
         }
         
-        JComboBox<Display.DisplayComboBoxItem> displayEditor = new JComboBox<>(new ObservableComboBoxModel<>(ObservableCollections.observableList(displayItems)));
+        JComboBox<Display.DisplayComboBoxItem> displayEditor = new JComboBox<>(new ObservableComboBoxModel<>(new ObservableArrayList<>(displayItems)));
         displayEditor.setEditable(true);
         
         Binding binding = new BasicBinding(this, "number", displayEditor.getModel(), "selectedItem", Binding.UpdateStrategy.READ_WRITE, new DisplayComboBoxConverter());

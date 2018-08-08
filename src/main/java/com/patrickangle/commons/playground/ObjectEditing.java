@@ -22,6 +22,7 @@ import com.patrickangle.commons.beansbinding.swing.boundfields.JListBoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableListModel;
 import com.patrickangle.commons.objectediting.ObjectEditingDialog;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
+import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import com.patrickangle.commons.util.Exceptions;
 import com.patrickangle.commons.util.LookAndFeels;
 import java.util.Arrays;
@@ -32,7 +33,7 @@ import java.util.List;
  * @author patrickangle
  */
 public class ObjectEditing extends javax.swing.JFrame {
-    List<FunPojo> funPojos = ObservableCollections.concurrentObservableList(Arrays.asList(new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo()));
+    List<FunPojo> funPojos = new ObservableCopyOnWriteArrayList<>(Arrays.asList(new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo()));
     
     
     /**

@@ -20,6 +20,7 @@ import com.patrickangle.commons.beansbinding.swing.models.ObservableListModel;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.collections.ObservableListListener;
 import com.patrickangle.commons.observable.support.TableModelSupport;
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -50,25 +51,23 @@ public class ObjectEditingListTableModel<E> extends ObservableListModel<E> imple
     private void commonInit() {
         this.observableListListener = new ObservableListListener() {
             @Override
-            public void listElementsAdded(ObservableList list, int index, int length) {
-                tableModelSupport.fireInserted(index, index+ length, TableModelEvent.ALL_COLUMNS);
+            public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
+                tableModelSupport.fireInserted(startIndex, startIndex+ length, TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementsRemoved(ObservableList list, int index, List oldElements) {
-                tableModelSupport.fireDeleted(index, index + oldElements.size(), TableModelEvent.ALL_COLUMNS);
+            public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
+                tableModelSupport.fireDeleted(startIndex, startIndex + oldElements.size(), TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementReplaced(ObservableList list, int index, Object oldElement) {
+            public void elementReplaced(ObservableList list, int index, Object oldElement, Object newElement) {
                 tableModelSupport.fireUpdated(index, index, TableModelEvent.ALL_COLUMNS);
             }
 
             @Override
-            public void listElementPropertyChanged(ObservableList list, int index) {
-                // Currently no implementation supports this sub-event. Save for the synthetic
-                // property issue, this would be much easier than maintaining specific bindings
-                // to all elements.
+            public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
+                //
             }
         };
         
@@ -76,7 +75,7 @@ public class ObjectEditingListTableModel<E> extends ObservableListModel<E> imple
     }
     
     @Override
-    public void setItems(ObservableList<E> items) {
+    public void setItems(List<E> items) {
         this.items.removeObservableListListener(observableListListener);
         this.tableModelSupport.fireDeleted(0, this.items.size(), TableModelEvent.ALL_COLUMNS);
         

@@ -21,6 +21,7 @@ import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
+import com.patrickangle.commons.observable.collections.ObservableArrayList;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.util.NetworkInterfaces;
 import java.awt.Dimension;
@@ -61,7 +62,7 @@ public class LocalInterface extends RemoteAddress {
         }
         networkInterfaceItems.add(0, new LocalInterfaceComboBoxItem("0.0.0.0"));
         
-        JComboBox<LocalInterfaceComboBoxItem> interfaceEditor = new JComboBox<>(new ObservableComboBoxModel<>(ObservableCollections.observableList(networkInterfaceItems)));
+        JComboBox<LocalInterfaceComboBoxItem> interfaceEditor = new JComboBox<>(new ObservableComboBoxModel<>(new ObservableArrayList<>(networkInterfaceItems)));
         
         interfaceEditor.setEditable(true);
         interfaceEditor.setSelectedIndex(0);

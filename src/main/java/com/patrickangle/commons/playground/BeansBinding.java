@@ -29,6 +29,7 @@ import com.patrickangle.commons.beansbinding.swing.models.ObservableListTableMod
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.ObjectEditingDialog;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
+import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,11 +39,11 @@ import java.util.stream.Collectors;
  * @author patrickangle
  */
 public class BeansBinding extends javax.swing.JFrame {
-    List<FunPojo> funPojos = ObservableCollections.concurrentObservableList(Arrays.asList(new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo()));
+    List<FunPojo> funPojos = new ObservableCopyOnWriteArrayList<>(Arrays.asList(new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo(), new FunPojo()));
 
     FunPojo selectedPojo;
     
-    List<String> binding6List = ObservableCollections.concurrentObservableList(Arrays.asList("1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato"));
+    List<String> binding6List = new ObservableCopyOnWriteArrayList<>(Arrays.asList("1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato", "1 Potato", "2 Potato", "Red Potato", "Blue Potato"));
     
     /**
      * Creates new form BeansBinding

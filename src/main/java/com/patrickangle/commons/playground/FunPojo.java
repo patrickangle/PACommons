@@ -18,6 +18,7 @@ package com.patrickangle.commons.playground;
 
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
+import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.types.Display;
 import com.patrickangle.commons.types.LocalInterface;
@@ -49,7 +50,7 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
     @ObjectEditingProperty(name="Display") protected Display display = new Display(3);
     @ObjectEditingProperty(name="NIC") protected LocalInterface localInterface = new LocalInterface();
     
-    @ObjectEditingProperty(name="Point List", listNewItemClass = Point.IntegerPoint.class) protected List<Point.IntegerPoint> pointList = ObservableCollections.concurrentObservableList(Arrays.asList(new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint()));
+    @ObjectEditingProperty(name="Point List", listNewItemClass = Point.IntegerPoint.class) protected List<Point.IntegerPoint> pointList = new ObservableCopyOnWriteArrayList<>(Arrays.asList(new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint()));
     
     public FunPojo() {
         
