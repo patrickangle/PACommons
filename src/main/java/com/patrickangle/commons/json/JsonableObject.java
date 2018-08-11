@@ -14,11 +14,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  *
  * @author Patrick Angle
  */
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@class")
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@objectType")
 public interface JsonableObject {
-    @JsonProperty("@class")
-    public default String getJsonClass() {
-        return this.getClass().getName();
-    }
+//    @JsonProperty("@objectType")
+//    public default String jacksonTypeInfoObjectType() {
+//        return this.getClass().getSimpleName();
+//    }
 }

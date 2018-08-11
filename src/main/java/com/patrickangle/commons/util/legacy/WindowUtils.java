@@ -8,6 +8,7 @@ package com.patrickangle.commons.util.legacy;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Taskbar;
 import java.awt.Toolkit;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,10 +46,19 @@ public class WindowUtils {
         }
     }
 
-    public static void setFrameIcon(JFrame frame, String iconClasspath) {
+    public static final void setFrameIcon(JFrame frame, String iconClasspath) {
         URL url = ClassLoader.getSystemResource(iconClasspath);
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(url);
         frame.setIconImage(img);
+    }
+    
+    public static final void setAppIcon(String iconClasspath) {
+        URL url = ClassLoader.getSystemResource(iconClasspath);
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Image img = kit.createImage(url);
+        if (Taskbar.isTaskbarSupported()) {
+            Taskbar.getTaskbar().setIconImage(img);
+        }
     }
 }
