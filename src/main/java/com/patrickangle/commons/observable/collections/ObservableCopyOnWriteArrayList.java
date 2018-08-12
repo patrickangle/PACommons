@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  *
@@ -47,7 +49,7 @@ public class ObservableCopyOnWriteArrayList<E> extends CopyOnWriteArrayList<E> i
         commonInit();
     }
     
-    private final void commonInit() {
+    private void commonInit() {
         observableListSupport = new ObservableListSupport<>(this);
         
         elementPropertyChangeListener = (propertyChangeEvent) -> {
@@ -125,6 +127,7 @@ public class ObservableCopyOnWriteArrayList<E> extends CopyOnWriteArrayList<E> i
         return this.addAll(this.size(), c);
     }
     
+    @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         if (super.addAll(index, c)) {
             observableListSupport.fireElementsAdded(index, c.size(), new ArrayList<>(c));
@@ -139,15 +142,40 @@ public class ObservableCopyOnWriteArrayList<E> extends CopyOnWriteArrayList<E> i
         }
     }
     
+    @Override
     public void clear() {
-        List<E> oldElements = new ArrayList<E>(this);
+        List<E> oldElements = new ArrayList<>(this);
         super.clear();
-        if (oldElements.size() != 0) {
+        if (!oldElements.isEmpty()) {
             observableListSupport.fireElementsRemoved(0, oldElements.size(), oldElements);
         }
         
         oldElements.stream().forEach((t) -> {
             PropertyChangeObservable.removePropertyChangeListener(t, elementPropertyChangeListener);
         });
+    }
+    
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        System.err.println("[ObservableCopyOnWriteArrayList] removeAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
+        return super.removeAll(c);
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        System.err.println("[ObservableCopyOnWriteArrayList] removeIf(Predicate<? super E> filter) is not currently observable. This will be fixed in a future version.");
+        return super.removeIf(filter);
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<E> operator) {
+        System.err.println("[ObservableCopyOnWriteArrayList] replaceAll(UnaryOperator<E> operator) is not currently observable. This will be fixed in a future version.");
+        super.replaceAll(operator);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        System.err.println("[ObservableCopyOnWriteArrayList] retainAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
+        return super.retainAll(c);
     }
 }

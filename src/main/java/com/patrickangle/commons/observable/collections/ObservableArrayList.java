@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  *
@@ -46,7 +48,7 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
         commonInit();
     }
     
-    private final void commonInit() {
+    private void commonInit() {
         observableListSupport = new ObservableListSupport<>(this);
         
         elementPropertyChangeListener = (propertyChangeEvent) -> {
@@ -124,6 +126,7 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
         return this.addAll(this.size(), c);
     }
     
+    @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         if (super.addAll(index, c)) {
             observableListSupport.fireElementsAdded(index, c.size(), new ArrayList<>(c));
@@ -138,10 +141,11 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
         }
     }
     
+    @Override
     public void clear() {
-        List<E> oldElements = new ArrayList<E>(this);
+        List<E> oldElements = new ArrayList<>(this);
         super.clear();
-        if (oldElements.size() != 0) {
+        if (!oldElements.isEmpty()) {
             observableListSupport.fireElementsRemoved(0, oldElements.size(), oldElements);
         }
         
@@ -149,11 +153,34 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
             PropertyChangeObservable.removePropertyChangeListener(t, elementPropertyChangeListener);
         });
     }
-    
-// @todo Implement additional methods to cover our bases.
-//    removeAll(Collection<?> c)
-//    removeIf(Predicate<? super E> filter)
-//    removeRange(int fromIndex, int toIndex)
-//    replaceAll(UnaryOperator<E> operator)
-//    retainAll(Collection<?> c)
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        System.err.println("[ObservableArrayList] removeAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
+        return super.removeAll(c);
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        System.err.println("[ObservableArrayList] removeIf(Predicate<? super E> filter) is not currently observable. This will be fixed in a future version.");
+        return super.removeIf(filter);
+    }
+
+    @Override
+    protected void removeRange(int fromIndex, int toIndex) {
+        System.err.println("[ObservableArrayList] removeRange(int fromIndex, int toIndex) is not currently observable. This will be fixed in a future version.");
+        super.removeRange(fromIndex, toIndex);
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<E> operator) {
+        System.err.println("[ObservableArrayList] replaceAll(UnaryOperator<E> operator) is not currently observable. This will be fixed in a future version.");
+        super.replaceAll(operator);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        System.err.println("[ObservableArrayList] retainAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
+        return super.retainAll(c);
+    }
 }

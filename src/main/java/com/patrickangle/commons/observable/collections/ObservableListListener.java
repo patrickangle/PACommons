@@ -24,6 +24,8 @@ import java.util.List;
  * @author Patrick Angle
  */
 public interface ObservableListListener<E> {
+    public static final int NON_CONSECUTIVE_INDEXES = Integer.MIN_VALUE;
+    
     public void elementsAdded(ObservableList<E> list, int startIndex, int length, List<E> newElements);
     public void elementsRemoved(ObservableList<E> list, int startIndex, int length, List<E> oldElements);
     public void elementReplaced(ObservableList<E> list, int index, E oldElement, E newElement);
