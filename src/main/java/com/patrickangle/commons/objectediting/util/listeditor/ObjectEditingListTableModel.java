@@ -53,21 +53,24 @@ public class ObjectEditingListTableModel<E> extends ObservableListModel<E> imple
             @Override
             public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
                 tableModelSupport.fireInserted(startIndex, startIndex+ length, TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
             public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
                 tableModelSupport.fireDeleted(startIndex, startIndex + oldElements.size(), TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
             public void elementReplaced(ObservableList list, int index, Object oldElement, Object newElement) {
                 tableModelSupport.fireUpdated(index, index, TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
             public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
-                //
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
         };
         

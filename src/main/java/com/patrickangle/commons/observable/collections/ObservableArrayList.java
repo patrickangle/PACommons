@@ -60,12 +60,12 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
 
     @Override
     public void addObservableListListener(ObservableListListener<E> listener) {
-        observableListSupport.addListListener(listener);
+        observableListSupport.addObservableListListener(listener);
     }
 
     @Override
     public void removeObservableListListener(ObservableListListener<E> listener) {
-        observableListSupport.removeListListener(listener);
+        observableListSupport.removeObservableListListener(listener);
     }
     
     @Override
@@ -80,11 +80,33 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
     }
     
     @Override
+    public boolean add(E element) {
+        boolean success = super.add(element);
+        if (success) {
+            observableListSupport.fireElementsAdded(this.size() - 1, 1, Collections.singletonList(element));
+            PropertyChangeObservable.addPropertyChangeListener(element, elementPropertyChangeListener);
+        }
+        return success;
+    }
+    
+    @Override
     public void add(int index, E element) {
         super.add(index, element);
         observableListSupport.fireElementsAdded(index, 1, Collections.singletonList(element));
         
         PropertyChangeObservable.addPropertyChangeListener(element, elementPropertyChangeListener);
+    }
+    
+    @Override
+    public boolean remove(Object element) {
+        int positionOfElement = this.indexOf(element);
+        boolean success = super.remove(element);
+        if (success) {
+            // It should be safe to cast the element to the generic type here, as we know the element was in the list to begin with.
+            observableListSupport.fireElementsRemoved(positionOfElement, 1, Collections.singletonList((E) element));
+            PropertyChangeObservable.removePropertyChangeListener(element, elementPropertyChangeListener);
+        }
+        return success;
     }
     
     @Override
@@ -127,4 +149,11 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
             PropertyChangeObservable.removePropertyChangeListener(t, elementPropertyChangeListener);
         });
     }
+    
+// @todo Implement additional methods to cover our bases.
+//    removeAll(Collection<?> c)
+//    removeIf(Predicate<? super E> filter)
+//    removeRange(int fromIndex, int toIndex)
+//    replaceAll(UnaryOperator<E> operator)
+//    retainAll(Collection<?> c)
 }

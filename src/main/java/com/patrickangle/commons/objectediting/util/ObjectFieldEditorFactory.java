@@ -34,9 +34,7 @@ import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListC
 import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListTableModel;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
-import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.legacy.ListUtils;
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -57,7 +55,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.StrokeBorder;
 
 /**
  *

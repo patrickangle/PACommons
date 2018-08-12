@@ -58,11 +58,11 @@ public class ObservableListSupport<E> {
         });
     }
     
-    public void addListListener(ObservableListListener<E> listener) {
-        observableListListeners.add(listener);
+    public void addObservableListListener(ObservableListListener<E> listener) {
+        observableListListeners.add(listener);        
     }
     
-    public void removeListListener(ObservableListListener<E> listener) {
+    public void removeObservableListListener(ObservableListListener<E> listener) {
         observableListListeners.remove(listener);
     }
 }
