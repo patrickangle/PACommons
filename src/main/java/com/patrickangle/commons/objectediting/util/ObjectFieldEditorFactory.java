@@ -26,6 +26,7 @@ import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
+import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
@@ -39,12 +40,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -101,6 +104,8 @@ public class ObjectFieldEditorFactory {
         } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
             return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup);
+        } else if (Enum.class.isAssignableFrom(fieldClass)) {
+            return createBoundComponentForEnum(objectField, bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
             return createBoundComponentForBoolean(objectField, bindingGroup);
         } else if (fieldClass == Integer.TYPE) {
@@ -349,5 +354,14 @@ public class ObjectFieldEditorFactory {
             editorBindingGroup.bind();
         });
         return new ComponentReturn(editButton, false);
+    }
+    
+    public static ComponentReturn createBoundComponentForEnum(BoundField boundField, BindingGroup bindingGroup) {
+        JComboBox comboBox = new JComboBox(new ObservableComboBoxModel(boundField.getFieldClass(), Arrays.asList(boundField.getFieldClass().getEnumConstants())));
+        
+        Binding selectionBinding = new BasicBinding(boundField, BoundFields.boundField(comboBox.getModel(), "selectedItem"), Binding.UpdateStrategy.READ_WRITE);
+        bindingGroup.add(selectionBinding);
+        
+        return new ComponentReturn(comboBox, false);
     }
 }
