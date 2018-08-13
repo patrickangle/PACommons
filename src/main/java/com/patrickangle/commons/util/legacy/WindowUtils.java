@@ -58,7 +58,9 @@ public class WindowUtils {
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(url);
         if (Taskbar.isTaskbarSupported()) {
-            Taskbar.getTaskbar().setIconImage(img);
+            if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                Taskbar.getTaskbar().setIconImage(img);
+            }
         }
     }
 }
