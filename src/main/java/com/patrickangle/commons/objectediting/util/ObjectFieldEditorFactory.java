@@ -347,10 +347,13 @@ public class ObjectFieldEditorFactory {
     }
     
     public static ComponentReturn createBoundComponentFor2dList(BoundField<List<List>> boundField, BindingGroup bindingGroup) {
+        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(boundField.getBindableField()), ObjectEditingProperty.class);
         JButton editButton = new JButton("Open Editor");
         editButton.addActionListener((actionEvent) -> {
             BindingGroup editorBindingGroup = new BindingGroup();
-            new ObjectEditingList2dTableEditorDialog(null, true, boundField, editorBindingGroup).setVisible(true);
+            ObjectEditingList2dTableEditorDialog editor = new ObjectEditingList2dTableEditorDialog(null, true, boundField, editorBindingGroup);
+            editor.setTitle(configInfo.name() + " Editor");
+            editor.setVisible(true);
             editorBindingGroup.bind();
         });
         return new ComponentReturn(editButton, false);

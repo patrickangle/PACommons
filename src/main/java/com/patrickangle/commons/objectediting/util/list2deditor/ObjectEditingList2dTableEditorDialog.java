@@ -77,7 +77,7 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setType(Type.UTILITY);
         this.setResizable(true);
-        this.setTitle("Wayne Romanowski Celebratory LED Cabinet Layout Editor Window");
+//        this.setTitle("Wayne Romanowski Celebratory LED Cabinet Layout Editor Window");
         
         Binding backingListBinding = new BasicBinding(boundField, BoundFields.boundField(this, "backingList"), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(backingListBinding);
