@@ -76,6 +76,11 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
     protected abstract boolean customObjectEditingSpinnerShowDecimalPoint();
 
     @Override
+    public String toString() {
+        return "<" + getX() + ", " + getY() + ">";
+    }
+
+    @Override
     public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
         JPanel pointEditor = new JPanel(new GridBagLayout());
         pointEditor.setBackground(Colors.transparentColor());
