@@ -66,9 +66,15 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
     public abstract void setPoint(E x, E y);
     
     public abstract Point<E> pointOffset(E x, E y);
-    public abstract Point<E> pointOffset(Point<E> offset);
-    public void test() {
-        
+    
+    public Point<E> pointOffset(Point<E> offset) {
+        return pointOffset(offset.getX(), offset.getY());
+    }
+    
+    public abstract Point<E> pointScale(double xScale, double yScale);
+    
+    public Point<E> pointScale(Point<Double> scale) {
+        return pointScale(scale.getX(), scale.getY());
     }
     
     protected abstract SpinnerNumberModel customObjectEditingSpinnerNumberModel();
@@ -172,12 +178,6 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         public Point.IntegerPoint pointOffset(Integer x, Integer y) {
             return new Point.IntegerPoint(this.x + x, this.y + y);
         }
-        
-        @Override
-        public Point.IntegerPoint pointOffset(Point<Integer> offset) {
-            return new Point.IntegerPoint(this.x + offset.x, this.y + offset.y);
-        }
-
 
         @Override
         protected SpinnerNumberModel customObjectEditingSpinnerNumberModel() {
@@ -188,6 +188,16 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         protected boolean customObjectEditingSpinnerShowDecimalPoint() {
             return false;
         }
+
+        @Override
+        public Point<Integer> pointScale(double xScale, double yScale) {
+            return new Point.IntegerPoint((int) (this.x * xScale), (int) (this.y * yScale));
+        }
+
+//        @Override
+//        public Point<Integer> pointScale(Point<Double> scale) {
+//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
     }
     
     public static class FloatPoint extends Point<Float> {
@@ -220,20 +230,20 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         public Point.FloatPoint pointOffset(Float x, Float y) {
             return new Point.FloatPoint(this.x + x, this.y + y);
         }
-        
-        @Override
-        public Point.FloatPoint pointOffset(Point<Float> offset) {
-            return new Point.FloatPoint(this.x + offset.x, this.y + offset.y);
-        }
 
         @Override
         protected SpinnerNumberModel customObjectEditingSpinnerNumberModel() {
-            return new SpinnerNumberModel(0f, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+            return new SpinnerNumberModel(0f, Integer.MIN_VALUE, Integer.MAX_VALUE, 0.1f);
         }
         
         @Override
         protected boolean customObjectEditingSpinnerShowDecimalPoint() {
             return true;
+        }
+        
+        @Override
+        public Point<Float> pointScale(double xScale, double yScale) {
+            return new Point.FloatPoint((float) (this.x * xScale), (float) (this.y * yScale));
         }
     }
     
@@ -267,20 +277,20 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         public Point.DoublePoint pointOffset(Double x, Double y) {
             return new Point.DoublePoint(this.x + x, this.y + y);
         }
-        
-        @Override
-        public Point.DoublePoint pointOffset(Point<Double> offset) {
-            return new Point.DoublePoint(this.x + offset.x, this.y + offset.y);
-        }
 
         @Override
         protected SpinnerNumberModel customObjectEditingSpinnerNumberModel() {
-            return new SpinnerNumberModel(0.0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+            return new SpinnerNumberModel(0.0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0.1);
         }
         
         @Override
         protected boolean customObjectEditingSpinnerShowDecimalPoint() {
             return true;
+        }
+        
+        @Override
+        public Point<Double> pointScale(double xScale, double yScale) {
+            return new Point.DoublePoint((this.x * xScale), (this.y * yScale));
         }
     }
 }
