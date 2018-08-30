@@ -98,8 +98,8 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 6;
-        c.ipady = 6;
+        c.ipadx = 0;
+        c.ipady = 0;
         c.insets = new Insets(1, 1, 1, 1);
         c.anchor = GridBagConstraints.NORTH;
         
