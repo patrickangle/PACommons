@@ -65,7 +65,7 @@ public interface Binding {
     }
     
     public abstract class ForwardConverter<BF, FF> implements Converter<BF, FF> {
-        public BF convertBackwards(FF object) {
+        public BF convertBackward(FF object) {
             throw new UnsupportedOperationException("Illegal backward conversion.");
         }
     }
