@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.util;
 
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.util.legacy.ArrayUtils;
 import java.awt.Font;
 import java.io.PrintWriter;
@@ -36,11 +37,10 @@ public class Exceptions {
         writer.write("Exception on thread: " + thread.getName() + "\n");
         String humanReadableThrowable = humanReadableThrowable(throwable);
         writer.write(humanReadableThrowable);
-//        throwable.printStackTrace(new PrintWriter(writer));
         
         String exceptionInformation = writer.toString();
         
-        System.err.println(humanReadableThrowable);
+        Logging.exception(Exceptions.class, throwable);
         
         JTextArea area = new JTextArea(20, 80);
         area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
@@ -90,7 +90,7 @@ public class Exceptions {
                 builder.append(element.getClassName());
                 builder.append(".");
                 builder.append(element.getMethodName());
-                builder.append("() on line ");
+                builder.append("() line ");
                 builder.append(element.getLineNumber());
                 builder.append("\n");
             }
