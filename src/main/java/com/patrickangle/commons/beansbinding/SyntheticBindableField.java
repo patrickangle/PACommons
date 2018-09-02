@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -169,4 +170,39 @@ public class SyntheticBindableField<C> implements BindableField<C> {
             return t.getName();
         }).collect(Collectors.toList()).toString() + ")" : "-") + " ]";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.containingClass);
+        hash = 19 * hash + Objects.hashCode(this.fieldName);
+        hash = 19 * hash + Objects.hashCode(this.fieldClass);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SyntheticBindableField<?> other = (SyntheticBindableField<?>) obj;
+        if (!Objects.equals(this.fieldName, other.fieldName)) {
+            return false;
+        }
+        if (!Objects.equals(this.containingClass, other.containingClass)) {
+            return false;
+        }
+        if (!Objects.equals(this.fieldClass, other.fieldClass)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

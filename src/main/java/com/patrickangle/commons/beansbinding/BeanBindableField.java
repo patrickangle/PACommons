@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -127,25 +128,37 @@ public class BeanBindableField<C> implements BindableField<C> {
             return t.getName();
         }).collect(Collectors.toList()).toString() + ")" : "-") + " ]";
     }
-    
-//    private static List<BindableField> bindableFieldsForClass(Class containingClass) {
-//        
-//    }
-    
-//    public static List<String> bindableFieldNamesForClass(Class c) {
-//        List<String> returnList = new ArrayList<>();
-//        if (c != null) {
-//            for (Method method : c.getMethods()) {
-//                // A getter must start with get, take no parameters, be public, and not return void.
-//                if (method.getName().startsWith("get")
-//                        && method.getParameterCount() == 0
-//                        && Modifier.isPublic(method.getModifiers())
-//                        && !method.getReturnType().equals(Void.TYPE)) {
-//                    returnList.add(method.getName().substring(3));
-//                }
-//            }
-//        }
-//        
-//        return returnList;
-//    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.containingClass);
+        hash = 13 * hash + Objects.hashCode(this.fieldName);
+        hash = 13 * hash + Objects.hashCode(this.fieldClass);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BeanBindableField<?> other = (BeanBindableField<?>) obj;
+        if (!Objects.equals(this.fieldName, other.fieldName)) {
+            return false;
+        }
+        if (!Objects.equals(this.containingClass, other.containingClass)) {
+            return false;
+        }
+        if (!Objects.equals(this.fieldClass, other.fieldClass)) {
+            return false;
+        }
+        return true;
+    }
 }
