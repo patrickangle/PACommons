@@ -64,4 +64,16 @@ public class Platform {
                 + "Available Cores: " + availableProcessorCores() + "\n"
                 + "Memory Usage: " + (totalMemory() - freeMemory()) + "mb / " + totalMemory() + "mb / " + maxMemory() + "mb";
     }
+    
+    public static String shortSystemDescriptor() {
+        return jvmName() + " " + jvmVender() + " " + jvmVersion() + "\n"
+                + "" + OperatingSystems.current().getName() + " " + OperatingSystems.current().getVersion() + " (" + OperatingSystems.current().getArchitecture() + ")\n";
+    }
 }
+
+
+//Jave Runtime Oracle Corporation 10.0.1
+//Java HotSpot(TM) 64-Bit Server VM "Oracle Corporation" 10.0.1+10
+//mac os x 10.14 (null)
+//Available Cores: 24
+//Memory Usage: 22mb / 512mb / 8192mb

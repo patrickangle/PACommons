@@ -16,9 +16,11 @@
  */
 package com.patrickangle.commons.util;
 
+import com.patrickangle.commons.util.legacy.ArrayUtils;
 import java.awt.Font;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -30,13 +32,15 @@ import javax.swing.JTextArea;
 public class Exceptions {
     public static final Thread.UncaughtExceptionHandler GUI_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
         StringWriter writer = new StringWriter();
-        writer.write(Platform.systemDescriptor() + "\n");
-        writer.write("Thread: " + thread.getName() + "\n");
-        throwable.printStackTrace(new PrintWriter(writer));
+        writer.write(Platform.shortSystemDescriptor() + "\n");
+        writer.write("Exception on thread: " + thread.getName() + "\n");
+        String humanReadableThrowable = humanReadableThrowable(throwable);
+        writer.write(humanReadableThrowable);
+//        throwable.printStackTrace(new PrintWriter(writer));
         
         String exceptionInformation = writer.toString();
         
-        System.err.println(exceptionInformation);
+        System.err.println(humanReadableThrowable);
         
         JTextArea area = new JTextArea(20, 80);
         area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
@@ -63,5 +67,33 @@ public class Exceptions {
     
     public static void raiseThrowableToUser(Throwable throwable) {
         Exceptions.GUI_UNCAUGHT_EXCEPTION_HANDLER.uncaughtException(Thread.currentThread(), throwable);
+    }
+    
+    public static String humanReadableThrowable(Throwable throwable) {
+        StringBuilder builder = new StringBuilder();
+        humanReadableThrowableBuilder(builder, throwable);
+        return builder.toString();
+    }
+    
+    public static void humanReadableThrowableBuilder(StringBuilder builder, Throwable throwable) {
+        Throwable cause = throwable.getCause();
+        if (cause != null) {
+            humanReadableThrowableBuilder(builder, throwable);
+        } else {
+            builder.append(throwable.getClass().getSimpleName());
+            builder.append(": ");
+            builder.append(throwable.getMessage());
+            builder.append("\n");
+            StackTraceElement[] stack = ArrayUtils.reverseArray(throwable.getStackTrace());
+            for (StackTraceElement element : stack) {
+                builder.append("\t");
+                builder.append(element.getClassName());
+                builder.append(".");
+                builder.append(element.getMethodName());
+                builder.append("() on line ");
+                builder.append(element.getLineNumber());
+                builder.append("\n");
+            }
+        }
     }
 }
