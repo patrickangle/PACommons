@@ -21,7 +21,11 @@ import com.patrickangle.commons.util.Exceptions;
 import com.patrickangle.commons.util.StringOutputStream;
 import java.io.PrintStream;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -84,29 +88,35 @@ public class Logging {
     }
 
     public static void trace(Class caller, String message) {
-        logOutAll(ConsoleColors.PURPLE + "[Trace] " + Instant.now().toString() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
+        logOutAll(ConsoleColors.PURPLE + "  [TRACE] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
     }
 
     public static void debug(Class caller, String message) {
-        logOutAll(ConsoleColors.BLUE + "[DEBUG] " + Instant.now().toString() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
+        logOutAll(ConsoleColors.BLUE + "  [DEBUG] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
     }
 
     public static void info(Class caller, String message) {
-        logOutAll(ConsoleColors.RESET + "[INFO] " + Instant.now().toString() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
+        logOutAll(ConsoleColors.RESET + "   [INFO] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
     }
 
     public static void warning(Class caller, String message) {
-        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + Instant.now().toString() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
+        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
     }
 
     public static void error(Class caller, String message) {
-        logErrAll(ConsoleColors.RED + "[ERROR] " + Instant.now().toString() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
+        logErrAll(ConsoleColors.RED + "  [ERROR] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
     }
 
     public static void exception(Class caller, Throwable exception) {
         logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + "[EXCEPTION] " + Instant.now().toString() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
     }
+    
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd',' yyyy hh:mm:ssa").withLocale(Locale.US).withZone(ZoneId.systemDefault());
 
+    private static String currentTimestamp() {
+        return formatter.format(Instant.now()).replace("AM", "a").replace("PM", "p");
+    }
+    
     private static void logOutAll(String message) {
         
         for (PrintStream stream : outputStreams) {

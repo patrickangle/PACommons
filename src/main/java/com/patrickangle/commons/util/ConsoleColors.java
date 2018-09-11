@@ -16,11 +16,87 @@
  */
 package com.patrickangle.commons.util;
 
+import java.awt.Color;
+import java.util.Arrays;
+
 /**
  *
  * @author patrickangle
  */
 public class ConsoleColors {
+    public enum Colors {
+        BlackForeground(30, new Color(0, 0, 0)),
+        RedForeground(31, new Color(194, 54, 33)),
+        GreenForeground(32, new Color(37, 188, 36)),
+        YellowForeground(33, new Color(173, 173, 39)),
+        BlueForeground(34, new Color(73, 46, 225)),
+        MagentaForeground(35, new Color(211, 56, 211)),
+        CyanForeground(36, new Color(51, 187, 200)),
+        WhiteForeground(37, new Color(203, 204, 205)),
+        
+        BrightBlackForeground(90, new Color(129, 131, 131)),
+        BrightRedForeground(91, new Color(252, 57, 31)),
+        BrightGreenForeground(92, new Color(49, 231, 34)),
+        BrightYellowForeground(93, new Color(234, 236, 35)),
+        BrightBlueForeground(94, new Color(88, 51, 255)),
+        BrightMagentaForeground(95, new Color(249, 53, 248)),
+        BrightCyanForeground(96, new Color(20, 240, 240)),
+        BrightWhiteForeground(97, new Color(235, 235, 235)),
+        
+        BlackBackground(30, new Color(0, 0, 0)),
+        RedBackground(31, new Color(194, 54, 33)),
+        GreenBackground(32, new Color(37, 188, 36)),
+        YellowBackground(33, new Color(173, 173, 39)),
+        BlueBackground(34, new Color(73, 46, 225)),
+        MagentaBackground(35, new Color(211, 56, 211)),
+        CyanBackground(36, new Color(51, 187, 200)),
+        WhiteBackground(37, new Color(203, 204, 205)),
+        
+        BrightBlackBackground(90, new Color(129, 131, 131)),
+        BrightRedBackground(91, new Color(252, 57, 31)),
+        BrightGreenBackground(92, new Color(49, 231, 34)),
+        BrightYellowBackground(93, new Color(234, 236, 35)),
+        BrightBlueBackground(94, new Color(88, 51, 255)),
+        BrightMagentaBackground(95, new Color(249, 53, 248)),
+        BrightCyanBackground(96, new Color(20, 240, 240)),
+        BrightWhiteBackground(97, new Color(235, 235, 235)),
+        ;
+        
+        private int code;
+        private Color color;
+        
+        private Colors(int code, Color color) {
+            this.code = code;
+            this.color = color;
+        }
+        
+        public int getCode() {
+            return this.code;
+        }
+        
+        public String getEscapeCode() {
+            return "\033[" + this.code + "m";
+        }
+        
+        public Color getColor() {
+            return this.color;
+        }
+        
+        public static String getEscapeCode(Colors... codes) {
+            StringBuilder returnValue = new StringBuilder("\033[");
+            
+            for (int i = 0; i < codes.length; i++) {
+                if (i != 0) {
+                    returnValue.append(";");
+                }
+                returnValue.append(codes[i]);
+            }
+            
+            returnValue.append("m");
+            
+            return returnValue.toString();
+        }
+    }
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
 
