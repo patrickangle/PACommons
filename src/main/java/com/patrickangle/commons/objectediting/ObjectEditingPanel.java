@@ -48,6 +48,8 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
     
     protected BindingGroup bindingGroup;
     
+    protected boolean treatAllAsMultilineEditor = false;
+    
     public ObjectEditingPanel() {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -81,6 +83,16 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             build();
         }
     }
+
+    public boolean isTreatAllAsMultilineEditor() {
+        return treatAllAsMultilineEditor;
+    }
+
+    public void setTreatAllAsMultilineEditor(boolean treatAllAsMultilineEditor) {
+        boolean oldTreatAllAsMultilineEditor = this.treatAllAsMultilineEditor;
+        this.treatAllAsMultilineEditor = treatAllAsMultilineEditor;
+        this.firePropertyChange("treatAllAsMultilineEditor", oldTreatAllAsMultilineEditor, this.treatAllAsMultilineEditor);
+    }
     
     protected void tearDown() {
         bindingGroup.unbind();
@@ -112,7 +124,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             ObjectFieldEditorFactory.ComponentReturn componentReturn = ObjectFieldEditorFactory.createEditorForObject(editingObject, field, bindingGroup);
             
             c.gridy = runningGridY;
-            c.gridwidth = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() ? 2 : 1;
+            c.gridwidth = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 2 : 1;
             
             JLabel label = null;
             if (!componentReturn.isSelfLabeled()) {
@@ -121,7 +133,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
                 
                 
                 label = new JLabel(ObjectEditingBindings.nameForBindableField(field) + ": ", JLabel.TRAILING);
-                if (componentReturn.multiLineEditor) {
+                if (componentReturn.multiLineEditor || this.treatAllAsMultilineEditor) {
                     label.setHorizontalAlignment(JLabel.LEADING);
                 }
                 label.setLabelFor(componentReturn.getComponent());
@@ -130,11 +142,11 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
                 }
                 sectionPanels.get(declaringClass).add(label, c);
             }
-            if (componentReturn.isMultiLineEditor()) {
+            if (componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor) {
                 runningGridY++;
                 c.gridy = runningGridY;
             }
-            c.gridx = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() ? 0 : 1;
+            c.gridx = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 0 : 1;
             c.weightx = 1.0;
             
             Dimension preferredDimension = componentReturn.getComponent().getPreferredSize();
