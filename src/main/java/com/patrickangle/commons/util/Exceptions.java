@@ -31,6 +31,9 @@ import javax.swing.JTextArea;
  * @author patrickangle
  */
 public class Exceptions {
+    private static final int MAXIMUM_STACK_TRACE_DEPTH = 100;
+    private static final int MAXIMUM_LINES_PER_CAUSE = 100;
+    
     public static final Thread.UncaughtExceptionHandler GUI_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
         StringWriter writer = new StringWriter();
         writer.write(Platform.shortSystemDescriptor() + "\n");
@@ -61,30 +64,43 @@ public class Exceptions {
         }
     };
     
-    public static void installUncaughtExceptionHandler() {
+    public static final Thread.UncaughtExceptionHandler HEADLESS_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
+        Logging.exception(Exceptions.class, throwable);
+    };
+    
+    public static void installGuiUncaughtExceptionHandler() {
         Thread.setDefaultUncaughtExceptionHandler(Exceptions.GUI_UNCAUGHT_EXCEPTION_HANDLER);
     }
     
+    public static void installHeadlessUncaughtExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(Exceptions.HEADLESS_UNCAUGHT_EXCEPTION_HANDLER);
+    }
+    
+    @Deprecated
     public static void raiseThrowableToUser(Throwable throwable) {
         Exceptions.GUI_UNCAUGHT_EXCEPTION_HANDLER.uncaughtException(Thread.currentThread(), throwable);
     }
     
     public static String humanReadableThrowable(Throwable throwable) {
         StringBuilder builder = new StringBuilder();
-        humanReadableThrowableBuilder(builder, throwable);
+        humanReadableThrowableBuilder(builder, throwable, 0);
         return builder.toString();
     }
     
-    public static void humanReadableThrowableBuilder(StringBuilder builder, Throwable throwable) {
+    public static void humanReadableThrowableBuilder(StringBuilder builder, Throwable throwable, int currentDepth) {
+        if (currentDepth >= MAXIMUM_STACK_TRACE_DEPTH) {
+            return;
+        }
         Throwable cause = throwable.getCause();
         if (cause != null) {
-            humanReadableThrowableBuilder(builder, throwable);
+            humanReadableThrowableBuilder(builder, throwable, currentDepth + 1);
         } else {
             builder.append(throwable.getClass().getSimpleName());
             builder.append(": ");
             builder.append(throwable.getMessage());
             builder.append("\n");
             StackTraceElement[] stack = ArrayUtils.reverseArray(throwable.getStackTrace());
+            int line = 0;
             for (StackTraceElement element : stack) {
                 builder.append("\t");
                 builder.append(element.getClassName());
@@ -93,6 +109,10 @@ public class Exceptions {
                 builder.append("() line ");
                 builder.append(element.getLineNumber());
                 builder.append("\n");
+                line++;
+                if (line >= MAXIMUM_LINES_PER_CAUSE) {
+                    break;
+                }
             }
         }
     }

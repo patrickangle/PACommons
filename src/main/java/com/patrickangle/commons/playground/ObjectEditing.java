@@ -42,7 +42,7 @@ public class ObjectEditing extends javax.swing.JFrame {
     public ObjectEditing() {
         initComponents();
         LookAndFeels.useSystemLookAndFeel();
-        Exceptions.installUncaughtExceptionHandler();
+        Exceptions.installGuiUncaughtExceptionHandler();
         Binding binding1 = new BasicBinding(this, "funPojos", jList1.getModel(), "items", Binding.UpdateStrategy.READ_WRITE);
         binding1.setBound(true);
         

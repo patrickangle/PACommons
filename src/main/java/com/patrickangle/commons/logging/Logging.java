@@ -108,7 +108,7 @@ public class Logging {
     }
 
     public static void exception(Class caller, Throwable exception) {
-        logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + "[EXCEPTION] " + Instant.now().toString() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
+        logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + " [THROWN] " + currentTimestamp() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
     }
     
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd',' yyyy hh:mm:ssa").withLocale(Locale.US).withZone(ZoneId.systemDefault());
