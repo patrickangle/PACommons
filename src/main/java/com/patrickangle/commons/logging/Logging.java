@@ -88,27 +88,60 @@ public class Logging {
     }
 
     public static void trace(Class caller, String message) {
-        logOutAll(ConsoleColors.PURPLE + "  [TRACE] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
+        log(caller, message, "  [TRACE]", false, ConsoleColors.MagentaForeground);
+//        logOutAll(ConsoleColors.PURPLE + "  [TRACE] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
     }
 
     public static void debug(Class caller, String message) {
-        logOutAll(ConsoleColors.BLUE + "  [DEBUG] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
+        log(caller, message, "  [DEBUG]", false, ConsoleColors.BlueForeground);
+//        logOutAll(ConsoleColors.BLUE + "  [] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
     }
 
     public static void info(Class caller, String message) {
-        logOutAll(ConsoleColors.RESET + "   [INFO] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
+        log(caller, message, "   [INFO]", false, ConsoleColors.Reset);
+//        logOutAll(ConsoleColors.RESET + "   [INFO] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
     }
 
     public static void warning(Class caller, String message) {
-        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
+        log(caller, message, "[WARNING]", false, ConsoleColors.YellowForeground);
+//        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
     }
 
     public static void error(Class caller, String message) {
-        logErrAll(ConsoleColors.RED + "  [ERROR] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
+        log(caller, message, "  [ERROR]", true, ConsoleColors.RedForeground);
+//        logErrAll(ConsoleColors.RED + "  [ERROR] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
     }
 
     public static void exception(Class caller, Throwable exception) {
-        logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + " [THROWN] " + currentTimestamp() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
+        log(caller, Exceptions.humanReadableThrowable(exception), " [THROWN] ", true, ConsoleColors.RedForeground, ConsoleColors.WhiteBackground);
+//        logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + " [THROWN] " + currentTimestamp() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
+    }
+    
+    private static void log(Class caller, Object message, String tag, boolean isError, ConsoleColors... consoleColors) {
+        StringBuilder logMessage = new StringBuilder(tag);
+        logMessage.append(" ");
+        logMessage.append(currentTimestamp());
+        
+        if (caller != null) {
+            logMessage.append(" ");
+            logMessage.append(caller.getSimpleName());
+        }
+        
+        logMessage.append(": ");
+        
+        if (message != null) {
+            logMessage.append(message);
+        } else {
+            logMessage.append("null");
+        }
+        
+        String decoratedLogMessage = decorateAllLines(ConsoleColors.getEscapeCode(consoleColors), logMessage.toString());
+        
+        if (isError) {
+            logErrAll(decoratedLogMessage);
+        } else {
+            logOutAll(decoratedLogMessage);
+        }
     }
     
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd',' yyyy hh:mm:ssa").withLocale(Locale.US).withZone(ZoneId.systemDefault());
@@ -120,14 +153,14 @@ public class Logging {
     private static void logOutAll(String message) {
         
         for (PrintStream stream : outputStreams) {
-            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.RESET)) {
+            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
                 stream.print(message);
             } else {
                 stream.println(message);
             }
         }
         if (injectIntoSystemStreams) {
-            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.RESET)) {
+            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
                 NATIVE_SYSTEM_OUT.print(message);
             } else {
                 NATIVE_SYSTEM_OUT.println(message);
@@ -137,14 +170,14 @@ public class Logging {
     
     private static void logErrAll(String message) {
         for (PrintStream stream : errorStreams) {
-            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.RESET)) {
+            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
                 stream.print(message);
             } else {
                 stream.println(message);
             }
         }
         if (injectIntoSystemStreams) {
-            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.RESET)) {
+            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
                 NATIVE_SYSTEM_ERR.print(message);
             } else {
                 NATIVE_SYSTEM_ERR.println(message);
@@ -153,6 +186,6 @@ public class Logging {
     }
     
     private static String decorateAllLines(String ansiDecorations, String lines) {
-        return ansiDecorations + lines.replace("\n", ConsoleColors.RESET + "\n" + ansiDecorations) + ConsoleColors.RESET;
+        return ansiDecorations + lines.replace("\n", ConsoleColors.Reset.getEscapeCode() + "\n" + ansiDecorations) + ConsoleColors.Reset.getEscapeCode();
     }
 }
