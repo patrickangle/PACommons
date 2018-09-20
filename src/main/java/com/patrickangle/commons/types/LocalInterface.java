@@ -22,17 +22,12 @@ import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableArrayList;
-import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.util.NetworkInterfaces;
-import java.awt.Dimension;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 
 /**
  *
@@ -52,12 +47,12 @@ public class LocalInterface extends RemoteAddress {
         
         int currentAddressItemIndex = -1;
         for (NetworkInterfaces.CrossPlatformNetworkInterface networkInterface : networkInterfaces) {
-            for (InetAddress address : networkInterface.getInetAddresses()) {
-                if (address.getHostAddress().equals(this.address)) {
+            for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
+                if (address.getAddress().getHostAddress().equals(this.address)) {
                     currentAddressItemIndex = networkInterfaceItems.size();
                 }
                 
-                networkInterfaceItems.add(new LocalInterfaceComboBoxItem(networkInterface.getDisplayName() + " (" + address.getHostAddress() + ")", address.getHostAddress()));
+                networkInterfaceItems.add(new LocalInterfaceComboBoxItem(networkInterface.getDisplayName() + " (" + address.getAddress().getHostAddress() + ")", address.getAddress().getHostAddress()));
             }
         }
         networkInterfaceItems.add(0, new LocalInterfaceComboBoxItem("0.0.0.0"));
@@ -163,8 +158,8 @@ public class LocalInterface extends RemoteAddress {
             if (visibleName == null) {
                 NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
                 for (NetworkInterfaces.CrossPlatformNetworkInterface networkInterface : networkInterfaces) {
-                    for (InetAddress address : networkInterface.getInetAddresses()) {
-                        if (address.getHostAddress().equals(ipAddress)) {
+                    for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
+                        if (address.getAddress().getHostAddress().equals(ipAddress)) {
                             this.visibleName = networkInterface.getDisplayName() + " (" + ipAddress + ")";
                         }
                     }

@@ -5,10 +5,12 @@
  */
 package com.patrickangle.commons.util;
 
+import com.patrickangle.commons.logging.Logging;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -33,14 +35,15 @@ public class NetworkInterfaces {
                 if (netint.getInetAddresses().hasMoreElements()) {
                     // Interface has at least one address, and is therefore available.
                     
-                    CrossPlatformNetworkInterface networkInterface = new CrossPlatformNetworkInterface(netint.getDisplayName(), netint.getName(), hardwareAddressByteArrayToString(netint.getHardwareAddress()), Collections.list(netint.getInetAddresses()).toArray(new InetAddress[0]));
+                    CrossPlatformNetworkInterface networkInterface = new CrossPlatformNetworkInterface(netint.getDisplayName(), netint.getName(), hardwareAddressByteArrayToString(netint.getHardwareAddress()), netint.getInterfaceAddresses().toArray(new InterfaceAddress[0]));
                     
                     for (WindowsNetworkInterface windowsInterface : windowsInterfaces) {
                         if (networkInterface.getMacAddress().equals(windowsInterface.getMacAddress())) {
+                            
                             networkInterface.setDisplayName(windowsInterface.getConnectionName());
                         }
                     }
-                    
+                    Logging.trace(NetworkInterfaces.class, "Found interface: " + netint + " with address " + Arrays.toString(networkInterface.getInterfaceAddresses()));
                     availableNetworkInterfaces.add(networkInterface);
                     
                 }
@@ -167,18 +170,20 @@ public class NetworkInterfaces {
         private String displayName;
         private String internalName;
         private String macAddress;
-        private InetAddress[] inetAddresses;
+        private InterfaceAddress[] interfaceAddresses;
+        private int subnetMask;
 
-        public CrossPlatformNetworkInterface(String displayName, String internalName, String macAddress, InetAddress[] inetAddresses) {
+        public CrossPlatformNetworkInterface(String displayName, String internalName, String macAddress, InterfaceAddress[] inetAddresses) {
             this.displayName = displayName;
             this.internalName = internalName;
             this.macAddress = macAddress;
-            this.inetAddresses = inetAddresses;
+            this.interfaceAddresses = inetAddresses;
+            this.subnetMask = subnetMask;
         }
         
         @Override
         public String toString() {
-            return displayName + "|" + internalName + "|" + macAddress + "|" + Arrays.toString(inetAddresses);
+            return displayName + "|" + internalName + "|" + macAddress + "|" + Arrays.toString(interfaceAddresses) + "|" + this.subnetMask;
         }
 
         public String getDisplayName() {
@@ -205,12 +210,20 @@ public class NetworkInterfaces {
             this.macAddress = macAddress;
         }
 
-        public InetAddress[] getInetAddresses() {
-            return inetAddresses;
+        public InterfaceAddress[] getInterfaceAddresses() {
+            return interfaceAddresses;
         }
 
-        public void setInetAddresses(InetAddress[] inetAddresses) {
-            this.inetAddresses = inetAddresses;
+        public void setInterfaceAddresses(InterfaceAddress[] interfaceAddresses) {
+            this.interfaceAddresses = interfaceAddresses;
+        }
+
+        public int getSubnetMask() {
+            return subnetMask;
+        }
+
+        public void setSubnetMask(int subnetMask) {
+            this.subnetMask = subnetMask;
         }
         
         

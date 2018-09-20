@@ -87,27 +87,27 @@ public class Logging {
         Logging.injectIntoSystemStreams = injectIntoSystemStreams;
     }
 
-    public static void trace(Class caller, String message) {
+    public static void trace(Class caller, Object message) {
         log(caller, message, "  [TRACE]", false, ConsoleColors.MagentaForeground);
 //        logOutAll(ConsoleColors.PURPLE + "  [TRACE] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
     }
 
-    public static void debug(Class caller, String message) {
+    public static void debug(Class caller, Object message) {
         log(caller, message, "  [DEBUG]", false, ConsoleColors.BlueForeground);
 //        logOutAll(ConsoleColors.BLUE + "  [] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
     }
 
-    public static void info(Class caller, String message) {
+    public static void info(Class caller, Object message) {
         log(caller, message, "   [INFO]", false, ConsoleColors.Reset);
 //        logOutAll(ConsoleColors.RESET + "   [INFO] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
     }
 
-    public static void warning(Class caller, String message) {
+    public static void warning(Class caller, Object message) {
         log(caller, message, "[WARNING]", false, ConsoleColors.YellowForeground);
 //        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
     }
 
-    public static void error(Class caller, String message) {
+    public static void error(Class caller, Object message) {
         log(caller, message, "  [ERROR]", true, ConsoleColors.RedForeground);
 //        logErrAll(ConsoleColors.RED + "  [ERROR] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
     }
