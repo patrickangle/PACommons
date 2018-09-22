@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.util;
 
+import com.patrickangle.commons.logging.Logging;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.UIManager;
@@ -34,7 +35,7 @@ public class LookAndFeels {
                 useGenericSystemLookAndFeel();
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            Exceptions.raiseThrowableToUser(ex);
+            Logging.exception(LookAndFeels.class, ex);
         }
     }
 
@@ -70,7 +71,7 @@ public class LookAndFeels {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            Exceptions.raiseThrowableToUser(ex);
+            Logging.exception(LookAndFeels.class, ex);
         }
     }
 

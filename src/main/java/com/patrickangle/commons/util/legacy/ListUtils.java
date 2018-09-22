@@ -1,5 +1,6 @@
 package com.patrickangle.commons.util.legacy;
 
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.util.Exceptions;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
@@ -161,7 +162,7 @@ public class ListUtils {
                     }
                 }
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Exceptions.raiseThrowableToUser(ex);
+                Logging.exception(ListUtils.class, ex);
             }
         }
     }
@@ -190,7 +191,7 @@ public class ListUtils {
                     arrayList.add(innerList);
                 }
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Exceptions.raiseThrowableToUser(ex);
+                Logging.exception(ListUtils.class, ex);
             }
         }
     }

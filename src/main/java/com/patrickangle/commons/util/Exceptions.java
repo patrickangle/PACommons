@@ -81,6 +81,14 @@ public class Exceptions {
         Exceptions.GUI_UNCAUGHT_EXCEPTION_HANDLER.uncaughtException(Thread.currentThread(), throwable);
     }
     
+    public static void handleThrowableWithDefaultGuiHandler(Throwable throwable) {
+        Exceptions.GUI_UNCAUGHT_EXCEPTION_HANDLER.uncaughtException(Thread.currentThread(), throwable);
+    }
+    
+    public static void handleThrowableWithDefaultHeadlessHandler(Throwable throwable) {
+        Exceptions.HEADLESS_UNCAUGHT_EXCEPTION_HANDLER.uncaughtException(Thread.currentThread(), throwable);
+    }
+    
     public static String humanReadableThrowable(Throwable throwable) {
         StringBuilder builder = new StringBuilder();
         humanReadableThrowableBuilder(builder, throwable, 0);
