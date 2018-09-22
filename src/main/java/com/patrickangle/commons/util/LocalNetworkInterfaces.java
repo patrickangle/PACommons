@@ -200,7 +200,6 @@ public class LocalNetworkInterfaces {
                         humanReadableName = windowsInterfaces.get(macAddress).getConnectionName();
                     }
                     LocalNetworkInterface newInterface = new LocalNetworkInterface(humanReadableName, interfaceAddress);
-                    Logging.trace(LocalNetworkInterfaces.class, newInterface);
                     availableInterfaces.add(newInterface);
                 }
             }
