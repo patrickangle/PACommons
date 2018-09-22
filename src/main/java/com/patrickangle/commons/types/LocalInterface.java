@@ -16,16 +16,17 @@
  */
 package com.patrickangle.commons.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableArrayList;
-import com.patrickangle.commons.util.NetworkInterfaces;
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
+import com.patrickangle.commons.util.LocalNetworkInterfaces;
+import com.patrickangle.commons.util.LocalNetworkInterfaces.LocalNetworkInterface;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.swing.JComboBox;
 
@@ -34,47 +35,87 @@ import javax.swing.JComboBox;
  * @author Patrick Angle
  */
 public class LocalInterface extends RemoteAddress {
-    
+
+    // The address property is actually the network address in this case. Port should remain 0 for most implementations.
     public LocalInterface() {
         this.address = "0.0.0.0";
         this.port = 0;
     }
+
+    
     
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
-        NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
-        ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.length);
-        
-        int currentAddressItemIndex = -1;
-        for (NetworkInterfaces.CrossPlatformNetworkInterface networkInterface : networkInterfaces) {
-            for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
-                if (address.getAddress().getHostAddress().equals(this.address)) {
-                    currentAddressItemIndex = networkInterfaceItems.size();
+    public void setAddress(String address) {
+        String oldAddress = this.address;
+        String actualAddress = address;
+
+        if (!address.equals("0.0.0.0")) {
+            for (LocalNetworkInterface networkInterface : LocalNetworkInterfaces.getAvailableInterfaces()) {
+                if (networkInterface.getAddress().equals(address)) {
+                    actualAddress = networkInterface.getNetworkAddress();
                 }
-                
-                networkInterfaceItems.add(new LocalInterfaceComboBoxItem(networkInterface.getDisplayName() + " (" + address.getAddress().getHostAddress() + ")", address.getAddress().getHostAddress()));
             }
         }
-        networkInterfaceItems.add(0, new LocalInterfaceComboBoxItem("0.0.0.0"));
-        
-        JComboBox<LocalInterfaceComboBoxItem> interfaceEditor = new JComboBox<>(new ObservableComboBoxModel<>(new ObservableArrayList<>(networkInterfaceItems)));
-        
-        interfaceEditor.setEditable(true);
-        interfaceEditor.setSelectedIndex(0);
-        
-        Binding binding = new BasicBinding(this, "address", interfaceEditor.getModel(), "selectedItem", Binding.UpdateStrategy.READ_WRITE, new LocalInterfaceComboBoxItemConverter());
-        bindingGroup.add(binding);
-        
-        return new ObjectFieldEditorFactory.ComponentReturn(interfaceEditor, false);
+
+        this.address = actualAddress;
+        this.propertyChangeSupport.firePropertyChange("address", oldAddress, this.address);
     }
     
+    @JsonProperty(value = "address")
+    public String getAddressForJson() {
+        return this.address;
+    }
+
+    public String getAddress() {
+        // If the address is currently the wildcard address, bypass trying to identify the NIC.
+        if (this.address.equals("0.0.0.0")) {
+            return this.address;
+        }
+
+        for (LocalNetworkInterface networkInterface : LocalNetworkInterfaces.getAvailableInterfaces()) {
+            if (networkInterface.getNetworkAddress().equals(this.address)) {
+                return networkInterface.getAddress();
+            }
+        }
+        // Upon failure to find a proper address, just return the current address.
+        return this.address;
+    }
+
+    @Override
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
+        List<LocalNetworkInterface> networkInterfaces = LocalNetworkInterfaces.getAvailableInterfaces();
+
+        ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.size());
+
+        int currentAddressItemIndex = -1;
+        for (LocalNetworkInterface networkInterface : networkInterfaces) {
+            // For compatbility, we also permit the actual address of the NIC to be used here.
+            if (networkInterface.getNetworkAddress().equals(this.address) || networkInterface.getAddress().equals(this.address)) {
+                currentAddressItemIndex = networkInterfaceItems.size();
+            }
+
+            networkInterfaceItems.add(new LocalInterfaceComboBoxItem(networkInterface.getHumanReadableName() + " (" + networkInterface.getAddress() + "/" + networkInterface.getSubnetMask() + ")", networkInterface.getNetworkAddress()));
+        }
+        networkInterfaceItems.add(0, new LocalInterfaceComboBoxItem("0.0.0.0"));
+
+        JComboBox<LocalInterfaceComboBoxItem> interfaceEditor = new JComboBox<>(new ObservableComboBoxModel<>(new ObservableArrayList<>(networkInterfaceItems)));
+
+        interfaceEditor.setEditable(true);
+        interfaceEditor.setSelectedIndex(0);
+
+        Binding binding = new BasicBinding(this, "address", interfaceEditor.getModel(), "selectedItem", Binding.UpdateStrategy.READ_WRITE, new LocalInterfaceComboBoxItemConverter());
+        bindingGroup.add(binding);
+
+        return new ObjectFieldEditorFactory.ComponentReturn(interfaceEditor, false);
+    }
+
     public static class LocalInterfaceComboBoxItemConverter implements Binding.Converter<String, Object> {
-        
+
         @Override
         public Object convertForward(String object) {
             return new LocalInterfaceComboBoxItem(object);
         }
-        
+
         @Override
         public String convertBackward(Object object) {
             if (object instanceof String) {
@@ -83,9 +124,9 @@ public class LocalInterface extends RemoteAddress {
                 return ((LocalInterfaceComboBoxItem) object).getIpAddress();
             } else {
                 return "0.0.0.0";
-            }            
+            }
         }
-        
+
     }
 
 //    @Override
@@ -142,56 +183,54 @@ public class LocalInterface extends RemoteAddress {
 
         private String visibleName;
         private String ipAddress;
-        
+
         public LocalInterfaceComboBoxItem(String visibleName, String ipAddress) {
             this.visibleName = visibleName;
             this.ipAddress = ipAddress;
         }
-        
+
         public LocalInterfaceComboBoxItem(String ipAddress) {
             this.ipAddress = ipAddress;
-            
+
             if (ipAddress.equals("0.0.0.0")) {
                 this.visibleName = "Automatic";
             }
-            
+
             if (visibleName == null) {
-                NetworkInterfaces.CrossPlatformNetworkInterface[] networkInterfaces = NetworkInterfaces.availableNetworkInterfaces();
-                for (NetworkInterfaces.CrossPlatformNetworkInterface networkInterface : networkInterfaces) {
-                    for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
-                        if (address.getAddress().getHostAddress().equals(ipAddress)) {
-                            this.visibleName = networkInterface.getDisplayName() + " (" + ipAddress + ")";
-                        }
-                    }
-                }
+                for (LocalNetworkInterface networkInterface : LocalNetworkInterfaces.getAvailableInterfaces()) {
+            if (networkInterface.getNetworkAddress().equals(ipAddress)) {
+                this.visibleName = networkInterface.getHumanReadableName() + " (" + networkInterface.getAddress() + "/" + networkInterface.getSubnetMask() + ")";
             }
-            
+        }
+                
+            }
+
             if (visibleName == null) {
                 this.visibleName = ipAddress;
             }
         }
-        
+
         public String getVisibleName() {
             return visibleName;
         }
-        
+
         public void setVisibleName(String visibleName) {
             this.visibleName = visibleName;
         }
-        
+
         public String getIpAddress() {
             return ipAddress;
         }
-        
+
         public void setIpAddress(String ipAddress) {
             this.ipAddress = ipAddress;
         }
-        
+
         @Override
         public String toString() {
             return visibleName;
         }
-        
+
         @Override
         public int hashCode() {
             int hash = 3;
@@ -199,7 +238,7 @@ public class LocalInterface extends RemoteAddress {
             hash = 67 * hash + Objects.hashCode(this.ipAddress);
             return hash;
         }
-        
+
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -220,6 +259,6 @@ public class LocalInterface extends RemoteAddress {
             }
             return true;
         }
-        
+
     }
 }

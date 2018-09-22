@@ -17,7 +17,6 @@
 package com.patrickangle.commons.util;
 
 import com.patrickangle.commons.logging.Logging;
-import static com.patrickangle.commons.util.NetworkInterfaces.availableNetworkInterfaces;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,8 +34,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -65,15 +62,29 @@ public class LocalNetworkInterfaces {
             this.subnetMask = interfaceAddress.getNetworkPrefixLength();
             
             
+            StringBuilder expandedSubnetMaskString = new StringBuilder();
+                for (int i = 0; i < subnetMask; i++) {
+                    expandedSubnetMaskString.insert(0, "1");
+                }
+                while(expandedSubnetMaskString.length() < 128) {
+                    expandedSubnetMaskString.append("0");
+                }
+
             if (interfaceAddress.getAddress() instanceof Inet4Address) {
                 Inet4Address inetAddress = (Inet4Address) interfaceAddress.getAddress();
                 
-                byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 4);
-                System.out.println(Arrays.toString(addressBytes));
-                for (int i = 0; i < 4; i++) {
-                    addressBytes[i] &= (subnetMask >>> (24 - (i * 8))); 
+                byte[] expandedSubnetMask = new byte[4];
+                String clippedExpandedSubnetMaskString = expandedSubnetMaskString.substring(0, 32);
+                for (int i = 0; i < expandedSubnetMask.length; i++) {
+                    expandedSubnetMask[i] = (byte)Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
                 }
-                System.out.println(Arrays.toString(addressBytes));
+                
+                byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 4);
+
+                for (int i = 0; i < 4; i++) {
+                    addressBytes[i] &= expandedSubnetMask[i]; 
+                }
+                
                 try {
                     this.networkAddress = InetAddress.getByAddress(addressBytes).getHostAddress();
                     this.addressVersion = IpAddressVersion.IPv4;
@@ -85,12 +96,18 @@ public class LocalNetworkInterfaces {
             } else if (interfaceAddress.getAddress() instanceof Inet6Address) {
                 Inet6Address inetAddress = (Inet6Address) interfaceAddress.getAddress();
                 
-                byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 16);
-                System.out.println(Arrays.toString(addressBytes));
-                for (int i = 0; i < 16; i++) {
-                    addressBytes[i] &= (subnetMask >>> (120 - (i * 8)));
+                byte[] expandedSubnetMask = new byte[16];
+                String clippedExpandedSubnetMaskString = expandedSubnetMaskString.substring(0, 128);
+                for (int i = 0; i < expandedSubnetMask.length; i++) {
+                    expandedSubnetMask[i] = (byte)Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
                 }
-                System.out.println(Arrays.toString(addressBytes));
+                
+                byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 16);
+
+                for (int i = 0; i < 16; i++) {
+                    addressBytes[i] &= expandedSubnetMask[i];
+                }
+
                 try {
                     this.networkAddress = InetAddress.getByAddress(addressBytes).getHostAddress();
                     this.addressVersion = IpAddressVersion.IPv6;
@@ -182,12 +199,13 @@ public class LocalNetworkInterfaces {
                     if (windowsInterfaces.containsKey(macAddress)) {
                         humanReadableName = windowsInterfaces.get(macAddress).getConnectionName();
                     }
-                    
-                    availableInterfaces.add(new LocalNetworkInterface(humanReadableName, interfaceAddress));
+                    LocalNetworkInterface newInterface = new LocalNetworkInterface(humanReadableName, interfaceAddress);
+                    Logging.trace(LocalNetworkInterfaces.class, newInterface);
+                    availableInterfaces.add(newInterface);
                 }
             }
         } catch (SocketException ex) {
-            Logger.getLogger(NetworkInterfaces.class.getName()).log(Level.SEVERE, null, ex);
+            Logging.exception(LocalNetworkInterfaces.class, ex);
         }
         
         LocalNetworkInterfaces.availableInterfaces = availableInterfaces;
@@ -249,9 +267,6 @@ public class LocalNetworkInterfaces {
         }
         return sb.toString();
     }
-    
-    
-    
     
     // TODO: Implement the reverse of this function
     public static String uncompressIPv6Address(String ipv6Address){
