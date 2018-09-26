@@ -14,22 +14,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Patrick Angle
  */
+@Deprecated(forRemoval = true)
 public class ListUtils {
-
+@Deprecated(forRemoval = true)
     public static <T extends Object> ArrayList<ArrayList<T>> createArray2dList(T initialItem) {
         ArrayList<ArrayList<T>> outerArrayList = new ArrayList<>(1);
         outerArrayList.add(new ArrayList<T>(1));
         outerArrayList.get(0).add(initialItem);
         return outerArrayList;
     }
-    
+    @Deprecated(forRemoval = true)
     public static <T extends Object> List<List<T>> create2dList(T initialItem) {
         List<List<T>> outerArrayList = new ArrayList<>(1);
         outerArrayList.add(new ArrayList<T>(1));
         outerArrayList.get(0).add(initialItem);
         return outerArrayList;
     }
-    
+    @Deprecated(forRemoval = true)
     public static <T extends Object> ArrayList<ArrayList<T>> createArray2dList(T[][] initialItems) {
         ArrayList<ArrayList<T>> outerArray = new ArrayList<>(initialItems.length);
         
@@ -43,7 +44,7 @@ public class ListUtils {
         
         return outerArray;
     }
-    
+    @Deprecated(forRemoval = true)
     public static <T extends Object> List<List<T>> create2dList(T[][] initialItems) {
         List<List<T>> outerArray = new ArrayList<>(initialItems.length);
         
@@ -57,7 +58,7 @@ public class ListUtils {
         
         return outerArray;
     }
-
+@Deprecated(forRemoval = true)
     public static int depthOfMultiDimensionList(Object list) {
         int depth = 0;
         Object currentDepthObject = list;
@@ -68,7 +69,7 @@ public class ListUtils {
 
         return depth;
     }
-
+@Deprecated(forRemoval = true)
     public static <T> boolean isRectangularArray2dList(List<List<T>> array) {
         if (array.size() > 0) {
             int expectedInnerLength = array.get(0).size();
@@ -82,7 +83,7 @@ public class ListUtils {
 
         return true;
     }
-
+@Deprecated(forRemoval = true)
     public static <T> boolean isRectangularArray2dList(ArrayList<ArrayList<T>> array) {
         if (array.size() > 0) {
             int expectedInnerLength = array.get(0).size();
@@ -96,7 +97,7 @@ public class ListUtils {
 
         return true;
     }
-
+@Deprecated(forRemoval = true)
     public static <T> Dimension dimensionsOfArray2dList(List<List<T>> array) {
         if (array.size() > 0 && ListUtils.isRectangularArray2dList(array)) {
             return new Dimension(array.size(), array.get(0).size());
@@ -111,7 +112,7 @@ public class ListUtils {
             return new Dimension(array.size(), tallestColumn);
         }
     }
-
+@Deprecated(forRemoval = true)
     public static <T> Dimension dimensionsOfArray2dList(ArrayList<ArrayList<T>> array) {
         if (array.size() > 0 && ListUtils.isRectangularArray2dList(array)) {
             return new Dimension(array.size(), array.get(0).size());
@@ -126,7 +127,7 @@ public class ListUtils {
             return new Dimension(array.size(), tallestColumn);
         }
     }
-
+@Deprecated(forRemoval = true)
     public static Class classOfObjectInMultiDimensionList(Object list) {
         Class currentClass = list.getClass();
         Object currentObject = list;
@@ -137,7 +138,7 @@ public class ListUtils {
 
         return currentClass;
     }
-
+@Deprecated(forRemoval = true)
     public static void changeRowsInArray2dList(List<List<Object>> arrayList, int numberOfRows) {
         Dimension dimensions = dimensionsOfArray2dList(arrayList);
         
@@ -166,7 +167,7 @@ public class ListUtils {
             }
         }
     }
-    
+    @Deprecated(forRemoval = true)
     public static void changeColumnsInArray2dList(List<List<Object>> arrayList, int numberOfColumns) {
         Dimension dimensions = dimensionsOfArray2dList(arrayList);
 
@@ -195,7 +196,7 @@ public class ListUtils {
             }
         }
     }
-    
+    @Deprecated(forRemoval = true)
     public static <T extends Object> List<List<T>> splitListIntoChunks(List<T> list, int chunkSize) {
         List<List<T>> chunks = new CopyOnWriteArrayList<List<T>>();
         for (int i = 0; i < list.size(); i += chunkSize) {
@@ -203,13 +204,13 @@ public class ListUtils {
         }
         return chunks;
     }
-    
+    @Deprecated(forRemoval = true)
     public static List<Object> flatten(List<?> list) {
         List<Object> ret = new ArrayList<>();
         flattenHelper(list, ret);
         return ret;
     }
-
+@Deprecated(forRemoval = true)
     public static void flattenHelper(List<?> nestedList, List<Object> flatList) {
         for (Object item : nestedList) {
             if (item instanceof List<?>) {
@@ -219,7 +220,7 @@ public class ListUtils {
             }
         }
     }
-
+@Deprecated(forRemoval = true)
     private static List<Object> lst(Object... objs) {
         return new ArrayList<>(Arrays.asList(objs));
     }

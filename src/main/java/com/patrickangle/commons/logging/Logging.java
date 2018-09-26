@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.logging;
 
-import com.patrickangle.commons.util.ConsoleColors;
 import com.patrickangle.commons.util.Exceptions;
 import com.patrickangle.commons.util.StringOutputStream;
 import java.io.PrintStream;

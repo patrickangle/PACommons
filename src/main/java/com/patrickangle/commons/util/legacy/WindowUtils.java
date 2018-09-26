@@ -10,18 +10,18 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Taskbar;
 import java.awt.Toolkit;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 
 /**
  *
  * @author Patrick Angle
  */
+@Deprecated(forRemoval = true)
 public class WindowUtils {
-
+    @Deprecated(forRemoval = true)
     public static void takeFrameFullscreenOnScreen(JFrame frame, int screen) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
@@ -33,7 +33,7 @@ public class WindowUtils {
             throw new RuntimeException("No Screens Found");
         }
     }
-
+@Deprecated(forRemoval = true)
     public static void moveWindowToScreen(int screen, JFrame frame) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gd = ge.getScreenDevices();
@@ -45,14 +45,26 @@ public class WindowUtils {
             throw new RuntimeException("Invalid Screen " + screen);
         }
     }
-
+@Deprecated(forRemoval = true)
     public static final void setFrameIcon(JFrame frame, String iconClasspath) {
         URL url = ClassLoader.getSystemResource(iconClasspath);
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(url);
         frame.setIconImage(img);
     }
-    
+    @Deprecated(forRemoval = true)
+    public static final void setFrameIcons(JFrame frame, String... iconClasspath) {
+        List<Image> images = new ArrayList<>();
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        
+        for (int i = 0; i < iconClasspath.length; i++) {
+            URL url = ClassLoader.getSystemResource(iconClasspath[i]);
+            images.add(kit.createImage(url));
+        }
+        
+        frame.setIconImages(images);
+    }
+    @Deprecated(forRemoval = true)
     public static final void setAppIcon(String iconClasspath) {
         URL url = ClassLoader.getSystemResource(iconClasspath);
         Toolkit kit = Toolkit.getDefaultToolkit();

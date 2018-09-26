@@ -13,12 +13,13 @@ import java.util.Arrays;
  *
  * @author Patrick Angle
  */
+@Deprecated(forRemoval = true)
 public class ArrayUtils {
-
+@Deprecated(forRemoval = true)
     public static String byteArrayToHex(byte[] bytes) {
         return byteArrayToHex(bytes, true);
     }
-
+@Deprecated(forRemoval = true)
     public static String byteArrayToHex(byte[] bytes, boolean autoLineBreak) {
         StringBuilder sb = new StringBuilder();
         int i = 0;
@@ -35,7 +36,7 @@ public class ArrayUtils {
         }
         return sb.toString();
     }
-
+@Deprecated(forRemoval = true)
     public static int numberOfItemsIn2DArray(Object[][] array) {
         int itemsIn2DArray = 0;
 
@@ -45,7 +46,7 @@ public class ArrayUtils {
 
         return itemsIn2DArray;
     }
-
+@Deprecated(forRemoval = true)
     public static boolean isSquare2DArray(Object[][] array) {
         if (array.length > 0) {
             int expectedInnerLength = array[0].length;
@@ -59,7 +60,7 @@ public class ArrayUtils {
 
         return true;
     }
-
+@Deprecated(forRemoval = true)
     public static boolean isSquare2DArray(boolean[][] array) {
         if (array.length > 0) {
             int expectedInnerLength = array[0].length;
@@ -73,7 +74,7 @@ public class ArrayUtils {
 
         return true;
     }
-
+@Deprecated(forRemoval = true)
     public static byte[] arrayListToArray(ArrayList<Byte> arrayList) {
         byte[] returnArray = new byte[arrayList.size()];
 
@@ -83,7 +84,7 @@ public class ArrayUtils {
 
         return returnArray;
     }
-
+@Deprecated(forRemoval = true)
     public static Dimension dimensionsOf2DArray(Object[][] array) {
         if (array.length > 0 && ArrayUtils.isSquare2DArray(array)) {
             return new Dimension(array.length, array[0].length);
@@ -98,7 +99,7 @@ public class ArrayUtils {
             return new Dimension(array.length, tallestColumn);
         }
     }
-
+@Deprecated(forRemoval = true)
     public static Dimension dimensionsOf2DArray(boolean[][] array) {
         if (array.length > 0 && ArrayUtils.isSquare2DArray(array)) {
             return new Dimension(array.length, array[0].length);
@@ -113,7 +114,7 @@ public class ArrayUtils {
             return new Dimension(array.length, tallestColumn);
         }
     }
-
+@Deprecated(forRemoval = true)
     public static String booleanArrayToXMap(boolean[][] array) {
         StringBuilder sb = new StringBuilder();
         for (int x = 0; x < array.length; x++) {
@@ -124,7 +125,7 @@ public class ArrayUtils {
         }
         return sb.toString();
     }
-
+@Deprecated(forRemoval = true)
     public static Class underlyingClassOfArray(Object[] array) {
         Class c = array.getClass();
         while (c.isArray()) {
@@ -132,7 +133,7 @@ public class ArrayUtils {
         }
         return c;
     }
-
+@Deprecated(forRemoval = true)
     public static int depthOfArray(Object array) {
         int depth = 0;
         Class c = array.getClass();
@@ -145,7 +146,7 @@ public class ArrayUtils {
         System.out.println(depth);
         return depth;
     }
-
+@Deprecated(forRemoval = true)
     public static Object[][] splitArray(Object[] arrayToSplit, int chunkSize) {
         if (chunkSize <= 0) {
             return null;  // just in case :)
@@ -171,7 +172,7 @@ public class ArrayUtils {
         }
         return arrays; // that's it
     }
-
+@Deprecated(forRemoval = true)
     public static <T extends Object> T[] reverseArray(T[] array) {
         for (int i = 0; i < array.length / 2; i++) {
             T temp = array[i];
