@@ -17,6 +17,7 @@
 package com.patrickangle.commons.util;
 
 import com.patrickangle.commons.Callback;
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import java.util.Arrays;
 
@@ -41,7 +42,7 @@ public class RecurringRunnable extends PropertyChangeObservableBase implements R
     
     public RecurringRunnable(int targetFPS, Callback<Long> frameCallback) {
         this.frameCallback = frameCallback;
-        this.targetPeriodLength = NANOSECONDS_IN_SECOND / targetFPS;
+        this.targetPeriodLength = Math.round((double)NANOSECONDS_IN_SECOND / (double)targetFPS);
         this.running = false;
         this.currentFPS = 0;
         
@@ -119,7 +120,7 @@ public class RecurringRunnable extends PropertyChangeObservableBase implements R
             }
             
             frameEndTime = System.nanoTime();
-            this.updateCurrentFPS(NANOSECONDS_IN_SECOND / (int)(frameEndTime - beforeTime));
+            this.updateCurrentFPS(Math.round((float)NANOSECONDS_IN_SECOND / (float)(frameEndTime - beforeTime)));
         }
     }
     

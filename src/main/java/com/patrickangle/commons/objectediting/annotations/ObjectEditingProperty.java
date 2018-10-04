@@ -18,6 +18,8 @@ package com.patrickangle.commons.objectediting.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.EditorKit;
 
 /**
  *
@@ -33,7 +35,6 @@ public @interface ObjectEditingProperty {
     NumberEditor numberEditor() default NumberEditor.SPINNER_CONTROL;
     Class listNewItemClass() default Object.class;
     boolean mutable() default true;
-    boolean stringMultilineEditor() default false;
     
     public enum NumberEditor {
         TEXT_CONTROL,
