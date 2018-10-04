@@ -107,7 +107,7 @@ public class Exceptions {
             builder.append(": ");
             builder.append(throwable.getMessage());
             builder.append("\n");
-            StackTraceElement[] stack = ArrayUtils.reverseArray(throwable.getStackTrace());
+            StackTraceElement[] stack = throwable.getStackTrace();
             int line = 0;
             for (StackTraceElement element : stack) {
                 builder.append("\t");
