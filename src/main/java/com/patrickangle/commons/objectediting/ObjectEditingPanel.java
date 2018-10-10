@@ -114,6 +114,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         c.ipady = 0;
         c.insets = new Insets(1, 1, 1, 1);
         c.anchor = GridBagConstraints.NORTH;
+//        c.weighty = 1;
         
         int runningGridY = 0;
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {
@@ -149,8 +150,8 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             c.gridx = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 0 : 1;
             c.weightx = 1.0;
             
-            Dimension preferredDimension = componentReturn.getComponent().getPreferredSize();
-            componentReturn.getComponent().setMinimumSize(new Dimension(preferredDimension.width, Math.max(preferredDimension.height, label != null ? label.getPreferredSize().height : 0)));
+//            Dimension preferredDimension = componentReturn.getComponent().getPreferredSize();
+//            componentReturn.getComponent().setMinimumSize(new Dimension(preferredDimension.width, Math.max(preferredDimension.height, label != null ? label.getPreferredSize().height : 0)));
             
 //            componentReturn.getComponent().setMinimumSize(componentReturn.getComponent().getPreferredSize());
             sectionPanels.get(declaringClass).add(componentReturn.getComponent(), c);
