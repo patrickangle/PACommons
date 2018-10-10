@@ -17,10 +17,14 @@
 package com.patrickangle.commons.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
+import com.patrickangle.commons.json.serialization.GenericStringSerializer;
+import com.patrickangle.commons.json.serialization.LocalInterfaceDeserializer;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableArrayList;
 import com.patrickangle.commons.util.LocalNetworkInterfaces;
@@ -34,12 +38,18 @@ import javax.swing.JComboBox;
  *
  * @author Patrick Angle
  */
+@JsonSerialize(using = GenericStringSerializer.class)
+@JsonDeserialize(using = LocalInterfaceDeserializer.class)
 public class LocalInterface extends RemoteAddress {
 
     // The address property is actually the network address in this case. Port should remain 0 for most implementations.
     public LocalInterface() {
         this.address = "0.0.0.0";
         this.port = 0;
+    }
+    
+    public LocalInterface(String value) {
+        super(value);
     }
 
     

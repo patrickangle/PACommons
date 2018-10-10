@@ -90,9 +90,13 @@ public class Exceptions {
     }
     
     public static String humanReadableThrowable(Throwable throwable) {
-        StringBuilder builder = new StringBuilder();
-        humanReadableThrowableBuilder(builder, throwable, 0);
-        return builder.toString();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        return sw.toString();
+//        StringBuilder builder = new StringBuilder();
+//        humanReadableThrowableBuilder(builder, throwable, 0);
+//        return builder.toString();
     }
     
     public static void humanReadableThrowableBuilder(StringBuilder builder, Throwable throwable, int currentDepth) {

@@ -17,17 +17,18 @@
 package com.patrickangle.commons.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
-import com.patrickangle.commons.json.JsonableObject;
+import com.patrickangle.commons.json.serialization.GenericStringSerializer;
+import com.patrickangle.commons.json.serialization.RemoteAddressDeserializer;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
-import com.patrickangle.commons.util.Colors;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -38,7 +39,9 @@ import javax.swing.SpinnerNumberModel;
  *
  * @author patrickangle
  */
-public class RemoteAddress extends PropertyChangeObservableBase implements CustomObjectEditingComponent, JsonableObject {
+@JsonSerialize(using = GenericStringSerializer.class)
+@JsonDeserialize(using = RemoteAddressDeserializer.class)
+public class RemoteAddress extends PropertyChangeObservableBase implements CustomObjectEditingComponent {
     @JsonProperty protected String address;
     @JsonProperty protected int port;
     
