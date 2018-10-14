@@ -28,39 +28,25 @@ import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBou
 import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
-import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
+import com.patrickangle.commons.objectediting.editors.list.ListObjectEditor;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingList2dTableEditorDialog;
-import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListCellRenderer;
-import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListTableModel;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
 import com.patrickangle.commons.util.legacy.ListUtils;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.Box;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.text.EditorKit;
 
 /**
  *
@@ -125,7 +111,7 @@ public class ObjectFieldEditorFactory {
                 case 0:
                 // Zero is returned if the list is empty, so it really should be treated as a depth of one.
                 case 1:
-                    return createBoundComponentForList(objectField, bindingGroup);
+                    return ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
                 case 2:
                     return createBoundComponentFor2dList(objectField, bindingGroup);
                 default:
@@ -231,99 +217,6 @@ public class ObjectFieldEditorFactory {
         bindingGroup.add(binding);
 
         return new ComponentReturn(colorButton, false);
-    }
-
-    public static ComponentReturn createBoundComponentForList(BoundField<List> objectField, BindingGroup bindingGroup) {
-        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
-
-        JPanel listEditor = new JPanel(new BorderLayout());
-
-        JTable table = new JTable(new ObjectEditingListTableModel(objectField.getFieldClass()));
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        table.setTableHeader(null);
-
-        if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
-            table.getColumnModel().getColumn(0).setCellEditor(new ObjectEditingListCellRenderer());
-            table.getColumnModel().getColumn(0).setCellRenderer(new ObjectEditingListCellRenderer());
-
-            table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
-            table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
-        } else {
-            table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));
-            table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
-        }
-
-        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
-            private static final int MIN_HEIGHT = 125;
-
-            @Override
-            public Dimension getPreferredSize() {
-                Dimension newPreferredSize = super.getPreferredSize();
-                newPreferredSize.height = MIN_HEIGHT;
-                return newPreferredSize;
-            }
-
-            @Override
-            public Dimension getMinimumSize() {
-                Dimension newMinimumSize = super.getMinimumSize();
-                newMinimumSize.height = MIN_HEIGHT;
-                return newMinimumSize;
-            }
-
-        };
-
-        listEditor.add(scrollPane, BorderLayout.CENTER);
-
-        table.setRowHeight(24);
-        table.setRowMargin(6);
-
-        Binding listBinding = new BasicBinding(objectField, BoundFields.boundField(table.getModel(), "items"), Binding.UpdateStrategy.READ_WRITE);
-        bindingGroup.add(listBinding);
-
-        if (configInfo.listNewItemClass() != Object.class) {
-            JToolBar toolbar = new JToolBar();
-            toolbar.setFloatable(false);
-            toolbar.add(Box.createHorizontalGlue());
-
-            JButton addButton = new JButton("+");
-            addButton.addActionListener((actionEvent) -> {
-                ((ObjectEditingListTableModel) table.getModel()).getItems().add(Classes.newInstance(configInfo.listNewItemClass()));
-            });
-            toolbar.add(addButton);
-
-            JButton removeButton = new JButton("−");
-            removeButton.addActionListener((actionEvent) -> {
-                int row = table.getSelectedRow();
-                if (row != -1) {
-                    ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
-                }
-            });
-            toolbar.add(removeButton);
-
-            JButton moveUpButton = new JButton("▲");
-            moveUpButton.addActionListener((actionEvent) -> {
-                int row = table.getSelectedRow();
-                if (row > 0) {
-                    Object o = ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
-                    ((ObjectEditingListTableModel) table.getModel()).getItems().add(row - 1, o);
-                }
-            });
-            toolbar.add(moveUpButton);
-
-            JButton moveDownButton = new JButton("▼");
-            moveDownButton.addActionListener((actionEvent) -> {
-                int row = table.getSelectedRow();
-                if (row < table.getRowCount() - 1) {
-                    Object o = ((ObjectEditingListTableModel) table.getModel()).getItems().remove(row);
-                    ((ObjectEditingListTableModel) table.getModel()).getItems().add(row + 1, o);
-                }
-            });
-            toolbar.add(moveDownButton);
-
-            listEditor.add(toolbar, BorderLayout.PAGE_END);
-        }
-
-        return new ComponentReturn(listEditor, false, true);
     }
 
     public static ComponentReturn createBoundComponentFor2dList(BoundField<List<List>> boundField, BindingGroup bindingGroup) {

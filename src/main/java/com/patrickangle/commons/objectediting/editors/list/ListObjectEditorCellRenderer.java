@@ -14,11 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.objectediting.util.listeditor;
+package com.patrickangle.commons.objectediting.editors.list;
 
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import java.awt.Component;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
@@ -31,7 +35,9 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Patrick Angle
  */
-public class ObjectEditingListCellRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+public class ListObjectEditorCellRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+    public static final int DEFAULT_ROW_MARGIN = 3;
+    
     protected Object object;
     
     JComponent component;
@@ -61,6 +67,14 @@ public class ObjectEditingListCellRenderer extends AbstractCellEditor implements
             
             component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
             
+            component.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+                if (evt.getPropertyName().equals("preferredSize")) {
+                    jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
+                }
+            });
+            
+            jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
+            
             bindingGroup.bind();
             return component;
         } else {
@@ -75,6 +89,14 @@ public class ObjectEditingListCellRenderer extends AbstractCellEditor implements
             BindingGroup bindingGroup = new BindingGroup();
             
             component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
+            
+            component.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+                if (evt.getPropertyName().equals("preferredSize")) {
+                    jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
+                }
+            });
+            
+            jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
             
             bindingGroup.bind();
             return component;

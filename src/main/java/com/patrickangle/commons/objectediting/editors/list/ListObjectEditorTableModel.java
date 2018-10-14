@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.objectediting.util.listeditor;
+package com.patrickangle.commons.objectediting.editors.list;
 
 import com.patrickangle.commons.beansbinding.swing.models.ObservableListModel;
 import com.patrickangle.commons.observable.collections.ObservableList;
@@ -25,24 +25,25 @@ import java.util.List;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import sun.plugin2.message.GetAuthenticationMessage;
 
 /**
  *
  * @author Patrick Angle
  */
-public class ObjectEditingListTableModel<E> extends ObservableListModel<E> implements TableModel {
+public class ListObjectEditorTableModel<E> extends ObservableListModel<E> implements TableModel {
     protected TableModelSupport tableModelSupport = new TableModelSupport(this);
     protected ObservableListListener observableListListener;
     
     protected Class<E> itemClass;
 
-    public ObjectEditingListTableModel(ObservableList<E> items, Class<E> itemClass) {
+    public ListObjectEditorTableModel(ObservableList<E> items, Class<E> itemClass) {
         super(items);
         this.itemClass = itemClass;
         commonInit();
     }
 
-    public ObjectEditingListTableModel(Class<E> itemClass) {
+    public ListObjectEditorTableModel(Class<E> itemClass) {
         super(itemClass);
         this.itemClass = itemClass;
         commonInit();

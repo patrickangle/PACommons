@@ -23,7 +23,7 @@ import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
-import com.patrickangle.commons.objectediting.util.listeditor.ObjectEditingListCellRenderer;
+import com.patrickangle.commons.objectediting.editors.list.ListObjectEditorCellRenderer;
 import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.util.Annotations;
@@ -94,8 +94,8 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
-        table.setDefaultEditor(Object.class, new ObjectEditingListCellRenderer());
-        table.setDefaultRenderer(Object.class, new ObjectEditingListCellRenderer());
+        table.setDefaultEditor(Object.class, new ListObjectEditorCellRenderer());
+        table.setDefaultRenderer(Object.class, new ListObjectEditorCellRenderer());
         table.setGridColor(Color.GRAY);
         
         JScrollPane scrollPane = new JScrollPane(table);
