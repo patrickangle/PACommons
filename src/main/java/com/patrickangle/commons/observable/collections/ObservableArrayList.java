@@ -17,6 +17,7 @@
 package com.patrickangle.commons.observable.collections;
 
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,33 +31,45 @@ import java.util.function.UnaryOperator;
  * @author Patrick Angle
  */
 public class ObservableArrayList<E> extends ArrayList<E> implements ObservableList<E> {
+
     private ObservableListSupport<E> observableListSupport;
     private PropertyChangeListener elementPropertyChangeListener;
-    
+    private ObservableListListener elementListListener;
+
     public ObservableArrayList() {
         super();
         commonInit();
     }
-    
+
     public ObservableArrayList(Collection<? extends E> c) {
         super(c);
         commonInit();
     }
-    
+
     public ObservableArrayList(int initialCapacity) {
         super(initialCapacity);
         commonInit();
     }
-    
+
     private void commonInit() {
         observableListSupport = new ObservableListSupport<>(this);
-        
+
         elementPropertyChangeListener = (propertyChangeEvent) -> {
             observableListSupport.fireElementPropertyChanged(this.indexOf(propertyChangeEvent.getSource()), (E) propertyChangeEvent.getSource(), propertyChangeEvent);
         };
-        
+
+        elementListListener = new ObservableListListenerAdapter() {
+            @Override
+            public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent propertyChangeEvent) {
+                observableListSupport.fireElementPropertyChanged(ObservableArrayList.this.indexOf(list), (E) list, propertyChangeEvent);
+            }
+        };
+
         this.stream().forEach((t) -> {
             PropertyChangeObservable.addPropertyChangeListener(t, elementPropertyChangeListener);
+            if (t instanceof List) {
+                ObservableList.addObservableListListener((List) t, elementListListener);
+            }
         });
     }
 
@@ -69,36 +82,48 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
     public void removeObservableListListener(ObservableListListener<E> listener) {
         observableListSupport.removeObservableListListener(listener);
     }
-    
+
     @Override
     public E set(int index, E element) {
         E oldElement = super.set(index, element);
         observableListSupport.fireElementReplaced(index, oldElement, element);
-        
+
         PropertyChangeObservable.removePropertyChangeListener(oldElement, elementPropertyChangeListener);
+        if (oldElement instanceof List) {
+            ObservableList.removeObservableListListener((List) oldElement, elementListListener);
+        }
         PropertyChangeObservable.addPropertyChangeListener(element, elementPropertyChangeListener);
-        
+        if (element instanceof List) {
+            ObservableList.addObservableListListener((List) element, elementListListener);
+        }
+
         return oldElement;
     }
-    
+
     @Override
     public boolean add(E element) {
         boolean success = super.add(element);
         if (success) {
             observableListSupport.fireElementsAdded(this.size() - 1, 1, Collections.singletonList(element));
             PropertyChangeObservable.addPropertyChangeListener(element, elementPropertyChangeListener);
+            if (element instanceof List) {
+                ObservableList.addObservableListListener((List) element, elementListListener);
+            }
         }
         return success;
     }
-    
+
     @Override
     public void add(int index, E element) {
         super.add(index, element);
         observableListSupport.fireElementsAdded(index, 1, Collections.singletonList(element));
-        
+
         PropertyChangeObservable.addPropertyChangeListener(element, elementPropertyChangeListener);
+        if (element instanceof List) {
+            ObservableList.addObservableListListener((List) element, elementListListener);
+        }
     }
-    
+
     @Override
     public boolean remove(Object element) {
         int positionOfElement = this.indexOf(element);
@@ -107,40 +132,48 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
             // It should be safe to cast the element to the generic type here, as we know the element was in the list to begin with.
             observableListSupport.fireElementsRemoved(positionOfElement, 1, Collections.singletonList((E) element));
             PropertyChangeObservable.removePropertyChangeListener(element, elementPropertyChangeListener);
+            if (element instanceof List) {
+                ObservableList.removeObservableListListener((List) element, elementListListener);
+            }
         }
         return success;
     }
-    
+
     @Override
     public E remove(int index) {
         E oldElement = super.remove(index);
         observableListSupport.fireElementsRemoved(index, 1, Collections.singletonList(oldElement));
-        
+
         PropertyChangeObservable.removePropertyChangeListener(oldElement, elementPropertyChangeListener);
-        
+        if (oldElement instanceof List) {
+            ObservableList.removeObservableListListener((List) oldElement, elementListListener);
+        }
         return oldElement;
     }
-    
+
     @Override
     public boolean addAll(Collection<? extends E> c) {
         return this.addAll(this.size(), c);
     }
-    
+
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         if (super.addAll(index, c)) {
             observableListSupport.fireElementsAdded(index, c.size(), new ArrayList<>(c));
-            
+
             c.stream().forEach((t) -> {
                 PropertyChangeObservable.addPropertyChangeListener(t, elementPropertyChangeListener);
+                if (t instanceof List) {
+                    ObservableList.addObservableListListener((List) t, elementListListener);
+                }
             });
-            
+
             return true;
         } else {
             return false;
         }
     }
-    
+
     @Override
     public void clear() {
         List<E> oldElements = new ArrayList<>(this);
@@ -148,9 +181,12 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
         if (!oldElements.isEmpty()) {
             observableListSupport.fireElementsRemoved(0, oldElements.size(), oldElements);
         }
-        
+
         oldElements.stream().forEach((t) -> {
             PropertyChangeObservable.removePropertyChangeListener(t, elementPropertyChangeListener);
+            if (t instanceof List) {
+                ObservableList.removeObservableListListener((List) t, elementListListener);
+            }
         });
     }
 

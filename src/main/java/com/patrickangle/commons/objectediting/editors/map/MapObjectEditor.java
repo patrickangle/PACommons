@@ -16,10 +16,18 @@
  */
 package com.patrickangle.commons.objectediting.editors.map;
 
+import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
+import java.util.Map;
+
 /**
  *
  * @author patrickangle
  */
 public class MapObjectEditor {
-    
+
+//    public static ObjectFieldEditorFactory.ComponentReturn createBoundComponentForMap(BoundField<Map> objectField, BindingGroup bindingGroup) {
+//        objectField.
+//    }
 }

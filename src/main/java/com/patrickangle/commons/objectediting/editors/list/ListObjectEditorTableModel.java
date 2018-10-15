@@ -25,7 +25,6 @@ import java.util.List;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import sun.plugin2.message.GetAuthenticationMessage;
 
 /**
  *

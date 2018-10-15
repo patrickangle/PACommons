@@ -23,22 +23,16 @@ import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
-import com.patrickangle.commons.objectediting.editors.list.ListObjectEditorCellRenderer;
-import com.patrickangle.commons.observable.collections.ObservableCollections;
-import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
+import com.patrickangle.commons.objectediting.editors.list2d.List2dObjectEditorCellRenderer;
+import com.patrickangle.commons.observable.collections.ObservableLists;
 import com.patrickangle.commons.util.Annotations;
-import com.patrickangle.commons.util.legacy.ListUtils;
+import com.patrickangle.commons.util.Lists;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -77,7 +71,8 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setType(Type.UTILITY);
         this.setResizable(true);
-//        this.setTitle("Wayne Romanowski Celebratory LED Cabinet Layout Editor Window");
+        
+        this.setTitle(configInfo.name().equals("") ? (boundField.getFieldName() + " Editor") : (configInfo.name() + " Editor"));
         
         Binding backingListBinding = new BasicBinding(boundField, BoundFields.boundField(this, "backingList"), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(backingListBinding);
@@ -94,15 +89,15 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
-        table.setDefaultEditor(Object.class, new ListObjectEditorCellRenderer());
-        table.setDefaultRenderer(Object.class, new ListObjectEditorCellRenderer());
+        table.setDefaultEditor(Object.class, new List2dObjectEditorCellRenderer());
+        table.setDefaultRenderer(Object.class, new List2dObjectEditorCellRenderer());
         table.setGridColor(Color.GRAY);
         
         JScrollPane scrollPane = new JScrollPane(table);
         
         RowHeaderUtils.addNumberColumn(table, 1, false);
         
-        Dimension currentArrayDimensions = ListUtils.dimensionsOfArray2dList(backingList);
+        Dimension currentArrayDimensions = Lists.dimensionsOfTwoDimensionalList(backingList);
         JPanel pointEditor = new JPanel(new GridBagLayout());
         GridBagConstraints gridBagConstraints;
         
@@ -112,7 +107,7 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         
         JSpinner spinnerX = new JSpinner(new SpinnerNumberModel(currentArrayDimensions.width, 1, 256, 1));
         spinnerX.addChangeListener((ChangeEvent ce) -> {
-            ListUtils.changeColumnsInArray2dList(backingList, (int)spinnerX.getValue());
+            ObservableLists.updateWidthInTwoDimensionalList(backingList, (int)spinnerX.getValue());
             tableModel.fireTableDataChanged();
             tableModel.fireTableStructureChanged();
             this.firePropertyChange("backingList", null, this.backingList);
@@ -135,7 +130,7 @@ public class ObjectEditingList2dTableEditorDialog extends JDialog {
         
         JSpinner spinnerY = new JSpinner(new SpinnerNumberModel(currentArrayDimensions.height, 1, 256, 1));
         spinnerY.addChangeListener((ChangeEvent ce) -> {
-            ListUtils.changeRowsInArray2dList(backingList, (int)spinnerY.getValue());
+            ObservableLists.updateHeightInTwoDimensionalList(backingList, (int)spinnerY.getValue());
             tableModel.fireTableDataChanged();
             tableModel.fireTableStructureChanged();
             this.firePropertyChange("backingList", null, this.backingList);

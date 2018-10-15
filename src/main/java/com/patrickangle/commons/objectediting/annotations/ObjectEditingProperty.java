@@ -18,8 +18,6 @@ package com.patrickangle.commons.objectediting.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.EditorKit;
 
 /**
  *
@@ -27,14 +25,26 @@ import javax.swing.text.EditorKit;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ObjectEditingProperty {
+    // The human-readable name of the property
     String name() default "";
+    
+    // The tooltip for the property. Note that this tooltip is not applied to editing components that are user-provided.
     String help() default "";
+    
+    // Hints for number-spinners
     double numberMinimumValue() default Integer.MIN_VALUE;
     double numberMaximumValue() default Integer.MAX_VALUE;
     double numberStepValue() default 1;
     NumberEditor numberEditor() default NumberEditor.SPINNER_CONTROL;
+    
+    // Properties for reflective creation of list and map contents
     Class listNewItemClass() default Object.class;
+    Class mapKeyNewItemClass() default Object.class;
+    Class mapValueNewItemClass() default Object.class;
+    
+    // Determine whether or not the entry will be editable.
     boolean mutable() default true;
+    
     
     public enum NumberEditor {
         TEXT_CONTROL,
