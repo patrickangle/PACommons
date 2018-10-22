@@ -17,13 +17,12 @@
 package com.patrickangle.commons.objectediting.editors.list;
 
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import java.awt.Component;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -36,73 +35,55 @@ import javax.swing.table.TableCellRenderer;
  * @author Patrick Angle
  */
 public class ListObjectEditorCellRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+
     public static final int DEFAULT_ROW_MARGIN = 3;
-    
-    protected Object object;
-    
-    JComponent component;
-    
+
+    private static final Map<Object, JComponent> cachedEditors = new HashMap<>();
+
     @Override
     public Object getCellEditorValue() {
         return null;
     }
 
-//    @Override
-//    public boolean isCellEditable(EventObject eo) {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean shouldSelectCell(EventObject eo) {
-//        return true;
-//    }
-    
-    
+    public ListObjectEditorCellRenderer() {
+        super();
+    }
 
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        this.object = object;
-        if (CustomObjectEditingComponent.class.isInstance(value)) {
-            BindingGroup bindingGroup = new BindingGroup();
-            
-            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
-            
-            component.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-                if (evt.getPropertyName().equals("preferredSize")) {
-                    jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
-                }
-            });
-            
-            jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
-            
-            bindingGroup.bind();
-            return component;
-        } else {
-            return new JLabel("Unsupported...");
+        if (!cachedEditors.containsKey(value)) {
+            // No editor is cached, we need to create one.
+            JComponent newComponent;
+
+            if (value instanceof CustomObjectEditingComponent) {
+                BindingGroup bindingGroup = new BindingGroup();
+
+                newComponent = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
+
+                bindingGroup.bind();
+
+            } else {
+                newComponent = new JLabel("Editing of this property is not supported.");
+            }
+
+            cachedEditors.put(value, newComponent);
         }
+
+        JComponent returnComponent = cachedEditors.get(value);
+
+//        returnComponent.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+//            if (evt.getPropertyName().equals("preferredSize")) {
+//                jtable.setRowHeight(row, returnComponent.getPreferredSize().height + DEFAULT_ROW_MARGIN);
+//            }
+//        });
+
+        jtable.setRowHeight(row, returnComponent.getPreferredSize().height + DEFAULT_ROW_MARGIN);
+
+        return returnComponent;
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable jtable, Object value, boolean isSelected, int row, int column) {
-        this.object = object;
-        if (CustomObjectEditingComponent.class.isInstance(value)) {
-            BindingGroup bindingGroup = new BindingGroup();
-            
-            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
-            
-            component.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-                if (evt.getPropertyName().equals("preferredSize")) {
-                    jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
-                }
-            });
-            
-            jtable.setRowHeight(row, component.getPreferredSize().height + DEFAULT_ROW_MARGIN);
-            
-            bindingGroup.bind();
-            return component;
-        } else {
-            return new JLabel("Unsupported...");
-        }
+        return getTableCellRendererComponent(jtable, value, isSelected, false, row, column);
     }
-    
 }

@@ -74,11 +74,12 @@ public class ListObjectEditor {
         table.setTableHeader(null);
 
         if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
-            table.getColumnModel().getColumn(0).setCellEditor(new ListObjectEditorCellRenderer());
-            table.getColumnModel().getColumn(0).setCellRenderer(new ListObjectEditorCellRenderer());
+            ListObjectEditorCellRenderer cellRenderer = new ListObjectEditorCellRenderer();
+            table.getColumnModel().getColumn(0).setCellEditor(cellRenderer);
+            table.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
 
-            table.setDefaultEditor(Object.class, new ListObjectEditorCellRenderer());
-            table.setDefaultRenderer(Object.class, new ListObjectEditorCellRenderer());
+            table.setDefaultEditor(Object.class, cellRenderer);
+            table.setDefaultRenderer(Object.class, cellRenderer);
         } else {
             table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));
             table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
