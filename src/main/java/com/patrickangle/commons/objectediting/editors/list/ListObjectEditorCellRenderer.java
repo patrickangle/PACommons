@@ -38,7 +38,7 @@ public class ListObjectEditorCellRenderer extends AbstractCellEditor implements 
 
     public static final int DEFAULT_ROW_MARGIN = 3;
 
-    private static final Map<Object, JComponent> cachedEditors = new HashMap<>();
+    private final Map<Object, JComponent> cachedEditors = new HashMap<>();
 
     @Override
     public Object getCellEditorValue() {
