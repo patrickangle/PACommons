@@ -45,10 +45,22 @@ public class MenuItems {
         return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorCharacter, acceleratorModifier), actionListener);
     }
     
+    public static JMenuItem item(String title, char acceleratorCharacter, int acceleratorModifier, ActionListener actionListener, String actionCommand) {
+        return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorCharacter, acceleratorModifier), actionListener, actionCommand);
+    }
+    
     public static JMenuItem item(String title, KeyStroke acceleratorKeystroke, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(title);
         menuItem.addActionListener(actionListener);
         menuItem.setAccelerator(acceleratorKeystroke);
+        return menuItem;
+    }
+    
+    public static JMenuItem item(String title, KeyStroke acceleratorKeystroke, ActionListener actionListener, String actionCommand) {
+        JMenuItem menuItem = new JMenuItem(title);
+        menuItem.addActionListener(actionListener);
+        menuItem.setAccelerator(acceleratorKeystroke);
+        menuItem.setActionCommand(actionCommand);
         return menuItem;
     }
 }
