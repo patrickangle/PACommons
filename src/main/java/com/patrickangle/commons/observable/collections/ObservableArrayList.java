@@ -192,8 +192,12 @@ public class ObservableArrayList<E> extends ArrayList<E> implements ObservableLi
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        System.err.println("[ObservableArrayList] removeAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
-        return super.removeAll(c);
+        boolean didRemoveItem = false;
+        for (Object o : c) {
+            didRemoveItem = this.remove(o) || didRemoveItem;
+        }
+
+        return didRemoveItem;
     }
 
     @Override

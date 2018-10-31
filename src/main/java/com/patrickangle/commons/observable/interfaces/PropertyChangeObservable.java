@@ -31,6 +31,10 @@ public interface PropertyChangeObservable {
     public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener);
     
     public static boolean addPropertyChangeListener(Object object, PropertyChangeListener propertyChangeListener) {
+        if (object == null) {
+            return false;
+        }
+        
         if (object instanceof PropertyChangeObservable) {
             ((PropertyChangeObservable) object).addPropertyChangeListener(propertyChangeListener);
             return true;
@@ -45,6 +49,10 @@ public interface PropertyChangeObservable {
     }
     
     public static boolean removePropertyChangeListener(Object object, PropertyChangeListener propertyChangeListener) {
+        if (object == null) {
+            return false;
+        }
+        
         if (object instanceof PropertyChangeObservable) {
             ((PropertyChangeObservable) object).removePropertyChangeListener(propertyChangeListener);
             return true;

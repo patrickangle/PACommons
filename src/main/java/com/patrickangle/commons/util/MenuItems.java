@@ -41,12 +41,12 @@ public class MenuItems {
         return menuItem;
     }
     
-    public static JMenuItem item(String title, char acceleratorCharacter, int acceleratorModifier, ActionListener actionListener) {
-        return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorCharacter, acceleratorModifier), actionListener);
+    public static JMenuItem item(String title, int acceleratorKeyCode, int acceleratorModifier, ActionListener actionListener) {
+        return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorKeyCode, acceleratorModifier), actionListener);
     }
     
-    public static JMenuItem item(String title, char acceleratorCharacter, int acceleratorModifier, ActionListener actionListener, String actionCommand) {
-        return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorCharacter, acceleratorModifier), actionListener, actionCommand);
+    public static JMenuItem item(String title, int acceleratorKeyCode, int acceleratorModifier, ActionListener actionListener, String actionCommand) {
+        return MenuItems.item(title, KeyStroke.getKeyStroke(acceleratorKeyCode, acceleratorModifier), actionListener, actionCommand);
     }
     
     public static JMenuItem item(String title, KeyStroke acceleratorKeystroke, ActionListener actionListener) {

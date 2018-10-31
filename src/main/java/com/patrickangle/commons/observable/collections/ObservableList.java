@@ -32,6 +32,10 @@ public interface ObservableList<E> extends List<E> {
     public void removeObservableListListener(ObservableListListener<E> listener);
     
     public static <E> boolean addObservableListListener(List<E> list, ObservableListListener<E> observableListListener) {
+        if (list == null) {
+            return false;
+        }
+        
         if (list instanceof ObservableList) {
             ((ObservableList) list).addObservableListListener(observableListListener);
             return true;
@@ -46,6 +50,10 @@ public interface ObservableList<E> extends List<E> {
     }
     
     public static <E> boolean removeObservableListListener(List<E> list, ObservableListListener<E> observableListListener) {
+        if (list == null) {
+            return false;
+        }
+        
         if (list instanceof ObservableList) {
             ((ObservableList) list).removeObservableListListener(observableListListener);
             return true;

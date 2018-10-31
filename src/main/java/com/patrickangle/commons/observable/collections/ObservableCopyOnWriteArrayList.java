@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -157,8 +158,12 @@ public class ObservableCopyOnWriteArrayList<E> extends CopyOnWriteArrayList<E> i
     
     @Override
     public boolean removeAll(Collection<?> c) {
-        System.err.println("[ObservableCopyOnWriteArrayList] removeAll(Collection<?> c) is not currently observable. This will be fixed in a future version.");
-        return super.removeAll(c);
+        boolean didRemoveItem = false;
+        for (Object o : c) {
+            didRemoveItem = this.remove(o) || didRemoveItem;
+        }
+
+        return didRemoveItem;
     }
 
     @Override

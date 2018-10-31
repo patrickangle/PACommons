@@ -42,11 +42,11 @@ public class Strings {
         return Pair.makePair(string.substring(0, offset), Integer.parseInt(string.substring(offset)));
     }
     
-    public static String incrementTrailingInteger(String string) {
+    public static String incrementTrailingInteger(String string, int defaultStartingNumber) {
         Pair<String, Integer> components = Strings.trailingIntegerComponents(string);
         
         if (components.b == Integer.MIN_VALUE) {
-            return components.a + " 1";
+            return components.a + " " + defaultStartingNumber;
         } else {
             return components.a + (components.b + 1);
         }
