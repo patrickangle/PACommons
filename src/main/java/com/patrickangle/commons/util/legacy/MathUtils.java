@@ -19,8 +19,10 @@ public class MathUtils {
     }
     
     public static double distanceBetweenPoints(Point.IntegerPoint a, Point.IntegerPoint b) {
-        return (Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2)));
+        return Math.hypot(a.getX() - b.getX(), a.getY() - b.getY());
     }
+    
+    
     
     public static double scaleForNestedDimensions(Dimension desiredDimension, Dimension currentDimension) {
         double scaleX = (double) desiredDimension.width / (double) currentDimension.width;
