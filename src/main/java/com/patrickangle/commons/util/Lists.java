@@ -66,7 +66,7 @@ public class Lists {
     }
     
     public static int depthOfMultiDimensionalList(List list) {
-        int depth = 1; // A list, even empty, will have a depth of 1 by default.
+        int depth = 0; // A list, even empty, will have a depth of 1 by default.
         Object currentDepthObject = list;
         
         // We now dive deeper into the list until we run out of lists, or a list is empty.
