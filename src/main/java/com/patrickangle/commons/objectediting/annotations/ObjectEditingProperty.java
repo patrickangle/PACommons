@@ -31,6 +31,9 @@ public @interface ObjectEditingProperty {
     // The tooltip for the property. Note that this tooltip is not applied to editing components that are user-provided.
     String help() default "";
     
+    // Hints for several editors
+    SetOnRule setOn() default SetOnRule.ANY_CHANGE;
+    
     // Hints for number-spinners
     double numberMinimumValue() default Integer.MIN_VALUE;
     double numberMaximumValue() default Integer.MAX_VALUE;
@@ -50,5 +53,11 @@ public @interface ObjectEditingProperty {
         TEXT_CONTROL,
         SPINNER_CONTROL,
         SLIDER_CONTROL;
+    }
+    
+    public enum SetOnRule {
+        ANY_CHANGE,
+        FOCUS_LOST,
+        ACTION_OR_FOCUS_LOST;
     }
 }

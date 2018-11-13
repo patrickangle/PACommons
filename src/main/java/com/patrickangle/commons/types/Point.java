@@ -214,11 +214,6 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
             
             return new Point.IntegerPoint(xPrime, yPrime);
         }
-
-//        @Override
-//        public Point<Integer> pointScale(Point<Double> scale) {
-//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        }
     }
     
     public static class FloatPoint extends Point<Float> {
@@ -232,7 +227,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
                 this.x = Float.parseFloat(parts[0]);
                 this.y = Float.parseFloat(parts[1]);
             } else {
-                throw new IllegalArgumentException("Point.IntegerPoint can only be constructed with two values seperated by a comma.");
+                throw new IllegalArgumentException("Point.FloatPoint can only be constructed with two values seperated by a comma.");
             }
         }
         
@@ -268,8 +263,8 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
         
         public Point<Float> pointRotated(double degrees) {
-            float xPrime = (float) ((x * Math.cos(Math.toRadians(degrees))) - (y * Math.sin(Math.toRadians(degrees))));
-            float yPrime = (float) ((y * Math.cos(Math.toRadians(degrees))) - (x * Math.sin(Math.toRadians(degrees))));
+            float xPrime = (float) ((x * Math.cos(-Math.toRadians(degrees))) - (y * Math.sin(-Math.toRadians(degrees))));
+            float yPrime = (float) ((y * Math.cos(-Math.toRadians(degrees))) - (x * Math.sin(-Math.toRadians(degrees))));
             return new Point.FloatPoint(xPrime, yPrime);
         }
         
@@ -283,7 +278,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
     
     public static class DoublePoint extends Point<Double> {
         public DoublePoint() {
-            this(0f, 0f);
+            this(0.0, 0.0);
         }
         
         public DoublePoint(String value) {
@@ -292,7 +287,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
                 this.x = Double.parseDouble(parts[0]);
                 this.y = Double.parseDouble(parts[1]);
             } else {
-                throw new IllegalArgumentException("Point.IntegerPoint can only be constructed with two values seperated by a comma.");
+                throw new IllegalArgumentException("Point.DoublePoint can only be constructed with two values seperated by a comma.");
             }
         }
         
@@ -328,8 +323,8 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
         
         public Point<Double> pointRotated(double degrees) {
-            double xPrime = ((x * Math.cos(Math.toRadians(degrees))) - (y * Math.sin(Math.toRadians(degrees))));
-            double yPrime = ((y * Math.cos(Math.toRadians(degrees))) - (x * Math.sin(Math.toRadians(degrees))));
+            double xPrime = ((x * Math.cos(-Math.toRadians(degrees))) - (y * Math.sin(-Math.toRadians(degrees))));
+            double yPrime = ((y * Math.cos(-Math.toRadians(degrees))) - (x * Math.sin(-Math.toRadians(degrees))));
             return new Point.DoublePoint(xPrime, yPrime);
         }
         

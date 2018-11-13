@@ -194,9 +194,25 @@ public class ObjectFieldEditorFactory {
     }
 
     private static ComponentReturn createBoundComponentForString(BoundField objectField, BindingGroup bindingGroup) {
+        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
+        
         JTextField textField = new JTextField();
 
-        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, JTextComponentBoundField.SYNTHETIC_FIELD_TEXT), Binding.UpdateStrategy.READ_WRITE);
+        String setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
+        switch (configInfo.setOn()) {
+            case ANY_CHANGE:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
+                break;
+            case FOCUS_LOST:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_FOCUS_LOST;
+                break;
+                
+            case ACTION_OR_FOCUS_LOST:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
+                break;
+        }
+        
+        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, setOn), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
 
         return new ComponentReturn(textField, false);
