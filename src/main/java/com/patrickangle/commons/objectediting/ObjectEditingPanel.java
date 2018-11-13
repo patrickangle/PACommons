@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.border.TitledBorder;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -50,10 +51,11 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
     
     protected boolean treatAllAsMultilineEditor = false;
     
+    protected UndoManager undoManager = null;
+    
     public ObjectEditingPanel() {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        
         this.bindingGroup = new BindingGroup();
     }
     
@@ -93,6 +95,18 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         this.treatAllAsMultilineEditor = treatAllAsMultilineEditor;
         this.firePropertyChange("treatAllAsMultilineEditor", oldTreatAllAsMultilineEditor, this.treatAllAsMultilineEditor);
     }
+
+    public UndoManager getUndoManager() {
+        return undoManager;
+    }
+
+    public void setUndoManager(UndoManager undoManager) {
+        UndoManager oldUndoManager = this.undoManager;
+        this.undoManager = undoManager;
+        this.firePropertyChange("undoManager", oldUndoManager, this.undoManager);
+    }
+    
+    
     
     protected void tearDown() {
         bindingGroup.unbind();
@@ -122,7 +136,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             String declaringClass = ObjectEditingBindings.getGroupNameForBindableField(field);
             sectionPanels.putIfAbsent(declaringClass, new JPanel(new GridBagLayout()));
             
-            ObjectFieldEditorFactory.ComponentReturn componentReturn = ObjectFieldEditorFactory.createEditorForObject(editingObject, field, bindingGroup);
+            ObjectFieldEditorFactory.ComponentReturn componentReturn = ObjectFieldEditorFactory.createEditorForObject(editingObject, field, bindingGroup, undoManager);
             
             c.gridy = runningGridY;
             c.gridwidth = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 2 : 1;

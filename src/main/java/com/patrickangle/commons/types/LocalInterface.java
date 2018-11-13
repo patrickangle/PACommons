@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.JComboBox;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -92,7 +93,7 @@ public class LocalInterface extends RemoteAddress {
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
         List<LocalNetworkInterface> networkInterfaces = LocalNetworkInterfaces.getAvailableInterfaces();
 
         ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.size());

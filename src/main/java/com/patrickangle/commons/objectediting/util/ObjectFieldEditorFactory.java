@@ -34,6 +34,7 @@ import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComp
 import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingList2dTableEditorDialog;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
+import com.patrickangle.commons.util.Lists;
 import com.patrickangle.commons.util.legacy.ListUtils;
 import java.awt.Color;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -84,7 +86,7 @@ public class ObjectFieldEditorFactory {
         }
     }
 
-    public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup) {
+    public static ComponentReturn createEditorForObject(Object containingObject, BindableField bindableField, BindingGroup bindingGroup, UndoManager undoManager) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(bindableField), ObjectEditingProperty.class);
 
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
@@ -94,7 +96,7 @@ public class ObjectFieldEditorFactory {
             return createBoundComponentForNonMutableObject(objectField, bindingGroup);
         } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
-            return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup);
+            return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup, undoManager);
         } else if (Enum.class.isAssignableFrom(fieldClass)) {
             return createBoundComponentForEnum(objectField, bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
@@ -102,11 +104,12 @@ public class ObjectFieldEditorFactory {
         } else if (fieldClass == Integer.TYPE) {
             return createBoundComponentForFixedPointNumber(objectField, bindingGroup);
         } else if (fieldClass == Float.TYPE || fieldClass == Double.TYPE) {
-            return createBoundComponentForFloatingPointNumber(objectField, bindingGroup);
+            return createBoundComponentForFloatingPointNumber(objectField, bindingGroup, undoManager);
         } else if (Color.class.isAssignableFrom(objectField.getFieldClass())) {
             return createBoundComponentForColor(objectField, bindingGroup);
         } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
-            int depth = ListUtils.depthOfMultiDimensionList(objectField.getValue());
+            int depth = Lists.depthOfMultiDimensionalList((List) objectField.getValue());
+//            int depth = ListUtils.depthOfMultiDimensionList(objectField.getValue());
             switch (depth) {
                 case 0:
                 // Zero is returned if the list is empty, so it really should be treated as a depth of one.
@@ -118,7 +121,7 @@ public class ObjectFieldEditorFactory {
                     return new ComponentReturn(new JLabel("List too deep."), false);
             }
         } else {
-            return createBoundComponentForString(objectField, bindingGroup);
+            return createBoundComponentForString(objectField, bindingGroup, undoManager);
         }
     }
 
@@ -166,12 +169,12 @@ public class ObjectFieldEditorFactory {
         }
     }
 
-    private static ComponentReturn createBoundComponentForFloatingPointNumber(BoundField objectField, BindingGroup bindingGroup) {
+    private static ComponentReturn createBoundComponentForFloatingPointNumber(BoundField objectField, BindingGroup bindingGroup, UndoManager undoManager) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
 
         switch (configInfo.numberEditor()) {
             case TEXT_CONTROL:
-                return createBoundComponentForString(objectField, bindingGroup);
+                return createBoundComponentForString(objectField, bindingGroup, undoManager);
             case SLIDER_CONTROL:
             case SPINNER_CONTROL:
             default:
@@ -193,7 +196,7 @@ public class ObjectFieldEditorFactory {
         }
     }
 
-    private static ComponentReturn createBoundComponentForString(BoundField objectField, BindingGroup bindingGroup) {
+    private static ComponentReturn createBoundComponentForString(BoundField objectField, BindingGroup bindingGroup, UndoManager undoManager) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
         
         JTextField textField = new JTextField();
@@ -211,6 +214,8 @@ public class ObjectFieldEditorFactory {
                 setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
                 break;
         }
+        
+        textField.getDocument().addUndoableEditListener(undoManager);
         
         BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, setOn), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);

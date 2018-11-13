@@ -18,16 +18,17 @@ package com.patrickangle.commons.objectediting.interfaces;
 
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
+import javax.swing.undo.UndoManager;
 
 /**
  *
  * @author patrickangle
  */
 public interface CustomObjectEditingComponent {
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup);
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager);
     
-    public default ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponentRenderer(BindingGroup bindingGroup) {
-        return this.customObjectEditingComponent(bindingGroup);
+    public default ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponentRenderer(BindingGroup bindingGroup, UndoManager undoManager) {
+        return this.customObjectEditingComponent(bindingGroup, undoManager);
     }
     
 }

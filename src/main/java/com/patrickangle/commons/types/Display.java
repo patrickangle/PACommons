@@ -17,13 +17,13 @@ import com.patrickangle.commons.json.JsonableObject;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableArrayList;
-import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import com.patrickangle.commons.util.Displays;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -64,7 +64,7 @@ public class Display extends PropertyChangeObservableBase implements CustomObjec
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
         Display[] displays = Displays.availableDisplays();
         ArrayList<Display.DisplayComboBoxItem> displayItems = new ArrayList<>(displays.length);
         

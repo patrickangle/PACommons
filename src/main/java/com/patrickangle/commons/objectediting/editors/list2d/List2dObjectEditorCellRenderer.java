@@ -48,7 +48,7 @@ public class List2dObjectEditorCellRenderer extends AbstractCellEditor implement
         if (CustomObjectEditingComponent.class.isInstance(value)) {
             BindingGroup bindingGroup = new BindingGroup();
             
-            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
+            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup, null).getComponent();
             
             bindingGroup.bind();
             return component;
@@ -63,7 +63,7 @@ public class List2dObjectEditorCellRenderer extends AbstractCellEditor implement
         if (CustomObjectEditingComponent.class.isInstance(value)) {
             BindingGroup bindingGroup = new BindingGroup();
             
-            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup).getComponent();
+            component = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup, null).getComponent();
 
             bindingGroup.bind();
             return component;

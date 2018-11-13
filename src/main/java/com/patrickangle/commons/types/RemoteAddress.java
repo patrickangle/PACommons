@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -91,7 +92,7 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
         JPanel remoteAddressEditor = new JPanel(new GridLayout(1, 2, 6, 0));
         
         JTextField addressField = new JTextField();

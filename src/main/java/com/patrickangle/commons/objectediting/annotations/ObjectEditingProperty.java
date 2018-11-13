@@ -33,6 +33,7 @@ public @interface ObjectEditingProperty {
     
     // Hints for several editors
     SetOnRule setOn() default SetOnRule.ANY_CHANGE;
+    boolean prohibitsUndo() default false;
     
     // Hints for number-spinners
     double numberMinimumValue() default Integer.MIN_VALUE;

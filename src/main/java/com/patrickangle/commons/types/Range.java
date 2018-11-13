@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -70,7 +71,7 @@ public abstract class Range<E extends Number> extends PropertyChangeObservableBa
     protected abstract boolean customObjectEditingSpinnerShowDecimalPoint();
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
         JPanel pointEditor = new JPanel(new GridBagLayout());
         pointEditor.setBackground(Colors.transparentColor());
         pointEditor.setOpaque(true);
