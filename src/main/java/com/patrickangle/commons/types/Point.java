@@ -71,18 +71,18 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         return pointOffset(offset.getX(), offset.getY());
     }
     
-    public abstract Point<E> pointScale(double xScale, double yScale);
+    public abstract Point<E> pointScaled(double xScale, double yScale);
     
-    public Point<E> pointScale(Point<Double> scale) {
-        return pointScale(scale.getX(), scale.getY());
+    public Point<E> pointScaled(Point<Double> scale) {
+        return Point.this.pointScaled(scale.getX(), scale.getY());
     }
     
-    public abstract Point<E> pointRotate(double degrees);
+    public abstract Point<E> pointRotated(double degrees);
     
-    public abstract Point<E> pointShear(double xShear, double yShear);
+    public abstract Point<E> pointSheared(double xShear, double yShear);
     
-    public Point<E> pointShear(Point<Double> shear) {
-        return pointShear(shear.getX(), shear.getY());
+    public Point<E> pointSheared(Point<Double> shear) {
+        return Point.this.pointSheared(shear.getX(), shear.getY());
     }
     
     protected abstract SpinnerNumberModel customObjectEditingSpinnerNumberModel();
@@ -91,7 +91,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
 
     @Override
     public String toString() {
-        return "<" + getX() + ", " + getY() + ">";
+        return "Point<" + getX() + ", " + getY() + ">";
     }
 
     @Override
@@ -198,17 +198,17 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
 
         @Override
-        public Point<Integer> pointScale(double xScale, double yScale) {
+        public Point<Integer> pointScaled(double xScale, double yScale) {
             return new Point.IntegerPoint((int) (this.x * xScale), (int) (this.y * yScale));
         }
         
-        public Point<Integer> pointRotate(double degrees) {
-            int xPrime = (int) Math.round((x * Math.cos(Math.toRadians(degrees))) - (y * Math.sin(Math.toRadians(degrees))));
-            int yPrime = (int) Math.round((y * Math.cos(Math.toRadians(degrees))) - (x * Math.sin(Math.toRadians(degrees))));
+        public Point<Integer> pointRotated(double degrees) {
+            int xPrime = (int) Math.round((x * Math.cos(-Math.toRadians(degrees))) - (y * Math.sin(-Math.toRadians(degrees))));
+            int yPrime = (int) Math.round((y * Math.cos(-Math.toRadians(degrees))) - (x * Math.sin(-Math.toRadians(degrees))));
             return new Point.IntegerPoint(xPrime, yPrime);
         }
         
-        public Point<Integer> pointShear(double xShear, double yShear) {
+        public Point<Integer> pointSheared(double xShear, double yShear) {
             int xPrime = (int) Math.round(x + (xShear * y));
             int yPrime = (int) Math.round(y + (xShear * x));
             
@@ -263,17 +263,17 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
         
         @Override
-        public Point<Float> pointScale(double xScale, double yScale) {
+        public Point<Float> pointScaled(double xScale, double yScale) {
             return new Point.FloatPoint((float) (this.x * xScale), (float) (this.y * yScale));
         }
         
-        public Point<Float> pointRotate(double degrees) {
+        public Point<Float> pointRotated(double degrees) {
             float xPrime = (float) ((x * Math.cos(Math.toRadians(degrees))) - (y * Math.sin(Math.toRadians(degrees))));
             float yPrime = (float) ((y * Math.cos(Math.toRadians(degrees))) - (x * Math.sin(Math.toRadians(degrees))));
             return new Point.FloatPoint(xPrime, yPrime);
         }
         
-        public Point<Float> pointShear(double xShear, double yShear) {
+        public Point<Float> pointSheared(double xShear, double yShear) {
             float xPrime = (float) (x + (xShear * y));
             float yPrime = (float) (y + (xShear * x));
             
@@ -323,17 +323,17 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
         
         @Override
-        public Point<Double> pointScale(double xScale, double yScale) {
+        public Point<Double> pointScaled(double xScale, double yScale) {
             return new Point.DoublePoint((this.x * xScale), (this.y * yScale));
         }
         
-        public Point<Double> pointRotate(double degrees) {
+        public Point<Double> pointRotated(double degrees) {
             double xPrime = ((x * Math.cos(Math.toRadians(degrees))) - (y * Math.sin(Math.toRadians(degrees))));
             double yPrime = ((y * Math.cos(Math.toRadians(degrees))) - (x * Math.sin(Math.toRadians(degrees))));
             return new Point.DoublePoint(xPrime, yPrime);
         }
         
-        public Point<Double> pointShear(double xShear, double yShear) {
+        public Point<Double> pointSheared(double xShear, double yShear) {
             double xPrime = (x + (xShear * y));
             double yPrime = (y + (xShear * x));
             
