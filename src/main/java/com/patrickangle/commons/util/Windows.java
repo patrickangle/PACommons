@@ -33,6 +33,20 @@ public class Windows {
         }
     }
     
+    public static void exitAllFullscreen() {
+        GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        for (GraphicsDevice graphicsDevice : graphicsDevices) {
+            graphicsDevice.setFullScreenWindow(null);
+        }
+//        if (screen > -1 && screen < graphicsDevices.length) {
+//            graphicsDevices[screen].setFullScreenWindow(window);
+//        } else if (graphicsDevices.length > 0) {
+//            graphicsDevices[0].setFullScreenWindow(window);
+//        } else {
+//            throw new RuntimeException("No screens are available in the current environment.");
+//        }
+    }
+    
     public static void moveToScreen(Window window, int screen) {
         GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
         if (screen > -1 && screen < graphicsDevices.length) {

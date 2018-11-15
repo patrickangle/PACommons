@@ -34,6 +34,8 @@ public @interface ObjectEditingProperty {
     // Hints for several editors
     SetOnRule setOn() default SetOnRule.ANY_CHANGE;
     boolean prohibitsUndo() default false;
+    String trackBooleanPropertyNamedForEnabled() default ""; // This property must be a non-empty string to be used.
+    String trackBooleanPropertyNamedForDisabled() default ""; // This property is only ever used if trackBooleanPropertyNamedForEnabled is an empty string and this property is a non-empty string.
     
     // Hints for number-spinners
     double numberMinimumValue() default Integer.MIN_VALUE;

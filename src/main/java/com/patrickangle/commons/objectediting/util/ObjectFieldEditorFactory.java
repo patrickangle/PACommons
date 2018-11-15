@@ -20,6 +20,7 @@ import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BasicBoundField;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.BoundFields;
+import com.patrickangle.commons.beansbinding.FlipBooleanBindingConverter;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
@@ -35,7 +36,6 @@ import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingLis
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
 import com.patrickangle.commons.util.Lists;
-import com.patrickangle.commons.util.legacy.ListUtils;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -91,38 +91,54 @@ public class ObjectFieldEditorFactory {
 
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
         Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
+        
+        // If undo is disabled for this editor, pass null as the UndoManager.
+        UndoManager realizedUndoManager = configInfo.prohibitsUndo() ? null : undoManager;
+        
+        ComponentReturn componentReturn;
 
         if (!configInfo.mutable()) {
-            return createBoundComponentForNonMutableObject(objectField, bindingGroup);
+            componentReturn = createBoundComponentForNonMutableObject(objectField, bindingGroup);
         } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
-            return ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup, undoManager);
+            componentReturn = ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup, realizedUndoManager);
         } else if (Enum.class.isAssignableFrom(fieldClass)) {
-            return createBoundComponentForEnum(objectField, bindingGroup);
+            componentReturn = createBoundComponentForEnum(objectField, bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
-            return createBoundComponentForBoolean(objectField, bindingGroup);
+            componentReturn = createBoundComponentForBoolean(objectField, bindingGroup);
         } else if (fieldClass == Integer.TYPE) {
-            return createBoundComponentForFixedPointNumber(objectField, bindingGroup);
+            componentReturn = createBoundComponentForFixedPointNumber(objectField, bindingGroup);
         } else if (fieldClass == Float.TYPE || fieldClass == Double.TYPE) {
-            return createBoundComponentForFloatingPointNumber(objectField, bindingGroup, undoManager);
+            componentReturn = createBoundComponentForFloatingPointNumber(objectField, bindingGroup, realizedUndoManager);
         } else if (Color.class.isAssignableFrom(objectField.getFieldClass())) {
-            return createBoundComponentForColor(objectField, bindingGroup);
+            componentReturn = createBoundComponentForColor(objectField, bindingGroup);
         } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
             int depth = Lists.depthOfMultiDimensionalList((List) objectField.getValue());
-//            int depth = ListUtils.depthOfMultiDimensionList(objectField.getValue());
             switch (depth) {
                 case 0:
                 // Zero is returned if the list is empty, so it really should be treated as a depth of one.
                 case 1:
-                    return ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
+                    componentReturn = ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
                 case 2:
-                    return createBoundComponentFor2dList(objectField, bindingGroup);
+                    componentReturn = createBoundComponentFor2dList(objectField, bindingGroup);
                 default:
-                    return new ComponentReturn(new JLabel("List too deep."), false);
+                    componentReturn = new ComponentReturn(new JLabel("List too deep."), false);
             }
         } else {
-            return createBoundComponentForString(objectField, bindingGroup, undoManager);
+            componentReturn = createBoundComponentForString(objectField, bindingGroup, realizedUndoManager);
         }
+        
+        
+        if (!configInfo.trackBooleanPropertyNamedForEnabled().equals("")) {
+            Binding enabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForEnabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY);
+            bindingGroup.add(enabledBinding);
+        } else if (!configInfo.trackBooleanPropertyNamedForDisabled().equals("")) {
+            System.out.println(configInfo.trackBooleanPropertyNamedForDisabled());
+            Binding disabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForDisabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY, new FlipBooleanBindingConverter());
+            bindingGroup.add(disabledBinding);
+        }
+        
+        return componentReturn;
     }
 
     private static ComponentReturn createBoundComponentForNonMutableObject(BoundField objectField, BindingGroup bindingGroup) {
@@ -209,7 +225,6 @@ public class ObjectFieldEditorFactory {
             case FOCUS_LOST:
                 setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_FOCUS_LOST;
                 break;
-                
             case ACTION_OR_FOCUS_LOST:
                 setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
                 break;
