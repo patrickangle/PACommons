@@ -24,6 +24,8 @@ import java.util.UUID;
  * @author Patrick Angle
  */
 public class IDs {
+    public static final String NIL_UUID = "00000000-0000-0000-0000-000000000000";
+    
     private static final HashMap<String, Integer> sequentialIDMap = new HashMap<>();
     public static int sequentialID(String context) {
         if (!sequentialIDMap.containsKey(context)) {
