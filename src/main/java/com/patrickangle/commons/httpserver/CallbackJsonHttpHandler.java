@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  *
@@ -50,14 +51,14 @@ public abstract class CallbackJsonHttpHandler<T> implements HttpHandler {
                 }
 
                 he.sendResponseHeaders(200, response.length);
-                OutputStream os = he.getResponseBody();
-                os.write(response);
-                os.close();
+                try (OutputStream os = he.getResponseBody()) {
+                    os.write(response);
+                }
             } catch (IOException ex) {
             }
         });
     }
     
-    public abstract void simpleHandle(HttpExchange exchange, Map<String, String> queryParameters, Callback<T> callback);
+    public abstract void simpleHandle(HttpExchange exchange, Map<String, String> queryParameters, Consumer<T> callback);
 
 }

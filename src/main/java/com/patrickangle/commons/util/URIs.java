@@ -6,6 +6,7 @@
 package com.patrickangle.commons.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -52,11 +53,19 @@ public class URIs {
         for (String param : query.split("&")) {
             String[] entry = param.split("=");
             if (entry.length > 1) {
-                result.put(entry[0], entry[1]);
-            }else{
-                result.put(entry[0], "");
+                result.put(decodeQueryStringValue(entry[0]), decodeQueryStringValue(entry[1]));
+            } else {
+                result.put(decodeQueryStringValue(entry[0]), "");
             }
         }
         return result;
+    }
+    
+    public static String decodeQueryStringValue(String query) {
+        try {
+            return URLDecoder.decode(query, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            return query;
+        }
     }
 }
