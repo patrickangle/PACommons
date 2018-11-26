@@ -24,12 +24,13 @@ import com.patrickangle.commons.beansbinding.FlipBooleanBindingConverter;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
-import com.patrickangle.commons.beansbinding.swing.boundfields.AbstractButtonBoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
+import com.patrickangle.commons.objectediting.editors.Point2dObjectEditor;
 import com.patrickangle.commons.objectediting.editors.list.ListObjectEditor;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingList2dTableEditorDialog;
@@ -37,6 +38,7 @@ import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
 import com.patrickangle.commons.util.Lists;
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JButton;
@@ -112,6 +114,8 @@ public class ObjectFieldEditorFactory {
             componentReturn = createBoundComponentForFloatingPointNumber(objectField, bindingGroup, realizedUndoManager);
         } else if (Color.class.isAssignableFrom(objectField.getFieldClass())) {
             componentReturn = createBoundComponentForColor(objectField, bindingGroup);
+        } else if (Point2D.class.isAssignableFrom(objectField.getFieldClass())) {
+            componentReturn = Point2dObjectEditor.createBoundComponentForPoint2D(objectField, bindingGroup);
         } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
             int depth = Lists.depthOfMultiDimensionalList((List) objectField.getValue());
             switch (depth) {
@@ -119,10 +123,13 @@ public class ObjectFieldEditorFactory {
                 // Zero is returned if the list is empty, so it really should be treated as a depth of one.
                 case 1:
                     componentReturn = ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
+                    break;
                 case 2:
                     componentReturn = createBoundComponentFor2dList(objectField, bindingGroup);
+                    break;
                 default:
-                    componentReturn = new ComponentReturn(new JLabel("List too deep."), false);
+                    componentReturn = new ComponentReturn(new JLabel("List too deep at " + depth + "."), false);
+                    break;
             }
         } else {
             componentReturn = createBoundComponentForString(objectField, bindingGroup, realizedUndoManager);
