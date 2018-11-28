@@ -74,8 +74,8 @@ public class ListObjectEditor {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setTableHeader(null);
 
+        ListObjectEditorCellRenderer cellRenderer = new ListObjectEditorCellRenderer();
         if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
-            ListObjectEditorCellRenderer cellRenderer = new ListObjectEditorCellRenderer();
             table.getColumnModel().getColumn(0).setCellEditor(cellRenderer);
             table.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
 
@@ -87,8 +87,6 @@ public class ListObjectEditor {
         }
 
         JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
-//            private static final int MIN_HEIGHT = 125;
-
             @Override
             public Dimension getPreferredSize() {
                 Dimension newPreferredSize = super.getPreferredSize();
@@ -121,6 +119,8 @@ public class ListObjectEditor {
             JButton addButton = new JButton("+");
             addButton.addActionListener((actionEvent) -> {
                 ((ListObjectEditorTableModel) table.getModel()).getItems().add(Classes.newInstance(configInfo.listNewItemClass()));
+                cellRenderer.invalidateCache();
+                table.invalidate();
             });
             addButton.putClientProperty("JButton.buttonType", "textured");
             toolbar.add(addButton);
@@ -129,8 +129,9 @@ public class ListObjectEditor {
             removeButton.addActionListener((actionEvent) -> {
                 int row = table.getSelectedRow();
                 if (row != -1) {
-                    System.out.println("SelectedRow: " + row + "\titemsLength: " + ((ListObjectEditorTableModel) table.getModel()).getItems().size());
                     ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
+                    cellRenderer.invalidateCache();
+                    table.invalidate();
                 }
             });
             removeButton.putClientProperty("JButton.buttonType", "textured");
@@ -142,6 +143,8 @@ public class ListObjectEditor {
                 if (row > 0) {
                     Object o = ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     ((ListObjectEditorTableModel) table.getModel()).getItems().add(row - 1, o);
+                    cellRenderer.invalidateCache();
+                    table.invalidate();
                 }
             });
             moveUpButton.putClientProperty("JButton.buttonType", "textured");
@@ -153,6 +156,8 @@ public class ListObjectEditor {
                 if (row < table.getRowCount() - 1) {
                     Object o = ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     ((ListObjectEditorTableModel) table.getModel()).getItems().add(row + 1, o);
+                    cellRenderer.invalidateCache();
+                    table.invalidate();
                 }
             });
             moveDownButton.putClientProperty("JButton.buttonType", "textured");

@@ -86,4 +86,8 @@ public class ListObjectEditorCellRenderer extends AbstractCellEditor implements 
     public Component getTableCellEditorComponent(JTable jtable, Object value, boolean isSelected, int row, int column) {
         return getTableCellRendererComponent(jtable, value, isSelected, false, row, column);
     }
+    
+    public void invalidateCache() {
+        cachedEditors.clear();
+    }
 }

@@ -52,13 +52,13 @@ public class ListObjectEditorTableModel<E> extends ObservableListModel<E> implem
         this.observableListListener = new ObservableListListener() {
             @Override
             public void elementsAdded(ObservableList list, int startIndex, int length, List newElements) {
-                tableModelSupport.fireInserted(startIndex, startIndex+ length, TableModelEvent.ALL_COLUMNS);
+                tableModelSupport.fireInserted(startIndex, startIndex + length - 1, TableModelEvent.ALL_COLUMNS);
                 propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
             public void elementsRemoved(ObservableList list, int startIndex, int length, List oldElements) {
-                tableModelSupport.fireDeleted(startIndex, startIndex + oldElements.size(), TableModelEvent.ALL_COLUMNS);
+                tableModelSupport.fireDeleted(startIndex, startIndex + length - 1, TableModelEvent.ALL_COLUMNS);
                 propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
