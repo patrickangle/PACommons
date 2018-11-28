@@ -19,6 +19,10 @@ public class Files {
     public static String mimeTypeFromFile(File file) throws IOException {
         return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(file);
     }
+    
+    public static String mimeTypeFromFileContents(String string) throws IOException {
+        return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(string);
+    }
 
     public static byte[] bytesFromFile(File file) throws IOException {
         byte[] bytearray = new byte[(int) file.length()];

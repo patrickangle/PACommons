@@ -12,14 +12,15 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.patrickangle.commons.json.serialization.ColorSerializer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.patrickangle.commons.Callback;
 import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.util.URIs;
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.zip.GZIPOutputStream;
 
 /**
  *
@@ -50,11 +51,24 @@ public abstract class CallbackJsonHttpHandler<T> implements HttpHandler {
                 if (he.getResponseHeaders().get("Access-Control-Allow-Headers") == null) {
                     he.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
                 }
+                
+//                if (he.getRequestHeaders().get("Accept-Encoding").contains("gzip")) {
+                    he.getResponseHeaders().add("Content-Encoding", "gzip");
 
-                he.sendResponseHeaders(200, response.length);
-                try (OutputStream os = he.getResponseBody()) {
-                    os.write(response);
-                }
+                    byte[] gzipResponse = gzipCompress(response);
+                    he.sendResponseHeaders(200, gzipResponse.length);
+                    try (OutputStream os = he.getResponseBody()) {
+                        os.write(gzipResponse);
+                    }
+//                } else {
+//                    Logging.warning(CallbackJsonHttpHandler.class, "A client did not report the ability to accept gzip from HttpServer. More bandwidth will be used by the client.");
+//
+//                    he.sendResponseHeaders(200, response.length);
+//                    try (OutputStream os = he.getResponseBody()) {
+//                        os.write(response);
+//                    }
+//                }
+                
             } catch (IOException ex) {
                 Logging.exception(CallbackJsonHttpHandler.class, ex);
             }
@@ -63,4 +77,17 @@ public abstract class CallbackJsonHttpHandler<T> implements HttpHandler {
     
     public abstract void simpleHandle(HttpExchange exchange, Map<String, String> queryParameters, Consumer<T> callback);
 
+    
+    private static byte[] gzipCompress(byte[] uncompressedData) {
+        byte[] result = new byte[]{};
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(uncompressedData.length);
+             GZIPOutputStream gzipOS = new GZIPOutputStream(bos)) {
+            gzipOS.write(uncompressedData);
+            gzipOS.close();
+            result = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }
