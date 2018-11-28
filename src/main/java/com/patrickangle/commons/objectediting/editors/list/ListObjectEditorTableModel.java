@@ -80,12 +80,18 @@ public class ListObjectEditorTableModel<E> extends ObservableListModel<E> implem
     @Override
     public void setItems(List<E> items) {
         this.items.removeObservableListListener(observableListListener);
-        this.tableModelSupport.fireDeleted(0, this.items.size(), TableModelEvent.ALL_COLUMNS);
+        if (this.items.size() > 0) {
+            // Only fire a deleted event if there are items to be deleted.
+            this.tableModelSupport.fireDeleted(0, this.items.size() - 1, TableModelEvent.ALL_COLUMNS);
+        }
         
         super.setItems(items);
         
         this.items.addObservableListListener(observableListListener);
-        this.tableModelSupport.fireInserted(0, this.items.size(), TableModelEvent.ALL_COLUMNS);
+        if (this.items.size() > 0) {
+            // Only fire an inserted event if there are items to be inserted.
+            this.tableModelSupport.fireInserted(0, this.items.size() - 1, TableModelEvent.ALL_COLUMNS);
+        }
     }
     
     @Override

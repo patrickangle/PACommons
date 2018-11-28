@@ -44,7 +44,8 @@ import javax.swing.JToolBar;
  * @author patrickangle
  */
 public class ListObjectEditor {
-    public static final int LIST_OBJECT_EDITOR_COMPONENT_HEIGHT = 125;
+    public static final int LIST_OBJECT_EDITOR_COMPONENT_HEIGHT = 150;
+    
     public static ObjectFieldEditorFactory.ComponentReturn createBoundComponentForList(BoundField<List> objectField, BindingGroup bindingGroup) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
 
@@ -128,6 +129,7 @@ public class ListObjectEditor {
             removeButton.addActionListener((actionEvent) -> {
                 int row = table.getSelectedRow();
                 if (row != -1) {
+                    System.out.println("SelectedRow: " + row + "\titemsLength: " + ((ListObjectEditorTableModel) table.getModel()).getItems().size());
                     ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                 }
             });

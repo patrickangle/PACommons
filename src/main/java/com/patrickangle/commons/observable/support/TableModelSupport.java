@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.observable.support;
 
-import com.patrickangle.commons.logging.Logging;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.event.TableModelEvent;
@@ -28,8 +27,8 @@ import javax.swing.table.TableModel;
  * @author Patrick Angle
  */
 public class TableModelSupport {
-    private TableModel sourceBean;
-    private List<TableModelListener> tableModelListeners;
+    private final TableModel sourceBean;
+    private final List<TableModelListener> tableModelListeners;
     
     public TableModelSupport(TableModel sourceBean) {
         this.sourceBean = sourceBean;
@@ -53,9 +52,8 @@ public class TableModelSupport {
     }
     
     public void fireDeleted(int firstRow, int lastRow, int column) {
-        Logging.warning(TableModelSupport.class, "fireDeleted() firstRow=" + firstRow + ", lastRow=" + lastRow + ", column=" + column);
         TableModelEvent event = new TableModelEvent(sourceBean, firstRow, lastRow, column, TableModelEvent.DELETE);
-        
+
         tableModelListeners.forEach((tableModelListener) -> {
             tableModelListener.tableChanged(event);
         });
