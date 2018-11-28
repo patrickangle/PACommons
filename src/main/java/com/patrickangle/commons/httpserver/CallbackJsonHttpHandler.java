@@ -13,6 +13,7 @@ import com.patrickangle.commons.json.serialization.ColorSerializer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.patrickangle.commons.Callback;
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.util.URIs;
 import java.awt.Color;
 import java.io.IOException;
@@ -55,6 +56,7 @@ public abstract class CallbackJsonHttpHandler<T> implements HttpHandler {
                     os.write(response);
                 }
             } catch (IOException ex) {
+                Logging.exception(CallbackJsonHttpHandler.class, ex);
             }
         });
     }

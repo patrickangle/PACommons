@@ -18,8 +18,10 @@ package com.patrickangle.commons.util;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.function.Consumer;
 
 /**
  *
@@ -33,5 +35,17 @@ public class GraphicsHelpers {
         int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
         g.setFont(font);
         g.drawString(text, x, y);
+    }
+    
+    public static void protectGraphics(Graphics g, Consumer<Graphics> operation) {
+        Graphics g2 = g.create();
+        operation.accept(g2);
+        g2.dispose();
+    }
+    
+    public static void protectGraphics2D(Graphics2D g, Consumer<Graphics2D> operation) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        operation.accept(g2);
+        g2.dispose();
     }
 }
