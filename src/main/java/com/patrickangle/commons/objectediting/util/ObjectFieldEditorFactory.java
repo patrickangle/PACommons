@@ -140,7 +140,6 @@ public class ObjectFieldEditorFactory {
             Binding enabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForEnabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY);
             bindingGroup.add(enabledBinding);
         } else if (!configInfo.trackBooleanPropertyNamedForDisabled().equals("")) {
-            System.out.println(configInfo.trackBooleanPropertyNamedForDisabled());
             Binding disabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForDisabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY, new FlipBooleanBindingConverter());
             bindingGroup.add(disabledBinding);
         }
