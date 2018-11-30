@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -73,6 +74,14 @@ public class BindableFields {
         }
         
         return returnList;
+    }
+    
+ 
+    
+    public static <C extends Object> List<BindableField<C>> forClassIsAssignable(Class<C> containingClass, Class isAssignableToClass) {
+        return BindableFields.forClass(containingClass).stream().filter((t) -> {
+            return t.getFieldClass().isAssignableFrom(isAssignableToClass);
+        }).collect(Collectors.toList());
     }
     
     public static Field reflectionFieldForBindableField(BindableField bindableField) {

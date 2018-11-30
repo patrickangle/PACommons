@@ -44,7 +44,7 @@ public class DocumentServerHttpHandler implements HttpHandler {
 
         File fileOrDirectory = resolveFileOrDirectoryIfPossible(new File(documentDirectory, requestPath));
         
-        System.out.println("requestPath=" + requestPath + "\tfileOrDirectory=" + fileOrDirectory.toString());
+//        System.out.println("requestPath=" + requestPath + "\tfileOrDirectory=" + fileOrDirectory.toString());
         
         if (fileOrDirectory != null) {
             if (fileOrDirectory.isFile()) {
