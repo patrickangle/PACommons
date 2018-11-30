@@ -80,7 +80,7 @@ public class BindableFields {
     
     public static <C extends Object> List<BindableField<C>> forClassIsAssignable(Class<C> containingClass, Class isAssignableToClass) {
         return BindableFields.forClass(containingClass).stream().filter((t) -> {
-            return t.getFieldClass().isAssignableFrom(isAssignableToClass);
+            return t.getFieldClass().equals(isAssignableToClass);
         }).collect(Collectors.toList());
     }
     

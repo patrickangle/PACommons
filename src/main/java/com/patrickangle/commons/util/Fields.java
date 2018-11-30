@@ -28,7 +28,7 @@ public class Fields {
             return c.getDeclaredField(fieldName);
         } catch (NoSuchFieldException | SecurityException ex) {
             if (c.isAssignableFrom(Object.class)) {
-                throw new RuntimeException("After travering all super classes, '" + fieldName + "' could not be found.", ex);
+                return null;
             } else {
                 return fieldForNameInClass(c.getSuperclass(), fieldName);
             }

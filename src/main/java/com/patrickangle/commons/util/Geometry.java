@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.util;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 
 
@@ -23,7 +24,11 @@ import java.awt.geom.Point2D;
  *
  * @author patrickangle
  */
-public class Geometry {    
+public class Geometry {
+    public static Point integerPoint(Point2D p) {
+        return new Point((int)Math.round(p.getX()), (int)Math.round(p.getY()));
+    }
+    
     public static Point2D offsetPoint(Point2D p, double offsetX, double offsetY) {
         return new Point2D.Double(p.getX() + offsetX, p.getY() + offsetY);
     }
