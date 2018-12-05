@@ -40,6 +40,7 @@ import javax.swing.undo.UndoManager;
  *
  * @author patrickangle
  */
+@Deprecated(forRemoval = true)
 public abstract class Point<E extends Number> extends PropertyChangeObservableBase implements CustomObjectEditingComponent, PropertyChangeObservable, JsonableObject {    
     @JsonProperty protected E x;
     @JsonProperty protected E y;
@@ -157,6 +158,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         return new ObjectFieldEditorFactory.ComponentReturn(pointEditor, false);
     }
     
+    @Deprecated(forRemoval = true)
     public static class IntegerPoint extends Point<Integer> {
         public IntegerPoint() {
             this(0, 0);
@@ -217,6 +219,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
     }
     
+    @Deprecated(forRemoval = true)
     public static class FloatPoint extends Point<Float> {
         public FloatPoint() {
             this(0f, 0f);
@@ -277,6 +280,7 @@ public abstract class Point<E extends Number> extends PropertyChangeObservableBa
         }
     }
     
+    @Deprecated(forRemoval = true)
     public static class DoublePoint extends Point<Double> {
         public DoublePoint() {
             this(0.0, 0.0);

@@ -17,7 +17,6 @@
 package com.patrickangle.commons.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +25,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.patrickangle.commons.json.serialization.ColorDeserializer;
 import com.patrickangle.commons.json.serialization.ColorSerializer;
+import com.patrickangle.commons.json.serialization.Point3DDeserializer;
+import com.patrickangle.commons.json.serialization.Point3DSerializer;
+import com.patrickangle.commons.types.Point3D;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class JsonObjects {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Color.class, new ColorDeserializer());
         module.addSerializer(Color.class, new ColorSerializer());
+        
         mapper.registerModule(module);
 
         return mapper;

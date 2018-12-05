@@ -16,20 +16,29 @@
  */
 package com.patrickangle.commons.types;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.patrickangle.commons.json.JsonableObject;
-import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.patrickangle.commons.json.serialization.TimeDeserializer;
+import com.patrickangle.commons.json.serialization.TimeSerializer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 /**
+ * A basic structure representing a specific amount of time, with millisecond
+ * precision.
+ * 
+ * A JSON serializer and deserializer are also provided in the
+ * `com.patrickangle.commons.json.serialization` package as `.TimeSerializer`
+ * and `.TimeSerializer`
  *
- * @author Patrick Angle
+ * @author patrickangle
  */
-public class Time extends PropertyChangeObservableBase implements JsonableObject {
-    @JsonProperty protected long milliseconds;
+@JsonSerialize(using = TimeSerializer.class)
+@JsonDeserialize(using = TimeDeserializer.class)
+public class Time {
+    protected long milliseconds;
     
     private static final SimpleDateFormat TIME_FORMAT_A = new SimpleDateFormat("HH:mm:ss.SSS");
     private static final SimpleDateFormat TIME_FORMAT_B = new SimpleDateFormat("mm:ss.SSS");
@@ -64,28 +73,47 @@ public class Time extends PropertyChangeObservableBase implements JsonableObject
             }
         }
     }
-
-    @Override
-    public String toString() {
-        return TIME_FORMAT_A.format(new Date(milliseconds - TimeZone.getDefault().getRawOffset()));
-    }
-    
-    public void setMilliseconds(long milliseconds) {
-        long oldMilliseconds = this.milliseconds;
-        this.milliseconds = milliseconds;
-        this.propertyChangeSupport.firePropertyChange("milliseconds", oldMilliseconds, this.milliseconds);
-    }
     
     public long getMilliseconds() {
         return this.milliseconds;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Time) {
-            return ((Time)o).getMilliseconds() == this.getMilliseconds();
-        } else {
+    public int hashCode() {
+        int hash = 5;
+        hash = 43 * hash + (int) (this.milliseconds ^ (this.milliseconds >>> 32));
+        return hash;
+    }
+
+    /**
+     * Check the equality of this Time with the given object by comparing the exact millisecond of each time.
+     * @param obj
+     * @return 
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Time other = (Time) obj;
+        if (this.milliseconds != other.milliseconds) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public String toString() {
+        return TIME_FORMAT_A.format(new Date(milliseconds - TimeZone.getDefault().getRawOffset()));
+    }
+    
+    public static Time parseTime(String string) {
+        return new Time(string);
     }
 }
