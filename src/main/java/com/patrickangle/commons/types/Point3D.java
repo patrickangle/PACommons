@@ -115,19 +115,14 @@ public class Point3D {
                 break;
             case 2:
                 this.x = Numbers.doubleFromString(parts[0], 0);
-                ;
                 this.y = Numbers.doubleFromString(parts[1], 0);
-                ;
                 this.z = 0;
                 break;
             case 3:
             default:
                 this.x = Numbers.doubleFromString(parts[0], 0);
-                ;
                 this.y = Numbers.doubleFromString(parts[1], 0);
-                ;
                 this.z = Numbers.doubleFromString(parts[2], 0);
-                ;
                 break;
         }
     }
@@ -494,7 +489,8 @@ public class Point3D {
 
     /**
      * Get the angles, for each axis, of this point from the origin, in degrees.
-     * @return 
+     *
+     * @return
      */
     public Point3D anglesFromOrigin() {
         double xAngle = Math.toDegrees(Math.atan2(this.getZ(), this.getY()));
@@ -506,7 +502,8 @@ public class Point3D {
 
     /**
      * Get the angle of this point from the origin on the z axis, in degrees.
-     * @return 
+     *
+     * @return
      */
     public double zAngleFromOrigin() {
         return Math.toDegrees(Math.atan2(this.getX(), this.getY()));
@@ -554,7 +551,7 @@ public class Point3D {
 
     @Override
     public String toString() {
-        return x + ", " + y + ", " + z;
+        return x + ", " + y + ((z != 0) ? ", " + z : "");
     }
 
 }

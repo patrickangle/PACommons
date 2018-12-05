@@ -22,7 +22,6 @@ import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArra
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
 import com.patrickangle.commons.types.Display;
 import com.patrickangle.commons.types.LocalInterface;
-import com.patrickangle.commons.types.Point;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -44,13 +43,13 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
     @ObjectEditingProperty(name="Double Slider", numberEditor = ObjectEditingProperty.NumberEditor.SLIDER_CONTROL) protected double option4 = 128.99999;
     @ObjectEditingProperty protected String option5 = "This is a test";
     @ObjectEditingProperty protected Color option6 = Color.BLUE;
-    @ObjectEditingProperty(name="Int Point") protected Point.IntegerPoint intPoint = new Point.IntegerPoint(7, 14);
-    @ObjectEditingProperty(name="Float Point") protected Point.FloatPoint floatPoint = new Point.FloatPoint(99.08f, 777.122324f);
-    @ObjectEditingProperty(name="Double Point") protected Point.DoublePoint doublePoint = new Point.DoublePoint(7.0000045, 13.99862);
+//    @ObjectEditingProperty(name="Int Point") protected Point.IntegerPoint intPoint = new Point.IntegerPoint(7, 14);
+//    @ObjectEditingProperty(name="Float Point") protected Point.FloatPoint floatPoint = new Point.FloatPoint(99.08f, 777.122324f);
+//    @ObjectEditingProperty(name="Double Point") protected Point.DoublePoint doublePoint = new Point.DoublePoint(7.0000045, 13.99862);
     @ObjectEditingProperty(name="Display") protected Display display = new Display(3);
     @ObjectEditingProperty(name="NIC") protected LocalInterface localInterface = new LocalInterface();
     
-    @ObjectEditingProperty(name="Point List", listNewItemClass = Point.IntegerPoint.class) protected List<Point.IntegerPoint> pointList = new ObservableCopyOnWriteArrayList<>(Arrays.asList(new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint()));
+//    @ObjectEditingProperty(name="Point List", listNewItemClass = Point.IntegerPoint.class) protected List<Point.IntegerPoint> pointList = new ObservableCopyOnWriteArrayList<>(Arrays.asList(new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint(), new Point.IntegerPoint()));
     
     public FunPojo() {
         
@@ -111,29 +110,29 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
         return this.option5;
     }
 
-    public Point.IntegerPoint getIntPoint() {
-        return intPoint;
-    }
-
-    public void setIntPoint(Point.IntegerPoint intPoint) {
-        this.intPoint = intPoint;
-    }
-
-    public Point.FloatPoint getFloatPoint() {
-        return floatPoint;
-    }
-
-    public void setFloatPoint(Point.FloatPoint floatPoint) {
-        this.floatPoint = floatPoint;
-    }
-
-    public Point.DoublePoint getDoublePoint() {
-        return doublePoint;
-    }
-
-    public void setDoublePoint(Point.DoublePoint doublePoint) {
-        this.doublePoint = doublePoint;
-    }
+//    public Point.IntegerPoint getIntPoint() {
+//        return intPoint;
+//    }
+//
+//    public void setIntPoint(Point.IntegerPoint intPoint) {
+//        this.intPoint = intPoint;
+//    }
+//
+//    public Point.FloatPoint getFloatPoint() {
+//        return floatPoint;
+//    }
+//
+//    public void setFloatPoint(Point.FloatPoint floatPoint) {
+//        this.floatPoint = floatPoint;
+//    }
+//
+//    public Point.DoublePoint getDoublePoint() {
+//        return doublePoint;
+//    }
+//
+//    public void setDoublePoint(Point.DoublePoint doublePoint) {
+//        this.doublePoint = doublePoint;
+//    }
 
     public Display getDisplay() {
         return display;
@@ -151,13 +150,13 @@ public class FunPojo extends BoringPojo implements PropertyChangeObservable {
         this.localInterface = localInterface;
     }
 
-    public List<Point.IntegerPoint> getPointList() {
-        return pointList;
-    }
-
-    public void setPointList(List<Point.IntegerPoint> pointList) {
-        this.pointList = pointList;
-    }
+//    public List<Point.IntegerPoint> getPointList() {
+//        return pointList;
+//    }
+//
+//    public void setPointList(List<Point.IntegerPoint> pointList) {
+//        this.pointList = pointList;
+//    }
     
     
     
