@@ -26,15 +26,15 @@ import java.awt.Point;
 
 /**
  * A basic structure representing a point in 3D space. The directions and signs
- * of the axis's are left up to the discretion of the user of this class, with the
- * exception of some transform operations, which have documented the assumptions
- * that have been made.
- * 
+ * of the axis's are left up to the discretion of the user of this class, with
+ * the exception of some transform operations, which have documented the
+ * assumptions that have been made.
+ *
  * This class is designed such that is can be easily used to store 2D points as
  * well, and has two convenience accessors that return `java.awt.Point` and
  * `java.awt.geom.Point2D` objects from the Point3D for working with other
  * frameworks.
- * 
+ *
  * A JSON serializer and deserializer are also provided in the
  * `com.patrickangle.commons.json.serialization` package as `.Point3DSerializer`
  * and `.Point3DSerializer`
@@ -93,8 +93,10 @@ public class Point3D {
     /**
      * Create a new Point3D from a list of numeric parameters in string form,
      * separated by commas. The first three comma-separated values are used, and
-     * a value of zero is substituted for malformed numbers or missing parameters.
-     * @param paramters 
+     * a value of zero is substituted for malformed numbers or missing
+     * parameters.
+     *
+     * @param paramters
      */
     public Point3D(String paramters) {
         // Split the text by commas, and remove the trailing and leading whitespace.
@@ -112,15 +114,20 @@ public class Point3D {
                 this.z = 0;
                 break;
             case 2:
-                this.x = Numbers.doubleFromString(parts[0], 0);;
-                this.y = Numbers.doubleFromString(parts[1], 0);;
+                this.x = Numbers.doubleFromString(parts[0], 0);
+                ;
+                this.y = Numbers.doubleFromString(parts[1], 0);
+                ;
                 this.z = 0;
                 break;
             case 3:
             default:
-                this.x = Numbers.doubleFromString(parts[0], 0);;
-                this.y = Numbers.doubleFromString(parts[1], 0);;
-                this.z = Numbers.doubleFromString(parts[2], 0);;
+                this.x = Numbers.doubleFromString(parts[0], 0);
+                ;
+                this.y = Numbers.doubleFromString(parts[1], 0);
+                ;
+                this.z = Numbers.doubleFromString(parts[2], 0);
+                ;
                 break;
         }
     }
@@ -177,181 +184,332 @@ public class Point3D {
     public Point2D getPoint2D() {
         return new Point2D.Double(this.getX(), this.getY());
     }
-    
+
     /**
      * Create a new Point3D offset by the given x, y, and z distances.
+     *
      * @param x
      * @param y
      * @param z
-     * @return 
+     * @return
      */
     public Point3D offsetBy(double x, double y, double z) {
         return new Point3D(this.getX() + x, this.getY() + y, this.getZ() + z);
     }
-    
+
     /**
-     * Create a new Point3D offset by the x, y, and z coordinates of the given point.
+     * Create a new Point3D offset by the x, y, and z coordinates of the given
+     * point.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D offsetBy(Point3D p) {
         return offsetBy(p.getX(), p.getY(), p.getZ());
     }
-    
+
     /**
      * Create a new Point3D offset by the given x and y distances.
+     *
      * @param x
      * @param y
-     * @return 
+     * @return
      */
     public Point3D offsetBy(double x, double y) {
         return offsetBy(x, y, 0);
     }
-    
+
     /**
-     * Create a new Point3D offset by the x and y coordinates of the given point.
+     * Create a new Point3D offset by the x and y coordinates of the given
+     * point.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D offsetBy(Point2D p) {
         return offsetBy(p.getX(), p.getY());
     }
-    
+
     /**
      * Create a new Point3D scaled by the given x, y, and z factors.
+     *
      * @param x
      * @param y
      * @param z
-     * @return 
+     * @return
      */
     public Point3D scaleBy(double x, double y, double z) {
-        return new Point3D(this.getX() * x, this.getY() * y, this.getZ() * z); 
+        return new Point3D(this.getX() * x, this.getY() * y, this.getZ() * z);
     }
-    
+
     /**
      * Create a new Point3D scaled by the x, y, and z of the given point.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D scaleBy(Point3D p) {
         return scaleBy(p.getX(), p.getY(), p.getZ());
     }
-    
+
     /**
      * Create a new Point3D scaled by the given x and y factors.
+     *
      * @param x
      * @param y
-     * @return 
+     * @return
      */
     public Point3D scaleBy(double x, double y) {
         return scaleBy(x, y, 0);
     }
-    
+
     /**
      * Create a new Point3D scaled by x and y of the given point.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D scaleBy(Point2D p) {
         return scaleBy(p.getX(), p.getY());
     }
-    
+
     /**
-     * Create a new Point3D, rotated in all three axis, by the given degree 
+     * Create a new Point3D, rotated in all three axis, by the given degree
      * increments. Rotation is first applied to the z axis, then the y axis, and
      * finally the x axis. All angles are to be provided in degrees and will be
      * used to rotate the point clockwise on each axis.
+     *
      * @param x
      * @param y
      * @param z
-     * @return 
+     * @return
      */
     public Point3D rotateBy(double x, double y, double z) {
         double xRot = Math.toRadians(x);
         double yRot = Math.toRadians(y);
         double zRot = Math.toRadians(z);
-        
+
         double xPrime = (this.getX() * Math.cos(-zRot)) - (this.getY() * Math.sin(-zRot));
         double yPrime = (this.getX() * Math.sin(-zRot)) - (this.getY() * Math.cos(-zRot));
-        
+
         double xDoublePrime = (xPrime * Math.cos(-yRot)) - (this.getZ() * Math.sin(-yRot));
         double zDoublePrime = (xPrime * Math.sin(-yRot)) - (this.getZ() * Math.cos(-yRot));
-        
+
         double yTriplePrime = (yPrime * Math.cos(-xRot)) - (zDoublePrime * Math.sin(-xRot));
         double zTriplePrime = (yPrime * Math.sin(-xRot)) - (zDoublePrime * Math.cos(-xRot));
-        
+
         return new Point3D(xDoublePrime, yTriplePrime, zTriplePrime);
     }
-    
+
     /**
-     * Create a new Point3D, rotated only on the z axis by the given degree value.
-     * The angle should be provided in degrees and will be used to rotate the
-     * point clockwise on the z axis. This is the equivalent of rotating a Point2D
-     * by the given angle.
+     * Create a new Point3D, rotated only on the z axis by the given degree
+     * value. The angle should be provided in degrees and will be used to rotate
+     * the point clockwise on the z axis. This is the equivalent of rotating a
+     * Point2D by the given angle.
+     *
      * @param z
-     * @return 
+     * @return
      */
     public Point3D rotateBy(double z) {
         return rotateBy(0, 0, z);
     }
-    
+
     /**
      * Create a new Point3D, sheared by the given amount per axis.
+     *
      * @param yx
      * @param zx
      * @param xy
      * @param zy
      * @param xz
      * @param yz
-     * @return 
+     * @return
      */
     public Point3D shearBy(double yx, double zx, double xy, double zy, double xz, double yz) {
         double xPrime = getX() + (yx * getY()) + (zx * getZ());
         double yPrime = getY() + (xy * getX()) + (zy * getZ());
         double zPrime = getZ() + (xz * getX()) + (yz * getY());
-        
+
         return new Point3D(xPrime, yPrime, zPrime);
-    } 
-    
+    }
+
     /**
      * Create a new Point3D, sheared by the given amount per axis.
+     *
      * @param x
      * @param y
      * @param z
-     * @return 
+     * @return
      */
     public Point3D shearBy(double x, double y, double z) {
         return shearBy(x, x, y, y, z, z);
     }
-    
+
     /**
      * Create a new Point3D, sheared by the coordinates of the given point.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D shearBy(Point3D p) {
         return shearBy(p.getX(), p.getY(), p.getZ());
     }
-    
+
     /**
      * Create a new Point3D, sheared by the given amounts on the x and y axis,
      * leaving the z position intact.
+     *
      * @param x
      * @param y
-     * @return 
+     * @return
      */
     public Point3D shearBy(double x, double y) {
         return shearBy(x, y, 0);
     }
-    
+
     /**
      * Create a new Point3D, sheared by the coordinates of the given point,
      * leaving the z position intact.
+     *
      * @param p
-     * @return 
+     * @return
      */
     public Point3D shearBy(Point2D p) {
         return shearBy(p.getX(), p.getY());
+    }
+
+    /**
+     * Get the distance between this point and the provided coordinates.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public double distanceTo(double x, double y, double z) {
+        double zAxisDistance = distanceTo(x, y);
+        double zDifference = this.getZ() - z;
+
+        return Math.hypot(zAxisDistance, zDifference);
+    }
+
+    /**
+     * Get the distance between this point and the provided point.
+     *
+     * @param p
+     * @return
+     */
+    public double distanceTo(Point3D p) {
+        return distanceTo(p.getX(), p.getY(), p.getZ());
+    }
+
+    /**
+     * Get the distance between this point and the provided point and z
+     * coordinate.
+     *
+     * @param p
+     * @param z
+     * @return
+     */
+    public double distanceTo(Point2D p, double z) {
+        return distanceTo(p.getX(), p.getY(), z);
+    }
+
+    /**
+     * Get the distance between this point and the provided coordinates,
+     * ignoring the z axis. To compute the distance from this point to another
+     * point in 3D space, use `distanceTo(double x, double y, double z)`,
+     * `distanceTo(Point3D p)`, or distanceTo(Point2D p, double z)`.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public double distanceTo(double x, double y) {
+        // Computes only the x/y distance
+        return Math.hypot(this.getX() - x, this.getY() - y);
+    }
+
+    /**
+     * Get the distance between this point and the provided point, ignoring the
+     * z axis. To compute the distance from this point to another point in 3D
+     * space, use `distanceTo(double x, double y, double z)`,
+     * `distanceTo(Point3D p)`, or distanceTo(Point2D p, double z)`.
+     *
+     * @param p
+     * @return
+     */
+    public double distanceTo(Point2D p) {
+        return distanceTo(p.getX(), p.getY());
+    }
+
+    /**
+     * Get the vector from this point to the given coordinates.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public Point3D vectorTo(double x, double y, double z) {
+        double xVector = x - this.getX();
+        double yVector = y - this.getY();
+        double zVector = z - this.getZ();
+
+        return new Point3D(xVector, yVector, zVector);
+    }
+
+    /**
+     * Get the vector from this point to the given point.
+     *
+     * @param p
+     * @return
+     */
+    public Point3D vectorTo(Point3D p) {
+        return vectorTo(p.getX(), p.getY(), p.getZ());
+    }
+
+    /**
+     * Get the vector from this point to the given coordinates, assuming a value
+     * of 0 for the z axis.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public Point3D vectorTo(double x, double y) {
+        return vectorTo(x, y, 0);
+    }
+
+    /**
+     * Get the vector from this point to the given point, assuming a value of 0
+     * for the z axis.
+     *
+     * @param p
+     * @return
+     */
+    public Point3D vectorTo(Point2D p) {
+        return vectorTo(p.getX(), p.getY());
+    }
+
+    /**
+     * Get the angles, for each axis, of this point from the origin, in degrees.
+     * @return 
+     */
+    public Point3D anglesFromOrigin() {
+        double xAngle = Math.toDegrees(Math.atan2(this.getZ(), this.getY()));
+        double yAngle = Math.toDegrees(Math.atan2(this.getX(), this.getZ()));
+        double zAngle = Math.toDegrees(Math.atan2(this.getX(), this.getY()));
+
+        return new Point3D(xAngle, yAngle, zAngle);
+    }
+
+    /**
+     * Get the angle of this point from the origin on the z axis, in degrees.
+     * @return 
+     */
+    public double zAngleFromOrigin() {
+        return Math.toDegrees(Math.atan2(this.getX(), this.getY()));
     }
 
     @Override
@@ -366,8 +524,9 @@ public class Point3D {
     /**
      * Check the equality of this point with another object. See
      * `Object.equals(Object obj)` for more details.
+     *
      * @param obj
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object obj) {
@@ -397,6 +556,5 @@ public class Point3D {
     public String toString() {
         return x + ", " + y + ", " + z;
     }
-    
-    
+
 }
