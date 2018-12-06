@@ -32,6 +32,8 @@ import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComp
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBase;
 import java.awt.GridLayout;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -58,13 +60,18 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
         this.port = port;
     }
     
-    public RemoteAddress(String value) {
+    public RemoteAddress(String value) throws UnknownHostException {
         String[] parts = value.split(":");
-        if (parts.length == 2) {
+        if (parts.length == 1) {
+            InetAddress.getByName(parts[0]); // This method will throw if the remote address is not known.
+            this.address = parts[0];
+            this.port = 0;
+        } else if (parts.length == 2) {
+            InetAddress.getByName(parts[0]); // This method will throw if the remote address is not known.
             this.address = parts[0];
             this.port = Integer.parseInt(parts[1]);
         } else {
-            throw new IllegalArgumentException("RemoteAddress can only be constructed with two values seperated by a colon.");
+            throw new IllegalArgumentException("Value must be an ip address or ip address with port.");
         }
     }
 
@@ -90,7 +97,7 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
 
     @Override
     public String toString() {
-        return address + ":" + port;
+        return address + ((port != 0) ? ":" + port : "");
     }
 
     @Override

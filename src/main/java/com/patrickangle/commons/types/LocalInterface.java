@@ -23,7 +23,6 @@ import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
-import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.json.serialization.GenericStringSerializer;
 import com.patrickangle.commons.json.serialization.LocalInterfaceDeserializer;
@@ -31,6 +30,7 @@ import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.observable.collections.ObservableArrayList;
 import com.patrickangle.commons.util.LocalNetworkInterfaces;
 import com.patrickangle.commons.util.LocalNetworkInterfaces.LocalNetworkInterface;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class LocalInterface extends RemoteAddress {
         this.port = 0;
     }
     
-    public LocalInterface(String value) {
+    public LocalInterface(String value) throws UnknownHostException {
         super(value);
     }
 
@@ -93,6 +93,26 @@ public class LocalInterface extends RemoteAddress {
         // Upon failure to find a proper address, just return the current address.
         return this.address;
     }
+
+    @Override
+    public String toString() {
+        // If the address is currently the wildcard address, bypass trying to identify the NIC.
+        if (this.address.equals("0.0.0.0")) {
+            return this.address;
+        }
+
+        // The opposite of the getAddress implementation, we here try to make sure the address is generified as needed.
+        for (LocalNetworkInterface networkInterface : LocalNetworkInterfaces.getAvailableInterfaces()) {
+            if (networkInterface.getAddress().equals(this.address)) {
+                return networkInterface.getNetworkAddress();
+            }
+        }
+        
+        // Upon failure to find a proper address, just return the current address.
+        return this.address;
+    }
+    
+    
 
     @Override
     public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {
