@@ -58,7 +58,7 @@ public class ListObjectEditorCellRenderer extends AbstractCellEditor implements 
             if (value instanceof CustomObjectEditingComponent) {
                 BindingGroup bindingGroup = new BindingGroup();
 
-                newComponent = ((CustomObjectEditingComponent) value).customObjectEditingComponent(bindingGroup, null).getComponent();
+                newComponent = ((CustomObjectEditingComponent) value).customObjectEditingComponent(null, bindingGroup, null).getComponent();
 
                 bindingGroup.bind();
 

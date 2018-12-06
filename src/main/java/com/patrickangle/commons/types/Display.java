@@ -11,6 +11,7 @@ package com.patrickangle.commons.types;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.json.JsonableObject;
@@ -64,7 +65,7 @@ public class Display extends PropertyChangeObservableBase implements CustomObjec
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {
         Display[] displays = Displays.availableDisplays();
         ArrayList<Display.DisplayComboBoxItem> displayItems = new ArrayList<>(displays.length);
         

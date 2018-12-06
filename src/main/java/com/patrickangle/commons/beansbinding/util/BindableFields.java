@@ -85,6 +85,9 @@ public class BindableFields {
     }
     
     public static Field reflectionFieldForBindableField(BindableField bindableField) {
+        if (bindableField == null) {
+            return null;
+        }
         return Fields.fieldForNameInClass(bindableField.getContainingClass(), bindableField.getFieldName());
     }
 }

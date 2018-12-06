@@ -21,7 +21,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
+import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.json.serialization.GenericStringSerializer;
 import com.patrickangle.commons.json.serialization.LocalInterfaceDeserializer;
@@ -93,7 +95,7 @@ public class LocalInterface extends RemoteAddress {
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {
         List<LocalNetworkInterface> networkInterfaces = LocalNetworkInterfaces.getAvailableInterfaces();
 
         ArrayList<LocalInterfaceComboBoxItem> networkInterfaceItems = new ArrayList<>(networkInterfaces.size());

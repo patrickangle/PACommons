@@ -21,7 +21,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.patrickangle.commons.beansbinding.BasicBinding;
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
+import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundField;
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.json.serialization.GenericStringSerializer;
@@ -92,7 +94,7 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
     }
 
     @Override
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager) {
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {
         JPanel remoteAddressEditor = new JPanel(new GridLayout(1, 2, 6, 0));
         
         JTextField addressField = new JTextField();

@@ -17,6 +17,8 @@
 package com.patrickangle.commons.objectediting.interfaces;
 
 import com.patrickangle.commons.beansbinding.BindingGroup;
+import com.patrickangle.commons.beansbinding.interfaces.BindableField;
+import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import javax.swing.undo.UndoManager;
 
@@ -25,10 +27,10 @@ import javax.swing.undo.UndoManager;
  * @author patrickangle
  */
 public interface CustomObjectEditingComponent {
-    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindingGroup bindingGroup, UndoManager undoManager);
+    public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField bindableField, BindingGroup bindingGroup, UndoManager undoManager);
     
-    public default ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponentRenderer(BindingGroup bindingGroup, UndoManager undoManager) {
-        return this.customObjectEditingComponent(bindingGroup, undoManager);
+    public default ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponentRenderer(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {
+        return this.customObjectEditingComponent(field, bindingGroup, undoManager);
     }
     
 }

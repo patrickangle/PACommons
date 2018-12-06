@@ -103,7 +103,7 @@ public class ObjectFieldEditorFactory {
             componentReturn = createBoundComponentForNonMutableObject(objectField, bindingGroup);
         } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
-            componentReturn = ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindingGroup, realizedUndoManager);
+            componentReturn = ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindableField, bindingGroup, realizedUndoManager);
         } else if (Enum.class.isAssignableFrom(fieldClass)) {
             componentReturn = createBoundComponentForEnum(objectField, bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
