@@ -70,7 +70,7 @@ public class Colors {
     }
 
     public static Color transparentColor(Color color, float alpha) {
-        return Colors.transparentColor(color, (int) (alpha * 255f));
+        return Colors.transparentColor(color, (int)((float)color.getAlpha() * alpha));
     }
 
     public static Color randomColor() {
