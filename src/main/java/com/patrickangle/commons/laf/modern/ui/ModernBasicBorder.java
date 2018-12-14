@@ -27,11 +27,11 @@ import javax.swing.plaf.UIResource;
  *
  * @author patrickangle
  */
-public class ModernButtonBorder implements Border, UIResource {
+public class ModernBasicBorder implements Border, UIResource {
     private static final int BLUR_SAFE_REGION = 4;
     private Insets additionalInsets;
 
-    public ModernButtonBorder(Insets additionalInsets) {
+    public ModernBasicBorder(Insets additionalInsets) {
         this.additionalInsets = additionalInsets;
     }
 

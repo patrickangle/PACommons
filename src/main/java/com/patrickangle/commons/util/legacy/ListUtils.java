@@ -1,7 +1,6 @@
 package com.patrickangle.commons.util.legacy;
 
 import com.patrickangle.commons.logging.Logging;
-import com.patrickangle.commons.util.Exceptions;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -229,7 +228,7 @@ public class ListUtils {
 
     @Deprecated(forRemoval = false)
     public static List<Object> flatten(List<?> list) {
-        List<Object> ret = new ArrayList<>();
+        List<Object> ret = new CopyOnWriteArrayList<>(); // It is possible for the flattenHelper to concurrently modify the element being iterated over, so we use a COWArrayList here
         flattenHelper(list, ret);
         return ret;
     }

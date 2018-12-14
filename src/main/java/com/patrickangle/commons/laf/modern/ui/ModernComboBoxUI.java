@@ -89,8 +89,10 @@ public class ModernComboBoxUI extends BasicComboBoxUI {
         return button; //To change body of generated methods, choose Tools | Templates.
     }
     
-    public static ModernButtonBorder getDefaultBorder() {
-        return new ModernButtonBorder(BUTTON_INSETS);
+    
+    
+    public static ModernBasicBorder getDefaultBorder() {
+        return new ModernBasicBorder(BUTTON_INSETS);
     }
     
     public static void installIntoDefaults(UIDefaults defaults) {

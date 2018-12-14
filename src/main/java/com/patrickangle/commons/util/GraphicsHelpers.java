@@ -83,61 +83,24 @@ public class GraphicsHelpers {
         return img;
     }
 
-//    private static void paintBorderGlow(Graphics2D g2, Shape s, int glowWidth) {
-//        int gw = glowWidth * 2;
-//        for (int i = gw; i >= 2; i -= 2) {
-//            float pct = (float) (gw - i) / (gw - 1);
-//
-//            Color mixHi = getMixedColor(clrGlowInnerHi, pct,
-//                    clrGlowOuterHi, 1.0f - pct);
-//            Color mixLo = getMixedColor(clrGlowInnerLo, pct,
-//                    clrGlowOuterLo, 1.0f - pct);
-//            g2.setPaint(new GradientPaint(0.0f, height * 0.25f, mixHi,
-//                    0.0f, height, mixLo));
-//            //g2.setColor(Color.WHITE);
-//
-//            // See my "Java 2D Trickery: Soft Clipping" entry for more
-//            // on why we use SRC_ATOP here
-//            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, pct));
-//            g2.setStroke(new BasicStroke(i));
-//            g2.draw(clipShape);
-//        }
-//    }
-
     // draw the shadow before the object to avoid unintended side effects.
-    public static void drawBorderShadow(Graphics2D graphics, Shape s, int shadowWidth) {
-//        BufferedImage bi = graphics.getDeviceConfiguration().createCompatibleImage(s.getBounds().x + s.getBounds().width + (shadowWidth * 2), s.getBounds().y + s.getBounds().height + (shadowWidth * 2), BufferedImage.TRANSLUCENT);
-        
-        Graphics2D g = (Graphics2D) graphics.create();//.createGraphics();
+    public static void drawBorderShadow(Graphics2D graphics, Shape s, int shadowWidth) {        
+        Graphics2D g = (Graphics2D) graphics.create();
         enableAntialiasing(g);
 
         Color baseColor = g.getColor();
-        
-//        g.setComposite(AlphaComposite.DstOver);
-        
+                
         int sw = shadowWidth * 2;
         for (int i = sw; i >= 2; i -= 2) {
             float pct = (float) (sw - i) / (sw - 1);
             
             g.setColor(Colors.transparentColor(baseColor, pct));
             
-//            g2.setColor(getMixedColor(Color.LIGHT_GRAY, pct,
-//                    Color.WHITE, 1.0f - pct));
             g.setStroke(new BasicStroke(i));
             g.draw(s);
         }
         
-////        g.fill(s);
-////        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//        g.setComposite(AlphaComposite.Clear);
-//        g.setColor(Color.BLACK);
-//        g.fill(s);
-        
         g.dispose();
-//        Composite existingComposite = graphics.getComposite();
-//        graphics.setComposite(AlphaComposite.DstOver);
-//        graphics.drawImage(bi, s.getBounds().x - shadowWidth - 1, s.getBounds().y - shadowWidth - 1, null);
-//        graphics.setComposite(existingComposite);
     }
 
     public static void enableAntialiasing(Graphics2D g) {

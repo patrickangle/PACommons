@@ -17,6 +17,14 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_DARK_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_DARK_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_ULTRA_DARK_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.SHADOW_COLOR_KEY;
 import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.BasicStroke;
@@ -74,6 +82,7 @@ public class ModernButtonUI extends BasicButtonUI {
                 CORNER_DIAMETER);
         
         paintShape(graphics, component, buttonRect);
+        super.paint(graphics, component);
     }
 
     @Override
@@ -103,20 +112,73 @@ public class ModernButtonUI extends BasicButtonUI {
         final Graphics2D g = (Graphics2D) graphics.create();
         GraphicsHelpers.enableAntialiasing(g);
 
-        ModernUIUtilities.paintButtonShadowOrGlow(g, button, buttonRect);
-        ModernUIUtilities.paintButtonBackgroundFill(g, button, buttonRect);
-        ModernUIUtilities.paintButtonBorderHighlight(g, button, buttonRect);
+        paintButtonShadowOrGlow(g, button, buttonRect);
+        paintButtonBackgroundFill(g, button, buttonRect);
+        paintButtonBorderHighlight(g, button, buttonRect);
                 
         g.dispose();
-        super.paint(graphics, component);
     }
     
-    public static ModernButtonBorder getDefaultBorder() {
-        return new ModernButtonBorder(BUTTON_INSETS);
+    public static ModernBasicBorder getDefaultBorder() {
+        return new ModernBasicBorder(BUTTON_INSETS);
     }
     
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("ButtonUI", ModernButtonUI.class.getName());
         defaults.put("Button.border", ModernButtonUI.getDefaultBorder());
+    }
+    
+    public static void paintButtonBackgroundFill(Graphics2D g, AbstractButton button, Shape buttonShape) {
+        final ButtonModel buttonModel = button.getModel();
+
+        if (button.isEnabled()) {
+            // Button is enabled
+            if (buttonModel.isPressed()) {
+                // Button is in its selected, depressed state
+                g.setColor(UIManager.getColor(PRIMARY_DARK_COLOR_KEY));
+            } else {
+                if ((button instanceof JButton && ((JButton) button).isDefaultButton())) {
+                    // Button is the default button
+                    g.setColor(UIManager.getColor(ACCENT_DARK_COLOR_KEY));
+                } else {
+                    // Button is a normal button
+                    g.setColor(UIManager.getColor(PRIMARY_MEDIUM_DARK_COLOR_KEY));
+                }
+            }
+        } else {
+            // Button is disabled
+            g.setColor(UIManager.getColor(PRIMARY_ULTRA_DARK_COLOR_KEY));
+        }
+
+        g.fill(buttonShape);
+    }
+
+    public static void paintButtonBorderHighlight(Graphics2D g, AbstractButton button, Shape buttonShape) {
+        boolean defaultOrPressedButton = button.isSelected() || (button instanceof JButton && ((JButton) button).isDefaultButton());
+
+        g.setStroke(new BasicStroke(0.25f));
+
+        if (button.hasFocus()) {
+            g.setColor(UIManager.getColor(ACCENT_HIGHLIGHT_COLOR_KEY));
+            g.draw(buttonShape);
+        } else {
+            if (defaultOrPressedButton) {
+                g.setColor(UIManager.getColor(ACCENT_MEDIUM_COLOR_KEY));
+                g.draw(buttonShape);
+            } else {
+                g.setColor(UIManager.getColor(PRIMARY_MEDIUM_COLOR_KEY));
+                g.draw(buttonShape);
+            }
+        }
+    }
+
+    public static void paintButtonShadowOrGlow(Graphics2D g, AbstractButton button, Shape buttonShape) {
+        if (button.hasFocus()) {
+            g.setColor(Colors.transparentColor(UIManager.getColor(ACCENT_HIGHLIGHT_COLOR_KEY), 0.5f));
+            GraphicsHelpers.drawBorderShadow(g, buttonShape, 3);
+        } else {
+            g.setColor(Colors.transparentColor(UIManager.getColor(SHADOW_COLOR_KEY), 0.25f));
+            GraphicsHelpers.drawBorderShadow(g, buttonShape, 3);
+        }
     }
 }
