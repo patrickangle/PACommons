@@ -18,6 +18,7 @@ package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
+import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import java.awt.Color;
 import java.awt.Font;
@@ -27,6 +28,7 @@ import javax.swing.UIDefaults;
 import javax.swing.UIDefaults.LazyInputMap;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.text.DefaultEditorKit;
 
 /**
@@ -52,6 +54,77 @@ public class ModernUIUtilities {
 
     public static final String SHADOW_COLOR_KEY = "ModernLAF.ShadowColor";
 
+    public static void installLafDefaults(UIDefaults defaults) {
+        installInputMapDefaults(defaults);
+
+        defaults.put(ACCENT_HIGHLIGHT_COLOR_KEY, new Color(0x0090e8));
+        defaults.put(ACCENT_LIGHT_COLOR_KEY, new Color(0x146bb9));
+        defaults.put(ACCENT_MEDIUM_COLOR_KEY, new Color(0x1e4e89));
+        defaults.put(ACCENT_DARK_COLOR_KEY, new Color(0x1d3c6c));
+
+        defaults.put(PRIMARY_LIGHT_COLOR_KEY, new Color(0xd3e1eb));
+        defaults.put(PRIMARY_MEDIUM_LIGHT_COLOR_KEY, new Color(0x9faebb));
+        defaults.put(PRIMARY_MEDIUM_COLOR_KEY, new Color(0x67778a));
+        defaults.put(PRIMARY_MEDIUM_DARK_COLOR_KEY, new Color(0x47566d));
+        defaults.put(PRIMARY_DARK_COLOR_KEY, new Color(0x29323f));
+        defaults.put(PRIMARY_ULTRA_DARK_COLOR_KEY, new Color(0x232a35));
+        defaults.put(BACKGROUND_COLOR_KEY, new Color(0x212833));
+
+        defaults.put(WORKSPACE_BACKGROUND_COLOR_KEY, new Color(0x151a21));
+
+        defaults.put(SHADOW_COLOR_KEY, Color.BLACK);
+        
+        defaults.put("text", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("infoText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("Label.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
+        
+//        defaults.put("EditorPane.background", defaults.getColor(defaults))
+        
+//        defaults.put("text", defaults)
+        
+//text=bbbbbb
+//textText=bbbbbb
+//infoText=bbbbbb
+//OptionPane.messageForeground=bbbbbb
+//        EditorPane.background
+//EditorPane.border
+//EditorPane.caretBlinkRate
+//EditorPane.caretForeground
+//EditorPane.font
+//EditorPane.foreground
+//EditorPane.inactiveForeground
+//EditorPane.margin
+//EditorPane.selectionBackground
+//EditorPane.selectionForeground
+//        link.foreground=589df6
+        defaults.put("Panel.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("Viewport.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("ScrollPane.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
+        
+        defaults.put("window", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("control", defaults.getColor(BACKGROUND_COLOR_KEY));
+        
+        
+        Font systemFont = new Font(Font.DIALOG, Font.PLAIN, 14);
+
+        defaults.put("defaultFont", systemFont);
+
+        ModernButtonUI.installIntoDefaults(defaults);
+        ModernTextFieldUI.installIntoDefaults(defaults);
+        ModernComboBoxUI.installIntoDefaults(defaults);
+        ModernScrollBarUI.installIntoDefaults(defaults);
+
+//        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
+//        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
+//        defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
+//        defaults.put("OptionPane.errorIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneError.png"))));
+//        defaults.put("ButtonUI", ModernButtonUI.class.getName());
+//        defaults.put("Button.border", new ModernButtonPainter(new Insets(2, 8, 2, 8)));
+    }
+    
     public static void installDefaults(UIDefaults defaults) {
         installInputMapDefaults(defaults);
 
@@ -72,22 +145,40 @@ public class ModernUIUtilities {
 
         defaults.put(SHADOW_COLOR_KEY, Color.BLACK);
         
-//        defaults.put("text", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("infoText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
+        defaults.put("text", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("infoText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("Label.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
         
+//        defaults.put("EditorPane.background", defaults.getColor(defaults))
+        
+//        defaults.put("text", defaults)
         
 //text=bbbbbb
 //textText=bbbbbb
 //infoText=bbbbbb
 //OptionPane.messageForeground=bbbbbb
-//        
+//        EditorPane.background
+//EditorPane.border
+//EditorPane.caretBlinkRate
+//EditorPane.caretForeground
+//EditorPane.font
+//EditorPane.foreground
+//EditorPane.inactiveForeground
+//EditorPane.margin
+//EditorPane.selectionBackground
+//EditorPane.selectionForeground
 //        link.foreground=589df6
 //        defaults.put("Panel.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+//        defaults.put("Viewport.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+//        defaults.put("ScrollPane.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
+//        
 //        defaults.put("window", defaults.getColor(BACKGROUND_COLOR_KEY));
 //        defaults.put("control", defaults.getColor(BACKGROUND_COLOR_KEY));
+        
+        
         Font systemFont = new Font(Font.DIALOG, Font.PLAIN, 14);
 
         defaults.put("defaultFont", systemFont);
@@ -95,6 +186,7 @@ public class ModernUIUtilities {
         ModernButtonUI.installIntoDefaults(defaults);
 //        ModernTextFieldUI.installIntoDefaults(defaults);
 //        ModernComboBoxUI.installIntoDefaults(defaults);
+        ModernScrollBarUI.installIntoDefaults(defaults);
 
 //        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
 //        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
@@ -118,32 +210,7 @@ public class ModernUIUtilities {
                 + " " + lf.getClassName()
                 + " " + uid.size() + " entries");
         }
-        UIManager.setLookAndFeel(new BasicLookAndFeel() {
-            @Override
-            public String getName() {
-                return "";
-            }
-
-            @Override
-            public String getID() {
-                return "";
-            }
-
-            @Override
-            public String getDescription() {
-                return "";
-            }
-
-            @Override
-            public boolean isNativeLookAndFeel() {
-                return true;
-            }
-
-            @Override
-            public boolean isSupportedLookAndFeel() {
-                return true;
-            }
-        });
+        UIManager.setLookAndFeel(new NimbusLookAndFeel());
             UIDefaults uid = UIManager.getLookAndFeelDefaults();
             System.out.println("***"
                 + " " + "BasicLookAndFeel"

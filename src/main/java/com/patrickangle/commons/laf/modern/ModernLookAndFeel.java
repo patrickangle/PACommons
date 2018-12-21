@@ -76,7 +76,7 @@ public final class ModernLookAndFeel extends BasicLookAndFeel {
 //                    = (UIDefaults) superMethod.invoke(new MetalLookAndFeel());
             final UIDefaults defaults = super.getDefaults();
 //            initInputMapDefaults(defaults);
-            ModernUIUtilities.installDefaults(defaults);
+            ModernUIUtilities.installLafDefaults(defaults);
 //            initIdeaDefaults(defaults);
 //            patchStyledEditorKit();
 //            patchComboBox(metalDefaults, defaults);

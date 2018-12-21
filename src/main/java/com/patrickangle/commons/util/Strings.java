@@ -71,7 +71,7 @@ public class Strings {
         Pair<String, Integer> components = Strings.trailingIntegerComponents(string);
 
         if (components.b == Integer.MIN_VALUE) {
-            return components.a + " " + defaultStartingNumber;
+            return components.a + defaultStartingNumber;
         } else {
             return components.a + (components.b + 1);
         }
