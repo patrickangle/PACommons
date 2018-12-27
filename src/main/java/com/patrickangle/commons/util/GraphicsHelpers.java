@@ -19,7 +19,6 @@ package com.patrickangle.commons.util;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -85,10 +84,18 @@ public class GraphicsHelpers {
 
     // draw the shadow before the object to avoid unintended side effects.
     public static void drawBorderShadow(Graphics2D graphics, Shape s, int shadowWidth) {        
+        
+        
         Graphics2D g = (Graphics2D) graphics.create();
         enableAntialiasing(g);
+        
+        
+//        g.setComposite(AlphaComposite.DstOver);
 
+//    g.setBackground(Colors.transparentColor());
         Color baseColor = g.getColor();
+        
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
                 
         int sw = shadowWidth * 2;
         for (int i = sw; i >= 2; i -= 2) {
@@ -99,6 +106,11 @@ public class GraphicsHelpers {
             g.setStroke(new BasicStroke(i));
             g.draw(s);
         }
+        
+        
+//        g.setComposite(AlphaComposite.Clear);
+//        g.setColor(Color.WHITE);
+//        g.fill(s);
         
         g.dispose();
     }

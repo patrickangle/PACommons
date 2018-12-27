@@ -16,9 +16,19 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY;
+import static com.patrickangle.commons.laf.modern.ModernUIUtilities.SHADOW_COLOR_KEY;
+import com.patrickangle.commons.util.Colors;
+import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Shape;
+import javax.swing.JComponent;
+import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.plaf.InsetsUIResource;
 import javax.swing.plaf.UIResource;
@@ -28,6 +38,7 @@ import javax.swing.plaf.UIResource;
  * @author patrickangle
  */
 public class ModernBasicBorder implements Border, UIResource {
+
     private static final int BLUR_SAFE_REGION = 4;
     private Insets additionalInsets;
 
@@ -37,7 +48,22 @@ public class ModernBasicBorder implements Border, UIResource {
 
     @Override
     public void paintBorder(Component component, Graphics graphics, int x, int y, int width, int height) {
-        // This border is a no-op border, and is only defined to allow for insets on Buttons.
+        if (component instanceof JComponent && ((JComponent) component).getUI() instanceof ModernShapedComponentUI) {
+            Shape shape = ((ModernShapedComponentUI) ((JComponent) component).getUI()).getShape((JComponent) component);
+            final Graphics2D g = (Graphics2D) graphics.create();
+            GraphicsHelpers.enableAntialiasing(g);
+            g.translate(x, y);
+
+            if (component.hasFocus() && !(component instanceof JToggleButton)) {
+                g.setColor(Colors.transparentColor(UIManager.getColor(ACCENT_HIGHLIGHT_COLOR_KEY), 0.5f));
+                GraphicsHelpers.drawBorderShadow(g, shape, 3);
+            } else {
+                g.setColor(Colors.transparentColor(UIManager.getColor(SHADOW_COLOR_KEY), 0.25f));
+                GraphicsHelpers.drawBorderShadow(g, shape, 3);
+            }
+            
+            g.dispose();
+        }
     }
 
     @Override

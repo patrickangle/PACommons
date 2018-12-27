@@ -17,6 +17,7 @@
 package com.patrickangle.commons.beansbinding.util;
 
 import com.patrickangle.commons.beansbinding.BeanBindableField;
+import com.patrickangle.commons.beansbinding.NestedBindableField;
 import com.patrickangle.commons.beansbinding.SyntheticBindableField;
 import com.patrickangle.commons.beansbinding.interfaces.SyntheticFieldProvider;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
  */
 public class BindableFields {
     public static <C extends Object> BindableField<C> forClassWithName(Class<C> containingClass, String fieldName) {
+//        if (fieldName.contains(".")) {
+//            return new NestedBindableField<>((Class) containingClass, fieldName);
         if (fieldName.contains("$") && !fieldName.startsWith("$")) {
             return new SyntheticBindableField<>((Class) containingClass, fieldName);
         } else {

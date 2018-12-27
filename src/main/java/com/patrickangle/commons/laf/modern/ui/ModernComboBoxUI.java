@@ -16,6 +16,8 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Shape;
@@ -26,26 +28,29 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 /**
  *
  * @author patrickangle
  */
-public class ModernComboBoxUI extends BasicComboBoxUI {
+public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedComponentUI {
+
     private final JComboBox comboBox;
 
     private static final int CORNER_DIAMETER = 8;
     private static final int GENERAL_PADDING = 4;
-    private static final int LEADING_AND_TRAILING_PADDING = 12;
+    private static final int LEADING_PADDING = 12;
 
-    private static final Insets BUTTON_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING + LEADING_AND_TRAILING_PADDING, GENERAL_PADDING, GENERAL_PADDING + LEADING_AND_TRAILING_PADDING);
+    private static final Insets BUTTON_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING + LEADING_PADDING, GENERAL_PADDING, GENERAL_PADDING);
 
     public ModernComboBoxUI(JComboBox c) {
         this.comboBox = c;
     }
-    
+
     @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static ComponentUI createUI(JComponent c) {
         return new ModernComboBoxUI((JComboBox) c);
@@ -55,51 +60,88 @@ public class ModernComboBoxUI extends BasicComboBoxUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         c.setOpaque(false);
-        
+
     }
 
     @Override
     protected JButton createArrowButton() {
         JButton button = new JButton("⌃");
-        button.setUI(new ModernButtonUI() {
+        button.putClientProperty(ModernButtonUI.JBUTTON_SEGMENT_POSITION_KEY, ModernButtonUI.JBUTTON_SEGMENT_POSITION_LAST_VALUE);
+        button.setUI(new ModernButtonUI() {            
             @Override
-            public void paint(Graphics graphics, JComponent component) {
-                final Insets buttonBorderInsets = component.getBorder().getBorderInsets(component);
-
+            public Shape getShape(JComponent c) {
                 Shape buttonRect = new RoundRectangle2D.Double(
                         0,
                         0,
-                        component.getWidth(),
-                        component.getHeight(),
+                        c.getWidth() + GENERAL_PADDING,
+                        c.getHeight() + (GENERAL_PADDING * 2),
                         CORNER_DIAMETER,
                         CORNER_DIAMETER);
                 Shape squareLeftSide = new Rectangle2D.Double(
                         0,
                         0,
-                        (component.getWidth()) / 2,
-                        component.getHeight()
+                        (CORNER_DIAMETER / 2) + 1,
+                        c.getHeight() + (GENERAL_PADDING * 2)
                 );
                 Area buttonArea = new Area(buttonRect);
                 Area squareLeftSideArea = new Area(squareLeftSide);
                 buttonArea.add(squareLeftSideArea);
-
-                paintShape(graphics, component, buttonArea);
+                
+                return buttonArea;
             }
+
+            @Override
+            public Dimension getPreferredSize(JComponent c) {
+                return new Dimension(comboBox.getWidth() + GENERAL_PADDING, comboBox.getHeight() + (GENERAL_PADDING * 2));
+            }
+            
+            
         });
+        button.setBorder(new EmptyBorder(0, 0, 0, 0));
+
         return button; //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
-    
-    
-    public static ModernBasicBorder getDefaultBorder() {
-        return new ModernBasicBorder(BUTTON_INSETS);
+
+    @Override
+    public Shape getShape(JComponent c) {
+//        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
+
+        Shape buttonRect = new RoundRectangle2D.Double(
+                0,
+                0,
+                c.getWidth(),//  + BUTTON_INSETS.left + BUTTON_INSETS.right,
+                c.getHeight(),//  + BUTTON_INSETS.top + BUTTON_INSETS.bottom,
+                CORNER_DIAMETER,
+                CORNER_DIAMETER);
+
+        Shape addonRect3 = new Rectangle2D.Double(
+                buttonRect.getBounds().x,
+                buttonRect.getBounds().y,
+                buttonRect.getBounds().width / 2,
+                buttonRect.getBounds().height);
+
+        Area compositeShape3 = new Area(buttonRect);
+        compositeShape3.add(new Area(addonRect3));
+
+        buttonRect = compositeShape3;
+
+        return buttonRect;
+    }
+
+    @Override
+    protected Insets getInsets() {
+        return BUTTON_INSETS;
     }
     
+    
+
+    public static ModernBasicBorder getDefaultBorder() {
+        return new ModernBasicBorder(new Insets(0, 0, 0, 0));
+    }
+
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("ComboBoxUI", ModernComboBoxUI.class.getName());
-//        defaults.put("ComboBox.border", ModernComboBoxUI.getDefaultBorder());
+        defaults.put("ComboBox.border", ModernComboBoxUI.getDefaultBorder());
     }
 
 }

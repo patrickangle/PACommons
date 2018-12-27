@@ -17,6 +17,7 @@
 package com.patrickangle.commons.beansbinding;
 
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
+import com.patrickangle.commons.beansbinding.interfaces.BoundField;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,18 +29,25 @@ import java.util.stream.Collectors;
  *
  * @author Patrick Angle
  */
-public class BeanBindableField<C> implements BindableField<C> {
+public class NestedBindableField<C> implements BindableField<C> {
     private Class<C> containingClass;
     private String fieldName;
     private Class fieldClass;
     
+    private String nestedFieldName;
+    private BoundField nestedBoundField;
+    
     private Method getter;
     private Method setter;
     
-    public BeanBindableField(Class<C> containingClass, String fieldName) {
+    public NestedBindableField(Class<C> containingClass, String fieldName) {
+        String[] fieldNameParts = fieldName.split(".", 2);
+        
         this.containingClass = containingClass;
-        this.fieldName = fieldName;
-
+        this.fieldName = fieldNameParts[0];
+        
+        this.nestedFieldName = fieldNameParts[1];
+                    
         String getterSignature = methodSignatureForFieldName("get", this.fieldName);
         String isSignature = methodSignatureForFieldName("is", this.fieldName);
         String setterSignature = methodSignatureForFieldName("set", this.fieldName);
@@ -149,7 +157,7 @@ public class BeanBindableField<C> implements BindableField<C> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final BeanBindableField<?> other = (BeanBindableField<?>) obj;
+        final NestedBindableField<?> other = (NestedBindableField<?>) obj;
         if (!Objects.equals(this.fieldName, other.fieldName)) {
             return false;
         }

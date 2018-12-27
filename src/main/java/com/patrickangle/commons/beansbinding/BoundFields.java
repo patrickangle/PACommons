@@ -55,8 +55,14 @@ public class BoundFields {
             return new BasicBoundField<C>(object, bindableField);
         }
     }
+
     
     public static <C extends Object> BoundField<C> boundField(C object, String fieldName) {
-        return boundField(object, BindableFields.forClassWithName(Classes.classFor(object), fieldName));
+        if (fieldName.contains(".")) {
+            return new NestedBasicBoundField<>(object, fieldName);
+        } else {
+            return boundField(object, BindableFields.forClassWithName(Classes.classFor(object), fieldName));
+        }
+        
     }
 }
