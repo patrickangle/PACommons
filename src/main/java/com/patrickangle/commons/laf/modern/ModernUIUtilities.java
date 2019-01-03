@@ -18,16 +18,20 @@ package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
+import com.patrickangle.commons.laf.modern.ui.ModernListUI;
+import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
+import com.patrickangle.commons.util.Images;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Map.Entry;
+import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.UIDefaults;
 import javax.swing.UIDefaults.LazyInputMap;
 import javax.swing.UIManager;
-import javax.swing.plaf.basic.BasicLookAndFeel;
+import javax.swing.plaf.IconUIResource;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.text.DefaultEditorKit;
 
@@ -117,10 +121,10 @@ public class ModernUIUtilities {
         ModernComboBoxUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
 
-//        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
-//        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
-//        defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
-//        defaults.put("OptionPane.errorIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneError.png"))));
+        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
+        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
+        defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
+        defaults.put("OptionPane.errorIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneError.png"))));
 //        defaults.put("ButtonUI", ModernButtonUI.class.getName());
 //        defaults.put("Button.border", new ModernButtonPainter(new Insets(2, 8, 2, 8)));
     }
@@ -149,9 +153,41 @@ public class ModernUIUtilities {
         defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("infoText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("Label.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-        defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+//        defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
+//        
+//        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
+//        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
+//        defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
+//        defaults.put("OptionPane.errorIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneError.png"))));
+//
+//        defaults.put("OptionPane.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+//        defaults.put("OptionPane.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         
+        defaults.put("Panel.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        
+        defaults.put("ToolTip.background", new Color(0xd9cc75));
+        
+        defaults.put("window", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("windowBorder", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("windowText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        
+        defaults.put("menu", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("Menu.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("Menu.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("MenuItem.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("CheckBoxMenuItem.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("RadioButtonMenuItem.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("PopupMenu.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("Seperator.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        
+        defaults.put("TextField.background", defaults.getColor(PRIMARY_DARK_COLOR_KEY));
+        
+        
+        
+        
+        
+
 //        defaults.put("EditorPane.background", defaults.getColor(defaults))
         
 //        defaults.put("text", defaults)
@@ -184,9 +220,10 @@ public class ModernUIUtilities {
         defaults.put("defaultFont", systemFont);
 
         ModernButtonUI.installIntoDefaults(defaults);
-//        ModernTextFieldUI.installIntoDefaults(defaults);
-//        ModernComboBoxUI.installIntoDefaults(defaults);
+        ModernTextFieldUI.installIntoDefaults(defaults);
+        ModernListUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
+        ModernOptionPaneUI.installIntoDefaults(defaults);
 
 //        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
 //        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));

@@ -19,6 +19,8 @@ package com.patrickangle.commons.util;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -29,5 +31,17 @@ public class Images {
         URL url = ClassLoader.getSystemResource(classpath);
         Toolkit kit = Toolkit.getDefaultToolkit();
         return kit.createImage(url);
+    }
+    
+    public static final List<Image> fromClasspaths(List<String> classpaths) {
+        List<Image> images = new ArrayList<>(classpaths.size());
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        
+        for (int i = 0; i < classpaths.size(); i++) {
+            URL url = ClassLoader.getSystemResource(classpaths.get(i));
+            images.add(kit.createImage(url));
+        }
+        
+        return images;
     }
 }

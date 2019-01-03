@@ -17,13 +17,14 @@
 package com.patrickangle.commons.logging;
 
 import java.awt.Color;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author patrickangle
  */
-public enum ConsoleColors {
+public enum ConsoleColor {
 //    public enum Colors {
         Reset(0, new Color(0, 0, 0)),
         
@@ -67,7 +68,7 @@ public enum ConsoleColors {
         private int code;
         private Color color;
         
-        private ConsoleColors(int code, Color color) {
+        private ConsoleColor(int code, Color color) {
             this.code = code;
             this.color = color;
         }
@@ -84,7 +85,7 @@ public enum ConsoleColors {
             return this.color;
         }
         
-        public static String getEscapeCode(ConsoleColors... codes) {
+        public static String getEscapeCode(ConsoleColor... codes) {
             StringBuilder returnValue = new StringBuilder("\033[");
             
             for (int i = 0; i < codes.length; i++) {
@@ -98,6 +99,51 @@ public enum ConsoleColors {
             
             return returnValue.toString();
         }
+        
+        public static Color foregroundForEscapeCode(String escapeCode) {
+            Color returnColor = ConsoleColor.WhiteForeground.getColor();
+            
+            List<ConsoleColor> consoleColors = colorsFromEscapeCode(escapeCode);
+            
+            for (ConsoleColor consoleColor : consoleColors) {
+                if (consoleColor.toString().toLowerCase().contains("foreground")) {
+                    returnColor = consoleColor.getColor();
+                }
+            }
+            
+            return returnColor;
+        }
+        
+        private static boolean isEscapeCode(String escapeCode) {
+            return escapeCode.startsWith("\033[") && escapeCode.endsWith("m");
+        }
+        
+        private static List<ConsoleColor> colorsFromEscapeCode(String escapeCode) {
+            if (!isEscapeCode(escapeCode)) {
+                return List.of();
+            }
+            
+            String codes = escapeCode.substring("\033[".length(), escapeCode.length() - "m".length());
+            
+            String[] codeParts = codes.split("\\;");
+            
+            List<ConsoleColor> returnList = new ArrayList<>();
+            
+            for (String codeString : codeParts) {
+                try {
+                    int code = Integer.parseInt(codeString);
+                    for (ConsoleColor cc : ConsoleColor.values()) {
+                        if (cc.getCode() == code) {
+                            returnList.add(cc);
+                        }
+                    }
+                }  catch (Exception e) {
+                }
+            }
+            
+            return returnList;
+        }
+        
 //    }
 //    // Reset
 //    public static final String RESET = "\033[0m";  // Text Reset

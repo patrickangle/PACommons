@@ -29,6 +29,8 @@ import com.patrickangle.commons.beansbinding.swing.boundfields.JSpinnerBoundFiel
 import com.patrickangle.commons.beansbinding.swing.boundfields.JTextComponentBoundField;
 import com.patrickangle.commons.beansbinding.swing.models.ObservableComboBoxModel;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
+import com.patrickangle.commons.objectediting.ObjectEditingDialog;
+import com.patrickangle.commons.objectediting.annotations.NestedObjectEditingProperty;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.editors.Point2dObjectEditor;
 import com.patrickangle.commons.objectediting.editors.list.ListObjectEditor;
@@ -38,6 +40,10 @@ import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
 import com.patrickangle.commons.util.Lists;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +52,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -104,6 +111,15 @@ public class ObjectFieldEditorFactory {
         } else if (CustomObjectEditingComponent.class.isAssignableFrom(fieldClass)) {
             // If a custom editor is available for a class type, it will always be favored over all default editors.
             componentReturn = ((CustomObjectEditingComponent) objectField.getValue()).customObjectEditingComponent(bindableField, bindingGroup, realizedUndoManager);
+        } else if (objectField.getFieldClass().isAnnotationPresent(NestedObjectEditingProperty.class)) {
+            JButton button = new JButton("Edit " + objectField.getFieldClass().getSimpleName());
+
+            button.addActionListener((ActionEvent ae) -> {
+                new ObjectEditingDialog((Frame) null, true, objectField.getValue()).setVisible(true);
+            });
+            
+            componentReturn = new ComponentReturn(button, true);
+
         } else if (Enum.class.isAssignableFrom(fieldClass)) {
             componentReturn = createBoundComponentForEnum(objectField, bindingGroup);
         } else if (fieldClass == Boolean.TYPE) {
@@ -132,7 +148,12 @@ public class ObjectFieldEditorFactory {
                     break;
             }
         } else {
-            componentReturn = createBoundComponentForString(objectField, bindingGroup, realizedUndoManager);
+            if (configInfo.useMultiLineTextEditor()) {
+                componentReturn = createBoundComponentForMultiLineString(objectField, bindingGroup, realizedUndoManager);
+            } else {
+                componentReturn = createBoundComponentForString(objectField, bindingGroup, realizedUndoManager);
+            }
+            
         }
         
         
@@ -222,6 +243,43 @@ public class ObjectFieldEditorFactory {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
         
         JTextField textField = new JTextField();
+
+        String setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
+        switch (configInfo.setOn()) {
+            case ANY_CHANGE:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
+                break;
+            case FOCUS_LOST:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_FOCUS_LOST;
+                break;
+            case ACTION_OR_FOCUS_LOST:
+                setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
+                break;
+        }
+        
+        textField.getDocument().addUndoableEditListener(undoManager);
+        
+        BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, setOn), Binding.UpdateStrategy.READ_WRITE);
+        bindingGroup.add(binding);
+
+        return new ComponentReturn(textField, false);
+    }
+    
+    private static ComponentReturn createBoundComponentForMultiLineString(BoundField objectField, BindingGroup bindingGroup, UndoManager undoManager) {
+        ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
+        
+        JEditorPane textField = new JEditorPane() {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension preferredSize = super.getPreferredSize();
+                preferredSize.height = 150;
+                return preferredSize;
+            }
+            
+        };
+        
+        textField.setFont(new Font(Font.DIALOG_INPUT, Font.PLAIN, 12));
+        
 
         String setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
         switch (configInfo.setOn()) {

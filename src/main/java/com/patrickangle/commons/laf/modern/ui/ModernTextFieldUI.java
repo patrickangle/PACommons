@@ -192,7 +192,7 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         int cornerDiameter = 0;
 
         if (isSearchField(c)) {
-            cornerDiameter = (c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + TEXT_FIELD_INSETS.top + TEXT_FIELD_INSETS.bottom) / 2;
+            cornerDiameter = (c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + TEXT_FIELD_INSETS.top + TEXT_FIELD_INSETS.bottom);
         }
 
         Shape buttonRect = new RoundRectangle2D.Double(

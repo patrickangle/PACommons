@@ -17,6 +17,8 @@
 package com.patrickangle.commons.util;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -29,18 +31,33 @@ import javax.swing.ImageIcon;
  * @author patrickangle
  */
 public class Icons {
-    public static Icon coloredTagIcon(Color innerColor, Color outerColor, int size) {
-        Image image = new BufferedImage(size, size, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D g = (Graphics2D) image.getGraphics();
-        GraphicsHelpers.enableAntialiasing(g);
-        
-        g.setColor(outerColor);
-        g.fillOval(0, 0, size, size);
-        
-        g.setColor(innerColor);
-        g.fillOval(1, 1, size-2, size-2);
-        
-        g.dispose();
-        return new ImageIcon(image);
+
+    public static Icon coloredTagIcon(final Color innerColor, final Color outerColor, final int size) {
+        return new Icon() {
+            @Override
+            public void paintIcon(Component c, Graphics graphics, int x, int y) {
+                Graphics2D g = (Graphics2D) graphics.create();
+                GraphicsHelpers.enableAntialiasing(g);
+
+                g.setColor(outerColor);
+                g.fillOval(x, y, size, size);
+
+                g.setColor(innerColor);
+                g.fillOval(x + 1, y + 1, size - 2, size - 2);
+
+                g.dispose();
+            }
+
+            @Override
+            public int getIconWidth() {
+                return size;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return size;
+            }
+
+        };
     }
 }
