@@ -76,5 +76,59 @@ public class Strings {
             return components.a + (components.b + 1);
         }
     }
+    
+    public static String bitwiseOr(String a, String b) {
+        int length = Math.max(a.length(), b.length());
+        
+        char[] aChars = new char[length];
+        char[] bChars = new char[length];
+        
+        a.getChars(0, a.length() - 1, aChars, 0);
+        b.getChars(0, b.length() - 1, bChars, 0);
+        
+        char[] orChars = new char[length];
+        
+        for (int i = 0; i < length; i++) {
+            orChars[i] = (char) (aChars[i] | bChars[i]);
+        }
+        
+        return String.valueOf(orChars);
+    }
+    
+    public static String bitwiseXor(String a, String b) {
+        int length = Math.max(a.length(), b.length());
+        
+        char[] aChars = new char[length];
+        char[] bChars = new char[length];
+        
+        a.getChars(0, a.length() - 1, aChars, 0);
+        b.getChars(0, b.length() - 1, bChars, 0);
+        
+        char[] xorChars = new char[length];
+        
+        for (int i = 0; i < length; i++) {
+            xorChars[i] = (char) (aChars[i] ^ bChars[i]);
+        }
+        
+        return String.valueOf(xorChars);
+    }
+    
+    public static String bitwiseAnd(String a, String b) {
+        int length = Math.max(a.length(), b.length());
+        
+        char[] aChars = new char[length];
+        char[] bChars = new char[length];
+        
+        a.getChars(0, a.length() - 1, aChars, 0);
+        b.getChars(0, b.length() - 1, bChars, 0);
+        
+        char[] andChars = new char[length];
+        
+        for (int i = 0; i < length; i++) {
+            andChars[i] = (char) (aChars[i] & bChars[i]);
+        }
+        
+        return String.valueOf(andChars);
+    }
 
 }

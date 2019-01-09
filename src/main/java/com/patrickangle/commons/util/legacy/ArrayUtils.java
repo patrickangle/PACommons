@@ -93,8 +93,7 @@ public class ArrayUtils {
         return true;
     }
 
-    @Deprecated(forRemoval = true)
-    public static byte[] arrayListToArray(ArrayList<Byte> arrayList) {
+    public static byte[] arrayListToArray(List<Byte> arrayList) {
         byte[] returnArray = new byte[arrayList.size()];
 
         for (int i = 0; i < arrayList.size(); i++) {
