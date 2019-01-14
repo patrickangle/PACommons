@@ -17,14 +17,14 @@
 package com.patrickangle.commons.util;
 
 import com.patrickangle.commons.logging.Logging;
-import com.patrickangle.commons.util.legacy.ArrayUtils;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -35,6 +35,10 @@ public class Exceptions {
     private static final int MAXIMUM_LINES_PER_CAUSE = 100;
     
     public static final Thread.UncaughtExceptionHandler GUI_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
+        presentExceptionDialog(thread, throwable);
+    };
+    
+    public static final void presentExceptionDialog(Thread thread, Throwable throwable) {
         StringWriter writer = new StringWriter();
         writer.write(Platform.shortSystemDescriptor() + "\n");
         writer.write("Exception on thread: " + thread.getName() + "\n");
@@ -51,18 +55,25 @@ public class Exceptions {
         area.setTabSize(4);
         area.setText(exceptionInformation);
         area.setCaretPosition(0);
+        area.setEditable(false);
         
         String copyOption = "Copy to Clipboard";
         
-        JOptionPane pane = new JOptionPane(new JScrollPane(area), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION, null, new String[]{copyOption, "Close"});
+        JScrollPane scrollPane = new JScrollPane(area);
+        scrollPane.setMaximumSize(new Dimension(480,320));
+        area.setBorder(new EmptyBorder(0, 0, 0, 0));
+        scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+        
+        JOptionPane pane = new JOptionPane(scrollPane, JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION, null, new String[]{copyOption, "Close"});
         pane.createDialog(null, "Uncaught Exception").setVisible(true);
         
         if (pane.getValue().equals(copyOption)) {
             area.setSelectionStart(0);
             area.setSelectionEnd(area.getText().length());
             area.copy();
+            area.setSelectionEnd(0);
         }
-    };
+    }
     
     public static final Thread.UncaughtExceptionHandler HEADLESS_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
         Logging.exception(Exceptions.class, throwable);
