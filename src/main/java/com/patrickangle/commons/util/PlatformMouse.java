@@ -18,16 +18,22 @@ package com.patrickangle.commons.util;
 
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author patrickangle
  */
 public class PlatformMouse {
+    /**
+     * Detect an event that is a Right Click, including macOS Ctrl+Click
+     * @param e
+     * @return 
+     */
     public static boolean isRightClick(MouseEvent e) {
         return (e.getButton() == MouseEvent.BUTTON3
             || (OperatingSystems.current() == OperatingSystems.Macintosh
             && (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0
-            && (e.getModifiers() & InputEvent.CTRL_MASK) != 0));
+            && (e.getModifiers() & InputEvent.CTRL_MASK) != 0)) || SwingUtilities.isRightMouseButton(e);
     }
 }
