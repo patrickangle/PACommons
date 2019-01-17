@@ -33,4 +33,13 @@ public class MathUtils {
     public static double clamp(double minimum, double number, double maximum) {
         return Math.min(maximum, Math.max(minimum, number));
     }
+    
+    public static long roundUpToPowerOfTwo(long x) {
+        return (long) Math.pow(2, (int) (Math.log(x - 1) / Math.log(2)) + 1);
+    }
+
+    
+    public static double roundUpToPowerOfTwo(double x) {
+        return Math.pow(2, (int) (Math.log(x - 1) / Math.log(2)) + 1);
+    }
 }

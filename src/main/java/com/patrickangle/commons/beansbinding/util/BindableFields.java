@@ -17,7 +17,6 @@
 package com.patrickangle.commons.beansbinding.util;
 
 import com.patrickangle.commons.beansbinding.BeanBindableField;
-import com.patrickangle.commons.beansbinding.NestedBindableField;
 import com.patrickangle.commons.beansbinding.SyntheticBindableField;
 import com.patrickangle.commons.beansbinding.interfaces.SyntheticFieldProvider;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
@@ -26,7 +25,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,19 +36,23 @@ import java.util.stream.Collectors;
  * @author Patrick Angle
  */
 public class BindableFields {
+
+    private static final Map<Class, Map<String, BindableField>> cachedBindableFields = new HashMap<Class, Map<String, BindableField>>(64);
+
     public static <C extends Object> BindableField<C> forClassWithName(Class<C> containingClass, String fieldName) {
-//        if (fieldName.contains(".")) {
-//            return new NestedBindableField<>((Class) containingClass, fieldName);
         if (fieldName.contains("$") && !fieldName.startsWith("$")) {
             return new SyntheticBindableField<>((Class) containingClass, fieldName);
         } else {
-            return new BeanBindableField<>(containingClass, fieldName);
+            // We cast here as the only way for an entry to be cached was for this to be true at one point.
+            return (BindableField<C>) cachedBindableFields.computeIfAbsent(containingClass, (c) -> {
+                return mappedForClass(containingClass);
+            }).get(fieldName);
         }
     }
-    
-    public static <C extends Object> List<BindableField<C>> forClass(Class<C> containingClass) {
-        List<BindableField<C>> returnList = new ArrayList<>();
-        
+
+    protected static Map<String, BindableField> mappedForClass(Class containingClass) {
+        Map<String, BindableField> returnList = new HashMap<>();
+
         for (Method method : containingClass.getMethods()) {
             // A getter must start with get, take no parameters, be public, and not return void.
             if ((method.getName().startsWith("get") || method.getName().startsWith("is"))
@@ -59,34 +65,86 @@ public class BindableFields {
 
                 // Try and create a BeanBindableField, but if that fails no further action is needed.
                 try {
-                    returnList.add(new BeanBindableField<>(containingClass, fieldName));
-                } catch (Exception e) {}
+                    returnList.put(fieldName, new BeanBindableField<>(containingClass, fieldName));
+                } catch (Exception e) {
+                }
             }
         }
-        
+
         if (SyntheticBindableField.class.isAssignableFrom(containingClass)) {
             try {
                 List<String> availableSyntheticFieldNames = (List<String>) containingClass.getMethod("syntheticFieldNames").invoke(null);
-                
+
                 availableSyntheticFieldNames.forEach((syntheticFieldName) -> {
                     try {
-                        returnList.add((BindableField<C>) new SyntheticBindableField<>((Class<? extends SyntheticFieldProvider>) containingClass, syntheticFieldName));
-                    } catch (Exception e) {}
+                        returnList.put(syntheticFieldName, new SyntheticBindableField<>((Class<? extends SyntheticFieldProvider>) containingClass, syntheticFieldName));
+                    } catch (Exception e) {
+                    }
                 });
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
-        
         return returnList;
     }
-    
- 
-    
+
+    protected static <C extends Object> BindableField<C> forClassWithNameNoCache(Class<C> containingClass, String fieldName) {
+        if (fieldName.contains("$") && !fieldName.startsWith("$")) {
+            return new SyntheticBindableField<>((Class) containingClass, fieldName);
+        } else {
+            return new BeanBindableField<>(containingClass, fieldName);
+        }
+    }
+
+    public static <C extends Object> List<BindableField<C>> forClass(Class<C> containingClass) {
+        List<BindableField<C>> returnValue = List.copyOf((Collection) cachedBindableFields.computeIfAbsent(containingClass, (c) -> {
+            return mappedForClass(c);
+        }).values());
+
+        return returnValue;
+
+//        List<BindableField<C>> returnList = new ArrayList<>();
+//
+//        for (Method method : containingClass.getMethods()) {
+//            // A getter must start with get, take no parameters, be public, and not return void.
+//            if ((method.getName().startsWith("get") || method.getName().startsWith("is"))
+//                    && method.getParameterCount() == 0
+//                    && Modifier.isPublic(method.getModifiers())
+//                    && !method.getReturnType().equals(Void.TYPE)) {
+//                // Reformat name to be in the proper case
+//                String fieldName = method.getName().substring((method.getName().startsWith("get") ? 3 : 2));
+//                fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+//
+//                // Try and create a BeanBindableField, but if that fails no further action is needed.
+//                try {
+//                    returnList.add(new BeanBindableField<>(containingClass, fieldName));
+//                } catch (Exception e) {
+//                }
+//            }
+//        }
+//
+//        if (SyntheticBindableField.class.isAssignableFrom(containingClass)) {
+//            try {
+//                List<String> availableSyntheticFieldNames = (List<String>) containingClass.getMethod("syntheticFieldNames").invoke(null);
+//
+//                availableSyntheticFieldNames.forEach((syntheticFieldName) -> {
+//                    try {
+//                        returnList.add((BindableField<C>) new SyntheticBindableField<>((Class<? extends SyntheticFieldProvider>) containingClass, syntheticFieldName));
+//                    } catch (Exception e) {
+//                    }
+//                });
+//            } catch (Exception e) {
+//            }
+//        }
+//
+//        return returnList;
+    }
+
     public static <C extends Object> List<BindableField<C>> forClassIsAssignable(Class<C> containingClass, Class isAssignableToClass) {
         return BindableFields.forClass(containingClass).stream().filter((t) -> {
             return t.getFieldClass().equals(isAssignableToClass);
         }).collect(Collectors.toList());
     }
-    
+
     public static Field reflectionFieldForBindableField(BindableField bindableField) {
         if (bindableField == null) {
             return null;

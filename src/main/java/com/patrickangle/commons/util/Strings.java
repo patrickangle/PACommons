@@ -17,6 +17,8 @@
 package com.patrickangle.commons.util;
 
 import com.patrickangle.commons.Pair;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -131,4 +133,13 @@ public class Strings {
         return String.valueOf(andChars);
     }
 
+    public static String fromFileOnClasspath(String path) throws IOException {
+        return fromFileOnClasspath(path, Charset.defaultCharset());
+    }
+    
+    public static String fromFileOnClasspath(String path, Charset charset) throws IOException {
+        byte[] encoded = Strings.class.getClassLoader().getResourceAsStream(path).readAllBytes();
+        return new String(encoded, charset);
+    }
+    
 }

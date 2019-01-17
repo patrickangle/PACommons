@@ -40,68 +40,70 @@ import java.util.Map;
  * @author Patrick Angle
  */
 public class LocalNetworkInterfaces {
+
+    private static final String WINDOWS_NIC_INFO_GETTER = "wmic nic get DeviceID,MACAddress,NetConnectionID /format:CSV";
+
     public static class LocalNetworkInterface {
+
         public static enum IpAddressVersion {
             IPv4,
             IPv6;
         }
-        
+
         String humanReadableName;
         String address;
         short subnetMask;
         String networkAddress;
         IpAddressVersion addressVersion;
-        
+
         private LocalNetworkInterface(InterfaceAddress interfaceAddress) {
             this(interfaceAddress.getAddress() + "\\" + interfaceAddress.getNetworkPrefixLength(), interfaceAddress);
         }
-        
+
         private LocalNetworkInterface(String humanReadableName, InterfaceAddress interfaceAddress) {
             this.humanReadableName = humanReadableName;
             this.address = interfaceAddress.getAddress().getHostAddress();
             this.subnetMask = interfaceAddress.getNetworkPrefixLength();
-            
-            
+
             StringBuilder expandedSubnetMaskString = new StringBuilder();
-                for (int i = 0; i < subnetMask; i++) {
-                    expandedSubnetMaskString.insert(0, "1");
-                }
-                while(expandedSubnetMaskString.length() < 128) {
-                    expandedSubnetMaskString.append("0");
-                }
+            for (int i = 0; i < subnetMask; i++) {
+                expandedSubnetMaskString.insert(0, "1");
+            }
+            while (expandedSubnetMaskString.length() < 128) {
+                expandedSubnetMaskString.append("0");
+            }
 
             if (interfaceAddress.getAddress() instanceof Inet4Address) {
                 Inet4Address inetAddress = (Inet4Address) interfaceAddress.getAddress();
-                
+
                 byte[] expandedSubnetMask = new byte[4];
                 String clippedExpandedSubnetMaskString = expandedSubnetMaskString.substring(0, 32);
                 for (int i = 0; i < expandedSubnetMask.length; i++) {
-                    expandedSubnetMask[i] = (byte)Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
+                    expandedSubnetMask[i] = (byte) Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
                 }
-                
+
                 byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 4);
 
                 for (int i = 0; i < 4; i++) {
-                    addressBytes[i] &= expandedSubnetMask[i]; 
+                    addressBytes[i] &= expandedSubnetMask[i];
                 }
-                
+
                 try {
                     this.networkAddress = InetAddress.getByAddress(addressBytes).getHostAddress();
                     this.addressVersion = IpAddressVersion.IPv4;
                 } catch (UnknownHostException ex) {
                     Logging.exception(LocalNetworkInterface.class, ex);
                 }
-                
-                
+
             } else if (interfaceAddress.getAddress() instanceof Inet6Address) {
                 Inet6Address inetAddress = (Inet6Address) interfaceAddress.getAddress();
-                
+
                 byte[] expandedSubnetMask = new byte[16];
                 String clippedExpandedSubnetMaskString = expandedSubnetMaskString.substring(0, 128);
                 for (int i = 0; i < expandedSubnetMask.length; i++) {
-                    expandedSubnetMask[i] = (byte)Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
+                    expandedSubnetMask[i] = (byte) Integer.parseUnsignedInt(clippedExpandedSubnetMaskString.substring((i * 8), ((i * 8) + 8)), 2);
                 }
-                
+
                 byte[] addressBytes = Arrays.copyOf(inetAddress.getAddress(), 16);
 
                 for (int i = 0; i < 16; i++) {
@@ -144,61 +146,51 @@ public class LocalNetworkInterfaces {
             return "LocalNetworkInterface{" + "humanReadableName=" + humanReadableName + ", address=" + address + ", subnetMask=" + subnetMask + ", networkAddress=" + networkAddress + ", addressVersion=" + addressVersion + '}';
         }
     }
-    
-    private static class WindowsNetworkInterface {
-        private String connectionName;
-        private String networkAdapter;
-        private String macAddress;
-        private String transportName;
 
-        public WindowsNetworkInterface(String connectionName, String networkAdapter, String macAddress, String transportName) {
+    private static class WindowsNetworkInterface {
+
+        private String connectionName;
+        private String macAddress;
+
+        public WindowsNetworkInterface(String connectionName, String macAddress) {
             this.connectionName = connectionName;
-            this.networkAdapter = networkAdapter;
             this.macAddress = macAddress;
-            this.transportName = transportName;
         }
 
         public String getConnectionName() {
             return connectionName;
         }
 
-        public String getNetworkAdapter() {
-            return networkAdapter;
-        }
-
         public String getMacAddress() {
             return macAddress;
         }
 
-        public String getTransportName() {
-            return transportName;
-        }
     }
-    
+
     private static List<LocalNetworkInterface> availableInterfaces;
-    
+
     public static List<LocalNetworkInterface> getAvailableInterfaces() {
         if (LocalNetworkInterfaces.availableInterfaces == null) {
             LocalNetworkInterfaces.updateAvailableInterfaces();
         }
         return LocalNetworkInterfaces.availableInterfaces;
     }
-    
+
     public static void updateAvailableInterfaces() {
         List<LocalNetworkInterface> availableInterfaces = new ArrayList<LocalNetworkInterface>();
-        
-        Map<String, WindowsNetworkInterface> windowsInterfaces = windowsNetworkInterfaces();
-        
+
+        Map<Integer, WindowsNetworkInterface> windowsInterfaces = windowsNetworkInterfaces();
+
         try {
             for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                String macAddress = LocalNetworkInterfaces.hardwareAddressByteArrayToString(networkInterface.getHardwareAddress());
-                
+                String humanReadableName = networkInterface.getDisplayName();
+
+                if (windowsInterfaces.containsKey(networkInterface.getIndex())) {
+                    humanReadableName = windowsInterfaces.get(networkInterface.getIndex()).getConnectionName();
+                }
+
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                    String humanReadableName = networkInterface.getDisplayName();
-                    
-                    if (windowsInterfaces.containsKey(macAddress)) {
-                        humanReadableName = windowsInterfaces.get(macAddress).getConnectionName();
-                    }
+
                     LocalNetworkInterface newInterface = new LocalNetworkInterface(humanReadableName, interfaceAddress);
                     availableInterfaces.add(newInterface);
                 }
@@ -206,40 +198,36 @@ public class LocalNetworkInterfaces {
         } catch (SocketException ex) {
             Logging.exception(LocalNetworkInterfaces.class, ex);
         }
-        
+
         LocalNetworkInterfaces.availableInterfaces = availableInterfaces;
     }
-    
-    private static Map<String, WindowsNetworkInterface> windowsNetworkInterfaces() {
-        Map<String, WindowsNetworkInterface> returnInterfaces = new HashMap<String, WindowsNetworkInterface>();
-        
+
+    private static Map<Integer, WindowsNetworkInterface> windowsNetworkInterfaces() {
+        Map<Integer, WindowsNetworkInterface> returnInterfaces = new HashMap<Integer, WindowsNetworkInterface>();
+
         if (OperatingSystems.current() == OperatingSystems.Windows) {
             try {
-                Process getMacProcess = Runtime.getRuntime().exec("getmac /fo csv /v");
-                
+                Process getMacProcess = Runtime.getRuntime().exec(WINDOWS_NIC_INFO_GETTER);
+
                 BufferedReader stdInput = new BufferedReader(new InputStreamReader(getMacProcess.getInputStream()));
                 BufferedReader stdError = new BufferedReader(new InputStreamReader(getMacProcess.getErrorStream()));
-                
+
                 boolean isFirst = true;
                 String s = null;
                 while ((s = stdInput.readLine()) != null) {
-                    if (!isFirst) {                        
-                        String[] params = s.split(",");
-                        for (int i = 0; i < params.length; i++) {
-                            if (params[i].startsWith("\"")) {
-                                params[i] = params[i].substring(1);
-                            }
-                            if (params[i].endsWith("\"")) {
-                                params[i] = params[i].substring(0, params[i].length() - 1);
-                            }
+                    if (!isFirst && !s.isBlank()) {
+                        String[] params = s.split(",", 4);
+
+                        try {
+                            returnInterfaces.put(Integer.parseInt(params[1]), new WindowsNetworkInterface(params[3], params[2]));
+                        } catch (Exception e) {
+                            // Ignore malformed entries.
                         }
-                        
-                        returnInterfaces.put(params[2], new WindowsNetworkInterface(params[0], params[1], params[2], params[3]));
                     }
-                    
+
                     isFirst = false;
                 }
-                
+
                 while ((s = stdError.readLine()) != null) {
                     Logging.error(LocalNetworkInterfaces.class, s);
                 }
@@ -247,15 +235,10 @@ public class LocalNetworkInterfaces {
                 Logging.exception(LocalNetworkInterfaces.class, ex);
             }
         }
-        
+
         return returnInterfaces;
     }
-    
-    
-    
-    
-    
-    
+
     private static String hardwareAddressByteArrayToString(byte[] hardwareAddress) {
         if (hardwareAddress == null) {
             return "";
@@ -266,57 +249,56 @@ public class LocalNetworkInterfaces {
         }
         return sb.toString();
     }
-    
+
     // TODO: Implement the reverse of this function
-    public static String uncompressIPv6Address(String ipv6Address){
-         StringBuilder address = new StringBuilder(ipv6Address);
+    public static String uncompressIPv6Address(String ipv6Address) {
+        StringBuilder address = new StringBuilder(ipv6Address);
         // Store the location where you need add zeroes that were removed during uncompression
-        int tempCompressLocation=address.indexOf("::");
-         
+        int tempCompressLocation = address.indexOf("::");
+
         //if address was compressed and zeroes were removed, remove that marker i.e "::"
-        if(tempCompressLocation!=-1){
-            address.replace(tempCompressLocation,tempCompressLocation+2,":");
+        if (tempCompressLocation != -1) {
+            address.replace(tempCompressLocation, tempCompressLocation + 2, ":");
         }
-         
+
         //extract rest of the components by splitting them using ":"
-        String[] addressComponents=address.toString().split(":");
-         
-        for(int i=0;i<addressComponents.length;i++){
-            StringBuilder uncompressedComponent=new StringBuilder("");
-            for(int j=0;j<4-addressComponents[i].length();j++){
-                 
+        String[] addressComponents = address.toString().split(":");
+
+        for (int i = 0; i < addressComponents.length; i++) {
+            StringBuilder uncompressedComponent = new StringBuilder("");
+            for (int j = 0; j < 4 - addressComponents[i].length(); j++) {
+
                 //add a padding of the ignored zeroes during compression if required
                 uncompressedComponent.append("0");
-                 
+
             }
             uncompressedComponent.append(addressComponents[i]);
-             
+
             //replace the compressed component with the uncompressed one
-            addressComponents[i]=uncompressedComponent.toString();
+            addressComponents[i] = uncompressedComponent.toString();
         }
-         
-         
+
         //Iterate over the uncompressed address components to add the ignored "0000" components depending on position of "::"
-        ArrayList<String> uncompressedAddressComponents=new ArrayList<String>();
-         
-        for(int i=0;i<addressComponents.length;i++){
-            if(i==tempCompressLocation/4){
-                for(int j=0;j<8-addressComponents.length;j++){
+        ArrayList<String> uncompressedAddressComponents = new ArrayList<String>();
+
+        for (int i = 0; i < addressComponents.length; i++) {
+            if (i == tempCompressLocation / 4) {
+                for (int j = 0; j < 8 - addressComponents.length; j++) {
                     uncompressedAddressComponents.add("0000");
                 }
             }
             uncompressedAddressComponents.add(addressComponents[i]);
-             
+
         }
-         
+
         //iterate over the uncomopressed components to append and produce a full address
-        StringBuilder uncompressedAddress=new StringBuilder("");
-        Iterator it=uncompressedAddressComponents.iterator();
+        StringBuilder uncompressedAddress = new StringBuilder("");
+        Iterator it = uncompressedAddressComponents.iterator();
         while (it.hasNext()) {
             uncompressedAddress.append(it.next().toString());
             uncompressedAddress.append(":");
         }
-        uncompressedAddress.replace(uncompressedAddress.length()-1, uncompressedAddress.length(), "");
+        uncompressedAddress.replace(uncompressedAddress.length() - 1, uncompressedAddress.length(), "");
         return uncompressedAddress.toString();
     }
 }
