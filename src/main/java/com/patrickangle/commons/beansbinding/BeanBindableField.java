@@ -119,6 +119,7 @@ public class BeanBindableField<C> implements BindableField<C> {
     }
     
     private static String methodSignatureForFieldName(String verb, String fieldName) {
+        // Substrings are expensive as of Java 7, but the performance issue here is repeated calls to this method instead of caching.
         return verb + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
     
