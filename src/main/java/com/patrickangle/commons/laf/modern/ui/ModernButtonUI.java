@@ -79,12 +79,13 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         super.installUI(c);
         c.setOpaque(false);
     }
-
+    
     @Override
     public void paint(Graphics graphics, JComponent component) {
         paintShape(graphics, component, getShape(component));
         super.paint(graphics, component);
     }
+    
     
     
 

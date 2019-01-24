@@ -74,6 +74,7 @@ public class ModernOptionPaneUI extends BasicOptionPaneUI {
      * body of the message.
      * The icon and body should be aligned on their top edges
      */
+    @Override
     protected Container createMessageArea() {
         final JPanel top = new JPanel();
         top.setBorder(UIManager.getBorder("OptionPane.messageAreaBorder"));
@@ -107,6 +108,13 @@ public class ModernOptionPaneUI extends BasicOptionPaneUI {
 
         return top;
     }
+
+    @Override
+    protected int getMaxCharactersPerLineCount() {
+        return 100;
+    }
+//    
+    
 
     /**
      * AquaButtonAreaLayout lays out all

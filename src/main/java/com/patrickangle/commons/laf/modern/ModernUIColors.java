@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.laf.modern.ui;
+package com.patrickangle.commons.laf.modern;
 
 import java.awt.Color;
 
@@ -23,20 +23,20 @@ import java.awt.Color;
  * @author patrickangle
  */
 public class ModernUIColors {
-    public static final Color accentHighlightColor = new Color(0x0090e8);
-    public static final Color accentLightColor = new Color(0x146bb9);
-    public static final Color accentMediumColor = new Color(0x1e4e89);
-    public static final Color accentDarkColor = new Color(0x1d2c6c);
+    public static final Color accentHighlightColor = new Color(0x1190eb);
+    public static final Color accentLightColor = new Color(0x1b6bbc);
+    public static final Color accentMediumColor = new Color(0x204e8b);
+    public static final Color accentDarkColor = new Color(0x1e3c6e);
 
-    public static final Color primaryLightColor = new Color(0xd3e1eb);
-    public static final Color primaryMediumLightColor = new Color(0x9faebb);
-    public static final Color primaryMediumColor = new Color(0x67778a);
-    public static final Color primaryMediumDarkColor = new Color(0x47566d);
-    public static final Color primaryDarkColor = new Color(0x29323f);
-    public static final Color primaryUltraDarkColor = new Color(0x232a35);
+    public static final Color primaryLightColor = new Color(0xdfe6eb);
+    public static final Color primaryMediumLightColor = new Color(0xa9b2bc);
+    public static final Color primaryMediumColor = new Color(0x767f8b);
+    public static final Color primaryMediumDarkColor = new Color(0x58606e);
+    public static final Color primaryDarkColor = new Color(0x303640);
+    public static final Color primaryUltraDarkColor = new Color(0x282d35);
 
-    public static final Color backgroundColor = new Color(0x212833);
-    public static final Color workspaceBackgroundColor = new Color(0x151a21);
+    public static final Color backgroundColor = new Color(0x262b33);
+    public static final Color workspaceBackgroundColor = new Color(0x191c21);
 
     public static final Color tooltipColor = new Color(0xd9cc75);
 

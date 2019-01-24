@@ -164,11 +164,20 @@ public class SyntheticBindableField<C> implements BindableField<C> {
     
     @Override
     public String toString() {
-        return containingClass.getName() + "." + fieldName + " [ " + ((getter != null) ? getter.getName() + "(" + Arrays.asList(getter.getParameterTypes()).stream().map((t) -> {
-            return t.getName();
-        }).collect(Collectors.toList()).toString() + ") -> " + getter.getReturnType().getName() + "" : "-") + " | " + ((setter != null) ? setter.getName() + "(" + Arrays.asList(setter.getParameterTypes()).stream().map((t) -> {
-            return t.getName();
-        }).collect(Collectors.toList()).toString() + ")" : "-") + " ]";
+        final StringBuilder sb = new StringBuilder();
+        sb.append(containingClass.getSimpleName());
+        sb.append(".");
+        sb.append(fieldName);
+        sb.append("<");
+        sb.append(fieldClass.getSimpleName());
+        sb.append("(");
+        sb.append(beanFieldName);
+        sb.append(")>[");
+        sb.append(getter != null ? "R" : "-");
+        sb.append(setter != null ? "W" : "-");
+        sb.append("]");
+        
+        return sb.toString();
     }
 
     @Override
