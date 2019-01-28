@@ -24,11 +24,11 @@ import com.patrickangle.commons.util.Fields;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class BindableFields {
 
-    private static final Map<Class, Map<String, BindableField>> cachedBindableFields = new HashMap<Class, Map<String, BindableField>>(64);
+    private static final Map<Class, Map<String, BindableField>> cachedBindableFields = new ConcurrentHashMap<Class, Map<String, BindableField>>(64);
 
     public static <C extends Object> BindableField<C> forClassWithName(Class<C> containingClass, String fieldName) {
         if (fieldName.contains("$") && !fieldName.startsWith("$")) {
