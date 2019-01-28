@@ -20,9 +20,11 @@ import com.patrickangle.commons.laf.modern.keybindings.GTKKeyBindings;
 import com.patrickangle.commons.laf.modern.keybindings.MacKeyBindings;
 import com.patrickangle.commons.laf.modern.keybindings.WindowsKeyBindings;
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
+import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
+import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.util.Images;
@@ -119,6 +121,8 @@ public class ModernUIUtilities {
         ModernComboBoxUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
         ModernOptionPaneUI.installIntoDefaults(defaults);
+        ModernCheckBoxUI.installIntoDefaults(defaults);
+        ModernRadioButtonUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
@@ -128,7 +132,7 @@ public class ModernUIUtilities {
 //        defaults.put("Button.border", new ModernButtonPainter(new Insets(2, 8, 2, 8)));
     }
 
-    public static void installDefaults(UIDefaults defaults) {
+    public static void installCompatibleDefaults(UIDefaults defaults) {
         installInputMapDefaults(defaults);
 
         defaults.put(ACCENT_HIGHLIGHT_COLOR_KEY, ModernUIColors.accentHighlightColor);
@@ -215,6 +219,9 @@ public class ModernUIUtilities {
         ModernListUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
         ModernOptionPaneUI.installIntoDefaults(defaults);
+        
+        ModernCheckBoxUI.installIntoDefaults(defaults);
+        ModernRadioButtonUI.installIntoDefaults(defaults);
 
 //        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
 //        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));

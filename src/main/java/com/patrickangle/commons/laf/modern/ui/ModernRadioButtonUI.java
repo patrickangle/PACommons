@@ -17,34 +17,30 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
-import com.patrickangle.commons.laf.modern.ui.icon.ModernCheckIcon;
-import com.patrickangle.commons.util.GraphicsHelpers;
-import java.awt.Color;
+import com.patrickangle.commons.laf.modern.ui.icon.ModernRadioIcon;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicCheckBoxUI;
+import javax.swing.plaf.basic.BasicRadioButtonUI;
 
 /**
  *
  * @author patrickangle
  */
-public class ModernCheckBoxUI extends BasicCheckBoxUI {
+public class ModernRadioButtonUI extends BasicRadioButtonUI {
     @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static ComponentUI createUI(JComponent c) {
-        return new ModernCheckBoxUI();
+        return new ModernRadioButtonUI();
     }
 
     @Override
     protected void installDefaults(AbstractButton b) {
         super.installDefaults(b);
         b.setRolloverEnabled(true);
-        icon = new ModernCheckIcon();        
+        icon = new ModernRadioIcon();
         b.setOpaque(false);
     }
 
@@ -54,6 +50,6 @@ public class ModernCheckBoxUI extends BasicCheckBoxUI {
     }
     
     public static void installIntoDefaults(UIDefaults defaults) {
-        defaults.put("CheckBoxUI", ModernCheckBoxUI.class.getName());
+        defaults.put("RadioButtonUI", ModernRadioButtonUI.class.getName());
     }
 }
