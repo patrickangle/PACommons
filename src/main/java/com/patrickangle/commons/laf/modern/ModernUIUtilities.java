@@ -79,7 +79,7 @@ public class ModernUIUtilities {
         defaults.put(SHADOW_COLOR_KEY, Color.BLACK);
 
         defaults.put("ToolTip.background", ModernUIColors.tooltipColor);
-        defaults.put("Tooltip.foreground", Color.BLACK);
+        defaults.put("ToolTip.foreground", Color.BLACK);
 
         defaults.put("text", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
@@ -123,7 +123,7 @@ public class ModernUIUtilities {
         ModernOptionPaneUI.installIntoDefaults(defaults);
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
-
+        
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
         defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
@@ -153,7 +153,7 @@ public class ModernUIUtilities {
         defaults.put(SHADOW_COLOR_KEY, Color.BLACK);
 
         defaults.put("ToolTip.background", ModernUIColors.tooltipColor);
-        defaults.put("Tooltip.foreground", Color.BLACK);
+        defaults.put("ToolTip.foreground", Color.BLACK);
 
         defaults.put("text", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("textText", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
@@ -222,7 +222,7 @@ public class ModernUIUtilities {
         
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
-
+        
 //        defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
 //        defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
 //        defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
