@@ -57,6 +57,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.undo.UndoManager;
 
 /**
@@ -171,6 +172,7 @@ public class ObjectFieldEditorFactory {
     private static ComponentReturn createBoundComponentForNonMutableObject(BoundField objectField, BindingGroup bindingGroup) {
         JTextField labelComponent = new JTextField("");
         labelComponent.setEditable(false);
+        labelComponent.setForeground(UIManager.getColor("Label.disabledForeground"));
 
         Binding binding = new BasicBinding(objectField, BoundFields.boundField(labelComponent, "text"), Binding.UpdateStrategy.READ_ONLY);
         bindingGroup.add(binding);
