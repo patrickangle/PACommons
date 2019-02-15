@@ -67,17 +67,6 @@ public class RecurringRunnable extends PropertyChangeObservableBase implements R
         return currentFrame;
     }
 
-//    private void updateCurrentFPS(int latestFPS) {
-//        this.frameRateSamples[(int) (currentFrame % frameRateSamples.length)] = latestFPS;
-//        int sum = 0;
-//        for (int i : this.frameRateSamples) {
-//            sum += i;
-//        }
-//        int average = sum / frameRateSamples.length;
-//
-//        this.setCurrentFPS(average);
-//    }
-
     @Override
     public void run() {
         this.running = true;
@@ -123,8 +112,8 @@ public class RecurringRunnable extends PropertyChangeObservableBase implements R
 
                 now = System.nanoTime();
             }
-
-            runningTargetPeriodLength = targetPeriodLength - ((now - frameStartTime) - targetPeriodLength);
+            
+            runningTargetPeriodLength = ((runningTargetPeriodLength) + (targetPeriodLength - ((now - frameStartTime) - targetPeriodLength))) / 2;
         }
     }
     
