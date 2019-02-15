@@ -37,7 +37,7 @@ public class Classes {
         return (Class<C>) object.getClass();
     }
     
-    public static Class primitaveClassFor(Class clazz) {
+    public static Class primitiveClassFor(Class clazz) {
         if (clazz == Short.class) {
             return Short.TYPE;
         } else if (clazz == Byte.class) {
@@ -59,8 +59,30 @@ public class Classes {
         }
     }
     
+    public static Class classForPrimitiveClass(Class clazz) {
+        if (clazz == Short.TYPE) {
+            return Short.class;
+        } else if (clazz == Byte.TYPE) {
+            return Byte.class;
+        } else if (clazz == Integer.TYPE) {
+            return Integer.class;
+        } else if (clazz == Long.TYPE) {
+            return Long.class;
+        } else if (clazz == Float.TYPE) {
+            return Float.class;
+        } else if (clazz == Double.TYPE) {
+            return Double.class;
+        } else if (clazz == Character.TYPE) {
+            return Character.class;
+        } else if (clazz == Boolean.TYPE) {
+            return Boolean.class;
+        } else {
+            return clazz;
+        }
+    }
+    
     public static Class primitaveClassFor(Object object) {
-        return primitaveClassFor(object.getClass());
+        return primitiveClassFor(object.getClass());
     }
     
     public static <E extends Object> E newInstance(Class<E> clazz) {

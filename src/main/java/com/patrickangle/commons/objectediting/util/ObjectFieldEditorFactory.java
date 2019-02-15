@@ -100,7 +100,7 @@ public class ObjectFieldEditorFactory {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(bindableField), ObjectEditingProperty.class);
 
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
-        Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
+        Class fieldClass = Classes.primitiveClassFor(bindableField.getFieldClass());
         
         // If undo is disabled for this editor, pass null as the UndoManager.
         UndoManager realizedUndoManager = configInfo.prohibitsUndo() ? null : undoManager;
