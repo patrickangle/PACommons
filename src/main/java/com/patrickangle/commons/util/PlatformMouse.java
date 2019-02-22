@@ -32,8 +32,8 @@ public class PlatformMouse {
      */
     public static boolean isRightClick(MouseEvent e) {
         return (e.getButton() == MouseEvent.BUTTON3
-            || (OperatingSystems.current() == OperatingSystems.Macintosh
+            || ((OperatingSystems.current() == OperatingSystems.Macintosh
             && (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0
-            && (e.getModifiers() & InputEvent.CTRL_MASK) != 0)) || SwingUtilities.isRightMouseButton(e);
+            && (e.getModifiers() & InputEvent.CTRL_MASK) != 0))) || SwingUtilities.isRightMouseButton(e);
     }
 }

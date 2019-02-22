@@ -34,6 +34,7 @@ import com.patrickangle.commons.observable.interfaces.PropertyChangeObservableBa
 import java.awt.GridLayout;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -99,6 +100,37 @@ public class RemoteAddress extends PropertyChangeObservableBase implements Custo
     public String toString() {
         return address + ((port != 0) ? ":" + port : "");
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.address);
+        hash = 97 * hash + this.port;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RemoteAddress other = (RemoteAddress) obj;
+        if (this.port != other.port) {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
     @Override
     public ObjectFieldEditorFactory.ComponentReturn customObjectEditingComponent(BindableField field, BindingGroup bindingGroup, UndoManager undoManager) {

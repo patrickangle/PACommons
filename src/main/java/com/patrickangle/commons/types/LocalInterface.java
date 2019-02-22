@@ -75,7 +75,7 @@ public class LocalInterface extends RemoteAddress {
     }
     
     @JsonProperty(value = "address")
-    public String getAddressForJson() {
+    public String getNetworkAddress() {
         return this.address;
     }
 

@@ -257,6 +257,17 @@ public class Point3D {
     public Point3D scaleBy(double x, double y) {
         return scaleBy(x, y, 0);
     }
+    
+    /**
+     * Create a new Point3D scaled by the given x and y factors.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public Point3D scaleBy(double f) {
+        return scaleBy(f, f, f);
+    }
 
     /**
      * Create a new Point3D scaled by x and y of the given point.
@@ -492,7 +503,7 @@ public class Point3D {
      *
      * @return
      */
-    public Point3D anglesFromOrigin() {
+    public Point3D getAnglesFromOrigin() {
         double xAngle = Math.toDegrees(Math.atan2(this.getZ(), this.getY()));
         double yAngle = Math.toDegrees(Math.atan2(this.getX(), this.getZ()));
         double zAngle = Math.toDegrees(Math.atan2(this.getX(), this.getY()));
@@ -505,7 +516,7 @@ public class Point3D {
      *
      * @return
      */
-    public double zAngleFromOrigin() {
+    public double getZAngleFromOrigin() {
         return Math.toDegrees(Math.atan2(this.getX(), this.getY()));
     }
 

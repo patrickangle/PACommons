@@ -57,6 +57,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.undo.UndoManager;
 
 /**
@@ -99,7 +100,7 @@ public class ObjectFieldEditorFactory {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(bindableField), ObjectEditingProperty.class);
 
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
-        Class fieldClass = Classes.primitaveClassFor(bindableField.getFieldClass());
+        Class fieldClass = Classes.primitiveClassFor(bindableField.getFieldClass());
         
         // If undo is disabled for this editor, pass null as the UndoManager.
         UndoManager realizedUndoManager = configInfo.prohibitsUndo() ? null : undoManager;
@@ -171,6 +172,7 @@ public class ObjectFieldEditorFactory {
     private static ComponentReturn createBoundComponentForNonMutableObject(BoundField objectField, BindingGroup bindingGroup) {
         JTextField labelComponent = new JTextField("");
         labelComponent.setEditable(false);
+        labelComponent.setForeground(UIManager.getColor("Label.disabledForeground"));
 
         Binding binding = new BasicBinding(objectField, BoundFields.boundField(labelComponent, "text"), Binding.UpdateStrategy.READ_ONLY);
         bindingGroup.add(binding);

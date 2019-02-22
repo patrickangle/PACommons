@@ -88,6 +88,7 @@ public class GraphicsHelpers {
         
         Graphics2D g = (Graphics2D) graphics.create();
         enableAntialiasing(g);
+        g.translate(0.0,0.0);
         
         
 //        g.setComposite(AlphaComposite.DstOver);
@@ -95,7 +96,7 @@ public class GraphicsHelpers {
 //    g.setBackground(Colors.transparentColor());
         Color baseColor = g.getColor();
         
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
+//        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
                 
         int sw = shadowWidth * 2;
         for (int i = sw; i >= 2; i -= 2) {
