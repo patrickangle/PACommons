@@ -104,6 +104,7 @@ public class RecurringRunnable extends PropertyChangeObservableBase implements R
                 Thread.yield();
                 if (now - lastUpdateTime < defaultSleepTime) {
                     try {
+                        defaultSleepTime = targetPeriodLength * 3 / 4;
                         Thread.sleep(defaultSleepTime / NANOSECONDS_IN_MILLISECOND, (int) defaultSleepTime % NANOSECONDS_IN_MILLISECOND);
                     } catch (InterruptedException e) {
 
