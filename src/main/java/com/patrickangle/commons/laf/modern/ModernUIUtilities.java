@@ -128,6 +128,8 @@ public class ModernUIUtilities {
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
         defaults.put("OptionPane.warningIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneWarning.png"))));
         defaults.put("OptionPane.errorIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneError.png"))));
+        defaults.put("Viewport.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
+                defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
 //        defaults.put("ButtonUI", ModernButtonUI.class.getName());
 //        defaults.put("Button.border", new ModernButtonPainter(new Insets(2, 8, 2, 8)));
     }
@@ -186,6 +188,10 @@ public class ModernUIUtilities {
         defaults.put("Seperator.background", defaults.getColor(BACKGROUND_COLOR_KEY));
 
         defaults.put("TextField.background", defaults.getColor(PRIMARY_DARK_COLOR_KEY));
+        
+        defaults.put("Viewport.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
+                defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
+
 
 //        defaults.put("EditorPane.background", defaults.getColor(defaults))
 //        defaults.put("text", defaults)

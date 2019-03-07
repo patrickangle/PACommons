@@ -21,12 +21,14 @@ import com.patrickangle.commons.beansbinding.BindingGroup;
 import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.interfaces.Binding;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import com.patrickangle.commons.beansbinding.swing.boundfields.JTableBoundField;
 import com.patrickangle.commons.beansbinding.util.BindableFields;
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
+import com.patrickangle.commons.util.Colors;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
@@ -44,8 +46,9 @@ import javax.swing.JToolBar;
  * @author patrickangle
  */
 public class ListObjectEditor {
-    public static final int LIST_OBJECT_EDITOR_COMPONENT_HEIGHT = 150;
-    
+
+    public static final int LIST_OBJECT_EDITOR_COMPONENT_HEIGHT = 200;
+
     public static ObjectFieldEditorFactory.ComponentReturn createBoundComponentForList(BoundField<List> objectField, BindingGroup bindingGroup) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
 
@@ -54,8 +57,7 @@ public class ListObjectEditor {
             public Dimension getMinimumSize() {
                 return new Dimension(super.getMinimumSize().width, LIST_OBJECT_EDITOR_COMPONENT_HEIGHT);
             }
-            
-            
+
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(super.getPreferredSize().width, LIST_OBJECT_EDITOR_COMPONENT_HEIGHT);
@@ -65,14 +67,14 @@ public class ListObjectEditor {
             public Dimension getMaximumSize() {
                 return new Dimension(super.getMaximumSize().width, LIST_OBJECT_EDITOR_COMPONENT_HEIGHT);
             }
-            
-            
+
         };
 
         JTable table = new JTable(new ListObjectEditorTableModel(objectField.getFieldClass()));
-        
+
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setTableHeader(null);
+//        table.set
 
         ListObjectEditorCellRenderer cellRenderer = new ListObjectEditorCellRenderer();
         if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
@@ -106,7 +108,8 @@ public class ListObjectEditor {
         listEditor.add(scrollPane, BorderLayout.CENTER);
 
         table.setRowHeight(24);
-        table.setRowMargin(ListObjectEditorCellRenderer.DEFAULT_ROW_MARGIN);
+        table.setGridColor(Colors.transparentColor());
+//        table.setRowMargin(ListObjectEditorCellRenderer.DEFAULT_ROW_MARGIN);
 
         Binding listBinding = new BasicBinding(objectField, BoundFields.boundField(table.getModel(), "items"), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(listBinding);
@@ -120,7 +123,11 @@ public class ListObjectEditor {
             addButton.addActionListener((actionEvent) -> {
                 ((ListObjectEditorTableModel) table.getModel()).getItems().add(Classes.newInstance(configInfo.listNewItemClass()));
                 cellRenderer.invalidateCache();
-                table.invalidate();
+                table.getSelectionModel().clearSelection();
+                if (table.editCellAt(table.getRowCount() - 1, 0)) {
+                    table.changeSelection(table.getRowCount() - 1, 0, false, false);
+                }
+                table.revalidate();
             });
             addButton.putClientProperty("JButton.buttonType", "textured");
             toolbar.add(addButton);
@@ -131,11 +138,21 @@ public class ListObjectEditor {
                 if (row != -1) {
                     ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     cellRenderer.invalidateCache();
-                    table.invalidate();
+                    table.getCellEditor().stopCellEditing();
+                    table.getSelectionModel().clearSelection();
+                    table.revalidate();
                 }
             });
             removeButton.putClientProperty("JButton.buttonType", "textured");
             toolbar.add(removeButton);
+
+            Binding removeEnabledBinding = new BasicBinding(table, JTableBoundField.SYNTHETIC_FIELD_SELECTED_ELEMENT, removeButton, "enabled", Binding.UpdateStrategy.READ_ONLY, new Binding.ForwardConverter<Object, Boolean>() {
+                @Override
+                public Boolean convertForward(Object object) {
+                    return object != null;
+                }
+            });
+            bindingGroup.add(removeEnabledBinding);
 
             JButton moveUpButton = new JButton("▲");
             moveUpButton.addActionListener((actionEvent) -> {
@@ -144,24 +161,48 @@ public class ListObjectEditor {
                     Object o = ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     ((ListObjectEditorTableModel) table.getModel()).getItems().add(row - 1, o);
                     cellRenderer.invalidateCache();
-                    table.invalidate();
+                    table.getSelectionModel().clearSelection();
+                    if (table.editCellAt(row - 1, 0)) {
+                        table.changeSelection(row - 1, 0, false, false);
+                    }
+                    table.revalidate();
                 }
             });
             moveUpButton.putClientProperty("JButton.buttonType", "textured");
             toolbar.add(moveUpButton);
 
+            Binding moveUpEnabledBinding = new BasicBinding(table, JTableBoundField.SYNTHETIC_FIELD_SELECTED_ELEMENT, moveUpButton, "enabled", Binding.UpdateStrategy.READ_ONLY, new Binding.ForwardConverter<Object, Boolean>() {
+                @Override
+                public Boolean convertForward(Object object) {
+                    return table.getSelectedRow() > 0;
+                }
+            });
+            bindingGroup.add(moveUpEnabledBinding);
+
             JButton moveDownButton = new JButton("▼");
             moveDownButton.addActionListener((actionEvent) -> {
                 int row = table.getSelectedRow();
-                if (row < table.getRowCount() - 1) {
+                if (row < table.getRowCount() - 1 && row != -1) {
                     Object o = ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     ((ListObjectEditorTableModel) table.getModel()).getItems().add(row + 1, o);
                     cellRenderer.invalidateCache();
-                    table.invalidate();
+                    table.getSelectionModel().clearSelection();
+                    if (table.editCellAt(row + 1, 0)) {
+                        table.changeSelection(row + 1, 0, false, false);
+                    }
+                    table.revalidate();
                 }
             });
             moveDownButton.putClientProperty("JButton.buttonType", "textured");
             toolbar.add(moveDownButton);
+
+            Binding moveDownEnabledBinding = new BasicBinding(table, JTableBoundField.SYNTHETIC_FIELD_SELECTED_ELEMENT, moveDownButton, "enabled", Binding.UpdateStrategy.READ_ONLY, new Binding.ForwardConverter<Object, Boolean>() {
+                @Override
+                public Boolean convertForward(Object object) {
+                    return table.getSelectedRow() < table.getRowCount() - 1 && table.getSelectedRow() != -1;
+                }
+            });
+            bindingGroup.add(moveDownEnabledBinding);
 
             listEditor.add(toolbar, BorderLayout.PAGE_END);
         }

@@ -141,7 +141,7 @@ public class JTableBoundField extends AbstractBoundField<JTable> {
         Object oldSelectedValue = cachedSelectedElement;
         List<Object> oldSelectedValuesList = cachedSelectedElementsList;
         
-        cachedSelectedElement = ((ObservableListModel) containingObject.getModel()).getElementAt(containingObject.getSelectedRow());
+        cachedSelectedElement = (containingObject.getSelectedRow() == -1) ? null : ((ObservableListModel) containingObject.getModel()).getElementAt(containingObject.getSelectedRow());
         int[] objectIndexes = containingObject.getSelectedRows();
         List<Object> objects = new ArrayList<>(objectIndexes.length);
         for (int i : objectIndexes) {
@@ -157,7 +157,7 @@ public class JTableBoundField extends AbstractBoundField<JTable> {
         Object oldSelectedValueIgnoreAdjusting = cachedSelectedElementIgnoreAdjusting;
         List<Object> oldSelectedValuesListIgnoreAdjusting = cachedSelectedElementsListIgnoreAdjusting;
         
-        cachedSelectedElementIgnoreAdjusting = ((ObservableListModel) containingObject.getModel()).getElementAt(containingObject.getSelectedRow());
+        cachedSelectedElementIgnoreAdjusting = (containingObject.getSelectedRow() == -1) ? null : ((ObservableListModel) containingObject.getModel()).getElementAt(containingObject.getSelectedRow());
         int[] objectIndexes = containingObject.getSelectedRows();
         List<Object> objects = new ArrayList<>(objectIndexes.length);
         for (int i : objectIndexes) {
