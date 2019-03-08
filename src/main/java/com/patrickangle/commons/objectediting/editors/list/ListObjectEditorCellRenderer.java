@@ -25,10 +25,12 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
@@ -40,9 +42,9 @@ import javax.swing.table.TableCellRenderer;
  * @author Patrick Angle
  */
 public class ListObjectEditorCellRenderer extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
-    
-    public static final Border selectedBorder = new MatteBorder(3, 9, 3, 3, UIManager.getColor("TextField.selectionBackground"));
-    public static final Border unselectedBorder = new MatteBorder(3, 9, 3, 3, UIManager.getColor("Viewport.background"));
+        
+    private static final Border selectedBorder = new MatteBorder(3, 9, 3, 3, UIManager.getColor("TextField.selectionBackground"));
+    private static final Border unselectedBorder = new MatteBorder(3, 9, 3, 3, UIManager.getColor("Viewport.background"));
 
     private final Map<Object, JComponent> cachedEditors = new HashMap<>();
 

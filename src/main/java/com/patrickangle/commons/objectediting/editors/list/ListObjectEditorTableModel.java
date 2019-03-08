@@ -91,7 +91,7 @@ public class ListObjectEditorTableModel<E> extends ObservableListModel<E> implem
         if (this.items.size() > 0) {
             // Only fire an inserted event if there are items to be inserted.
             this.tableModelSupport.fireInserted(0, this.items.size() - 1, TableModelEvent.ALL_COLUMNS);
-        }
+        }        
     }
     
     @Override

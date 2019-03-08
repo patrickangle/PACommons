@@ -77,6 +77,7 @@ public class ListObjectEditor {
 //        table.set
 
         ListObjectEditorCellRenderer cellRenderer = new ListObjectEditorCellRenderer();
+        
         if (CustomObjectEditingComponent.class.isAssignableFrom(configInfo.listNewItemClass())) {
             table.getColumnModel().getColumn(0).setCellEditor(cellRenderer);
             table.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
@@ -86,6 +87,9 @@ public class ListObjectEditor {
         } else {
             table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()));
             table.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()));
+            
+            JTextField sizingSampleTextField = new JTextField("Sizing Sample");
+            table.setRowHeight((int) (sizingSampleTextField.getPreferredSize().getHeight() + 3));
         }
 
         JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
@@ -107,9 +111,10 @@ public class ListObjectEditor {
 
         listEditor.add(scrollPane, BorderLayout.CENTER);
 
-        table.setRowHeight(24);
+//        table.setRowHeight(24);
         table.setGridColor(Colors.transparentColor());
-//        table.setRowMargin(ListObjectEditorCellRenderer.DEFAULT_ROW_MARGIN);
+        table.setRowMargin(0);
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 
         Binding listBinding = new BasicBinding(objectField, BoundFields.boundField(table.getModel(), "items"), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(listBinding);
