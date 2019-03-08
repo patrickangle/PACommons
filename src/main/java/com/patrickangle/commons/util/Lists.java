@@ -188,4 +188,19 @@ public class Lists {
             }
         }
     }
+    
+    /**
+     * Returns true if all items in the list are assignable to the provided class.
+     * @param list
+     * @param assignableToClass
+     * @return 
+     */
+    public static boolean contentsAreAssignableTo(List list, Class assignableToClass) {
+        for (Object o : list) {
+            if (o == null || !assignableToClass.isAssignableFrom(o.getClass())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
