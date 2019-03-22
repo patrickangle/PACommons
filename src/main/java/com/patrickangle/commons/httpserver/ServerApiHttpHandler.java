@@ -17,7 +17,6 @@
 package com.patrickangle.commons.httpserver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.patrickangle.commons.Callback;
 import com.sun.net.httpserver.HttpExchange;
 import java.util.HashMap;
 import java.util.Map;

@@ -30,6 +30,7 @@ public class PlatformMouse {
      * @param e
      * @return 
      */
+    @SuppressWarnings("deprecation")
     public static boolean isRightClick(MouseEvent e) {
         return (e.getButton() == MouseEvent.BUTTON3
             || ((OperatingSystems.current() == OperatingSystems.Macintosh

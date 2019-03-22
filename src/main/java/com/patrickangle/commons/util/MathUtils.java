@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.patrickangle.commons.util.legacy;
+package com.patrickangle.commons.util;
 
 import java.awt.Dimension;
 
@@ -37,7 +37,6 @@ public class MathUtils {
     public static long roundUpToPowerOfTwo(long x) {
         return (long) Math.pow(2, (int) (Math.log(x - 1) / Math.log(2)) + 1);
     }
-
     
     public static double roundUpToPowerOfTwo(double x) {
         return Math.pow(2, (int) (Math.log(x - 1) / Math.log(2)) + 1);

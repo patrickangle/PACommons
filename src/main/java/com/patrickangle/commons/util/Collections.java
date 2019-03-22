@@ -17,7 +17,6 @@
 package com.patrickangle.commons.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

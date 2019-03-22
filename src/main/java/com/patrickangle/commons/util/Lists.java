@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -202,5 +203,31 @@ public class Lists {
             }
         }
         return true;
+    }
+    
+    public static byte[] toArray(List<Byte> arrayList) {
+        byte[] returnArray = new byte[arrayList.size()];
+
+        for (int i = 0; i < arrayList.size(); i++) {
+            returnArray[i] = arrayList.get(i);
+        }
+
+        return returnArray;
+    }
+    
+    public static List<Object> flatten(List<?> list) {
+        List<Object> ret = new CopyOnWriteArrayList<>(); // It is possible for the flattenHelper to concurrently modify the element being iterated over, so we use a COWArrayList here
+        flattenHelper(list, ret);
+        return ret;
+    }
+
+    private static void flattenHelper(List<?> nestedList, List<Object> flatList) {
+        for (Object item : nestedList) {
+            if (item instanceof List<?>) {
+                flattenHelper((List<?>) item, flatList);
+            } else {
+                flatList.add(item);
+            }
+        }
     }
 }
