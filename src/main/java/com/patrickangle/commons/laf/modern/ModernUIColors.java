@@ -28,15 +28,15 @@ public class ModernUIColors {
     public static final Color accentMediumColor = new Color(0x204e8b);
     public static final Color accentDarkColor = new Color(0x1e3c6e);
 
-    public static final Color primaryLightColor = new Color(0xdfe6eb);
-    public static final Color primaryMediumLightColor = new Color(0xa9b2bc);
-    public static final Color primaryMediumColor = new Color(0x767f8b);
-    public static final Color primaryMediumDarkColor = new Color(0x58606e);
-    public static final Color primaryDarkColor = new Color(0x303640);
-    public static final Color primaryUltraDarkColor = new Color(0x282d35);
+    public static final Color primaryLightColor = new Color(0xEBEBEB);
+    public static final Color primaryMediumLightColor = new Color(0x939393);
+    public static final Color primaryMediumColor = new Color(0x757575);
+    public static final Color primaryMediumDarkColor = new Color(0x585858);
+    public static final Color primaryDarkColor = new Color(0x303030);
+    public static final Color primaryUltraDarkColor = new Color(0x1D1D1D);
 
-    public static final Color backgroundColor = new Color(0x262b33);
-    public static final Color workspaceBackgroundColor = new Color(0x191c21);
+    public static final Color backgroundColor = new Color(0x262626);
+    public static final Color workspaceBackgroundColor = new Color(0x141414);
 
     public static final Color tooltipColor = new Color(0xd9cc75);
 

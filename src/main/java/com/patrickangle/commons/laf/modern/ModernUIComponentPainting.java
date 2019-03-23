@@ -30,6 +30,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -101,18 +102,20 @@ public class ModernUIComponentPainting {
             // Enabled
             if (buttonIsDefaultOrSelected(button)) {
                 // Enabled + Default or Selected
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
+                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
             } else if (button.isFocusOwner()) {
                 // Enabled + In Focus
                 g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
             } else {
                 // Enabled + Normal
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
             }
         } else {
             // Disabled
             g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
         }
+        
+        g.draw(buttonShape);
     }
 
     public static void paintComponentShadowOrFocus(Graphics2D g, Component component, Shape shape) {//Graphics graphics, int x, int y, int width, int height) {
@@ -184,6 +187,28 @@ public class ModernUIComponentPainting {
         g.drawLine(x1, y1, x2, y2);
         g.drawLine(x2, y2, x3, y3);
     }
+    
+//    public static void paintComponentDownArrow(Graphics2D g, Component component) {
+//        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+//        final int xU = Math.min(component.getWidth(), component.getHeight()) / 4;
+//        final int yU = Math.min(component.getWidth(), component.getHeight()) / 4;
+//        final Path2D.Double path = new Path2D.Double();
+//        path.moveTo(xU + 1, yU + 2);
+//        path.lineTo(3 * xU + 1, yU + 2);
+//        path.lineTo(2 * xU + 1, 3 * yU);
+//        path.lineTo(xU + 1, yU + 2);
+//        path.closePath();
+//        
+//        if (component.isEnabled()) {
+//            // Enabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
+//        } else {
+//            // Disabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//        }
+//        
+//        g.fill(path);
+//    }
 
     public static void paintComponentRadioMark(Graphics2D g, Component component, Shape shape) {
         Shape radioMark = new Ellipse2D.Double(shape.getBounds().x + 4, shape.getBounds().y + 4, shape.getBounds().width - 8, shape.getBounds().height - 8);

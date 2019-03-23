@@ -43,6 +43,7 @@ public class ModernRadioIcon implements Icon {
             
             Graphics2D g = (Graphics2D) graphics.create();
             GraphicsHelpers.enableAntialiasing(g);
+            GraphicsHelpers.enableStrokeNormalization(g);
             g.translate(x + GENERAL_PADDING, y + GENERAL_PADDING);
             
             ModernUIComponentPainting.paintComponentShadowOrFocus(g, c, ICON_SHAPE);

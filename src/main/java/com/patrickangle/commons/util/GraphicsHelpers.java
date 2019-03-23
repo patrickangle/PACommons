@@ -119,4 +119,8 @@ public class GraphicsHelpers {
     public static void enableAntialiasing(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
+    
+    public static void enableStrokeNormalization(Graphics2D g) {
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+    }
 }

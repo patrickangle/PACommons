@@ -33,6 +33,7 @@ import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -109,6 +110,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         
         final Graphics2D g = (Graphics2D) graphics.create();
         GraphicsHelpers.enableAntialiasing(g);
+        GraphicsHelpers.enableStrokeNormalization(g);
 
         ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
         ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
@@ -260,5 +262,15 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         }
         
         return buttonRect;
+    }
+    
+    @Override
+    public Dimension getPreferredSize(JComponent c) {
+        return new Dimension(super.getPreferredSize(c).width, 28);
+    }
+
+    @Override
+    public Dimension getMinimumSize(JComponent c) {
+        return new Dimension(super.getMinimumSize(c).width, 28);
     }
 }

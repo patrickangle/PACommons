@@ -102,6 +102,7 @@ public class ModernUIUtilities {
         ModernButtonUI.installIntoDefaults(defaults);
         ModernTextFieldUI.installIntoDefaults(defaults);
         ModernComboBoxUI.installIntoDefaults(defaults);
+        ModernListUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
         ModernOptionPaneUI.installIntoDefaults(defaults);
         ModernCheckBoxUI.installIntoDefaults(defaults);
@@ -181,6 +182,7 @@ public class ModernUIUtilities {
 
         ModernButtonUI.installIntoDefaults(defaults);
         ModernTextFieldUI.installIntoDefaults(defaults);
+        ModernComboBoxUI.installIntoDefaults(defaults);
         ModernListUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
         ModernOptionPaneUI.installIntoDefaults(defaults);
