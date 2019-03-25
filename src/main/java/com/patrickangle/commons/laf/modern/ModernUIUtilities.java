@@ -158,6 +158,7 @@ public class ModernUIUtilities {
 
         defaults.put("menu", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("Menu.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        defaults.put("MenuBar.background", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("Menu.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("MenuItem.background", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("CheckBoxMenuItem.background", defaults.getColor(BACKGROUND_COLOR_KEY));
