@@ -230,4 +230,14 @@ public class Lists {
             }
         }
     }
+    
+    public static boolean containsExactly(Object object, List list) {
+        for (Object e : list) {
+            if (object == e) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

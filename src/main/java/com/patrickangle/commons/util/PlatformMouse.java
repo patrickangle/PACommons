@@ -37,4 +37,8 @@ public class PlatformMouse {
             && (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0
             && (e.getModifiers() & InputEvent.CTRL_MASK) != 0))) || SwingUtilities.isRightMouseButton(e);
     }
+    
+    public static boolean isLeftClick(MouseEvent e) {
+        return SwingUtilities.isLeftMouseButton(e) && !isRightClick(e);
+    }
 }
