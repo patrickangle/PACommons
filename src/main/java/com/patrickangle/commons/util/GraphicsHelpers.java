@@ -28,6 +28,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Transparency;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
@@ -122,5 +123,13 @@ public class GraphicsHelpers {
     
     public static void enableStrokeNormalization(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+    }
+    
+    public static Rectangle2D normalizeRectangle(Rectangle2D rect) {
+        return new Rectangle2D.Double(rect.getWidth() < 0 ? rect.getX() + rect.getWidth() : rect.getX(), rect.getHeight() < 0 ? rect.getY() + rect.getHeight(): rect.getY(), Math.abs(rect.getWidth()), Math.abs(rect.getHeight()));
+    }
+    
+    public static Rectangle normalizeRectangle(Rectangle rect) {
+        return new Rectangle(rect.width < 0 ? rect.x + rect.width : rect.x, rect.height < 0 ? rect.y + rect.height: rect.y, Math.abs(rect.width), Math.abs(rect.height));
     }
 }
