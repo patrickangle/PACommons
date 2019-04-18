@@ -41,4 +41,44 @@ public class MathUtils {
     public static double roundUpToPowerOfTwo(double x) {
         return Math.pow(2, (int) (Math.log(x - 1) / Math.log(2)) + 1);
     }
+    
+    public static int sign(int number) {
+        if (number > -0) {
+            return 1;
+        } else if (number < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+    
+    public static int sign(long number) {
+        if (number > -0) {
+            return 1;
+        } else if (number < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+    
+    public static int sign(float number) {
+        if (number > -0f) {
+            return 1;
+        } else if (number < 0f) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+    
+    public static int sign(double number) {
+        if (number > -0.0) {
+            return 1;
+        } else if (number < 0.0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }

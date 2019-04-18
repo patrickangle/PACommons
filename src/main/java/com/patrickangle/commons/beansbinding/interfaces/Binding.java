@@ -29,11 +29,40 @@ public interface Binding {
     public void setBound(boolean bound);
 
     public enum UpdateStrategy {
+        /**
+         * Initially reads from the back property to write the front property, and does not bind the objects any further.
+         */
         READ_ONCE(false, false, true),
+        
+        /**
+         * Initially reads from the front property to write the back property, and does not bind the objects any further.
+         */
         WRITE_ONCE(false, false, false),
+        
+        /**
+         * Initially reads from the back property to write the front property, and then tracks the back property to update the front property when the back property changes.
+         */
         READ_ONLY(true, false, true),
+        
+        /**
+         * Initially reads from the front property to write the back property, and then tracks the front property to update the back property when the front property changes.
+         */
         WRITE_ONLY(false, true, false),
-        READ_WRITE(true, true, true);
+        
+        /**
+         * Initially reads from the back property to write the front property, and then tracks both the front and back property to update each other when either changes. This is the most common binding for connecting interface component models to backing data.
+         */
+        READ_WRITE(true, true, true),
+        
+        /**
+         * Initially reads from the front property to write the back property, and then tracks the back property to update the front property when the back property changes.
+         */
+        WRITE_FIRST_READ_AFTER(false, true, true),
+        
+        /**
+         * Initially reads from the back property to write the front property, and then tracks the front property to update the back property when the front property changes.
+         */
+        READ_FIRST_WRITE_AFTER(true, false, false);
 
         private final boolean forward;
         private final boolean backward;
