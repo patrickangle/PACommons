@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
  * @author Patrick Angle
  */
 public class Strings {
+    // [^\s\"']+|\"([^\"]*)\"|'([^']*)'
     private static Pattern SPLIT_BY_UNESCAPED_WHITESPACE_REGEX = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
     
     
