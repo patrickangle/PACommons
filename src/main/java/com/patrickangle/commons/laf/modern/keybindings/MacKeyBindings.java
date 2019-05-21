@@ -107,10 +107,10 @@ public class MacKeyBindings {
         map.setDefaultAction(defaultKeyTypedAction);
     }
 
-    static final String upMultilineAction = "aqua-move-up";
-    static final String downMultilineAction = "aqua-move-down";
-    static final String pageUpMultiline = "aqua-page-up";
-    static final String pageDownMultiline = "aqua-page-down";
+    static final String upMultilineAction = DefaultEditorKit.upAction;//"aqua-move-up";
+    static final String downMultilineAction = DefaultEditorKit.downAction;//"aqua-move-down";
+    static final String pageUpMultiline = DefaultEditorKit.pageUpAction;//"aqua-page-up";
+    static final String pageDownMultiline = DefaultEditorKit.pageDownAction;//"aqua-page-down";
 
     final String[] commonTextEditorBindings = {
         "ENTER", JTextField.notifyAction,
