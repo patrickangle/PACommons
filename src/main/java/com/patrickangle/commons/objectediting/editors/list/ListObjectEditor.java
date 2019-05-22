@@ -32,6 +32,7 @@ import com.patrickangle.commons.util.Colors;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -143,7 +144,10 @@ public class ListObjectEditor {
                 if (row != -1) {
                     ((ListObjectEditorTableModel) table.getModel()).getItems().remove(row);
                     cellRenderer.invalidateCache();
-                    table.getCellEditor().stopCellEditing();
+                    Optional.ofNullable(table.getCellEditor()).ifPresent((tableCellEditor) -> {
+                        tableCellEditor.stopCellEditing();
+                    });
+//                    table.getCellEditor().stopCellEditing();
                     table.getSelectionModel().clearSelection();
                     table.revalidate();
                 }

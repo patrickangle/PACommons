@@ -129,11 +129,12 @@ public class Exceptions {
                 builder.append(element.getClassName());
                 builder.append(".");
                 builder.append(element.getMethodName());
-                builder.append("() line ");
+                builder.append("(…) line ");
                 builder.append(element.getLineNumber());
                 builder.append("\n");
                 line++;
                 if (line >= MAXIMUM_LINES_PER_CAUSE) {
+                    builder.append("\tSuppressed " + (stack.length - (line - 1)) + " additional stack elements.\n");
                     break;
                 }
             }
