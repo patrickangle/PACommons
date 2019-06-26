@@ -38,4 +38,8 @@ public class Container<T> {
     public void setValue(T value) {
         this.value = value;
     }
+    
+    public T getValueOrElse(T orElse) {
+        return (value != null) ? value : orElse;
+    }
 }

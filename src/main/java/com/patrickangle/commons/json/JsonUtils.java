@@ -69,6 +69,15 @@ public class JsonUtils {
         }
     }
     
+    public static Map<String, Object> unsafelyGetMapFromJson(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        InputStream from = new ByteArrayInputStream(json.getBytes());
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+        };
+
+        return mapper.readValue(from, typeRef);
+    }
+    
     public static <T extends Object> List<T> getListFromJson(String json, Class<T> hint) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
