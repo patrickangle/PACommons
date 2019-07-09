@@ -30,6 +30,10 @@ public class ModernUIColors {
     public static Color accentDarkColor;
 
     static {
+        updateColors();
+    }
+    
+    public static final void updateColors() {
         switch (ModernUIAquaAppearanceAdapter.systemColorScheme()) {
             case Blue:
                 accentHighlightColor = new Color(0x1190eb);

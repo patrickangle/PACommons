@@ -84,7 +84,7 @@ public class ModernUIAquaAppearanceAdapter {
     public static final Color mojaveDarkGraphiteAccentColor = new Color(140, 140, 140);
     public static final Color mojaveLightGraphiteHighContrastAccentColor = new Color(107, 107, 107);
     public static final Color mojaveDarkGraphiteHighContrastAccentColor = new Color(140, 140, 140);
-
+    
     protected static Color systemAccentColor() {
         try {
             Class appearanceManagerClass = Class.forName("org.violetlib.aqua.AppearanceManager");
