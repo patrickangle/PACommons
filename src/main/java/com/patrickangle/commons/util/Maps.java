@@ -19,6 +19,7 @@ package com.patrickangle.commons.util;
 import com.patrickangle.commons.logging.Logging;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,7 +58,7 @@ public class Maps {
      */
     public static Map unpackNestedMap(Map map, String prefix, String seperator) {
         if (mapIsStringKeyed(map)) {
-            Map<String, Object> newMap = new HashMap<>(map.size());
+            Map<String, Object> newMap = new LinkedHashMap<>(map.size());
             for (Entry<String, Object> entry : ((Map<String, Object>) map).entrySet()) {
                 if (entry.getValue() instanceof Map && mapIsStringKeyed((Map) entry.getValue())) {
                     newMap.putAll(unpackNestedMap((Map) entry.getValue(), prefix + entry.getKey() + seperator, seperator));
