@@ -59,6 +59,10 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
         commonInit();
     }
     
+    public void fireUpdated() {
+        tableModelSupport.fireUpdated(0, items.size(), TableModelEvent.ALL_COLUMNS);
+    }
+    
     private void commonInit() {
         
         this.boundFieldMap = new HashMap<>();

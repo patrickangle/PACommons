@@ -18,15 +18,9 @@ package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.logging.Logging;
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComponent;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -65,22 +59,22 @@ public class ModernUIAquaAppearanceAdapter {
     public static final Color mojaveLightRedHighContrastAccentColor = new Color(224, 56, 61);
     public static final Color mojaveDarkRedHighContrastAccentColor = new Color(255, 82, 87);
 
-    public static final Color mojaveLightOrangeAccentColor = new Color(247, 130, 26);
-    public static final Color mojaveDarkOrangeAccentColor = new Color(247, 130, 26);
+    public static final Color mojaveLightOrangeAccentColor = new Color(247, 130, 28);
+    public static final Color mojaveDarkOrangeAccentColor = new Color(247, 130, 28);
     public static final Color mojaveLightOrangeHighContrastAccentColor = new Color(253, 123, 26);
     public static final Color mojaveDarkOrangeHighContrastAccentColor = new Color(235, 123, 26);
 
-    public static final Color mojaveLightYellowAccentColor = new Color(252, 184, 40);
-    public static final Color mojaveDarkYellowAccentColor = new Color(252, 184, 40);
+    public static final Color mojaveLightYellowAccentColor = new Color(252, 184, 38);
+    public static final Color mojaveDarkYellowAccentColor = new Color(252, 184, 38);
     public static final Color mojaveLightYellowHighContrastAccentColor = new Color(196, 143, 29);
     public static final Color mojaveDarkYellowHighContrastAccentColor = new Color(196, 143, 29);
 
-    public static final Color mojaveLightGreenAccentColor = new Color(98, 186, 70);
-    public static final Color mojaveDarkGreenAccentColor = new Color(98, 186, 70);
+    public static final Color mojaveLightGreenAccentColor = new Color(97, 186, 69);
+    public static final Color mojaveDarkGreenAccentColor = new Color(97, 186, 69);
     public static final Color mojaveLightGreenHighContrastAccentColor = new Color(88, 168, 64);
     public static final Color mojaveDarkGreenHighContrastAccentColor = new Color(88, 168, 64);
 
-    public static final Color mojaveLightGraphiteAccentColor = new Color(152, 152, 152);
+    public static final Color mojaveLightGraphiteAccentColor = new Color(153, 153, 153);
     public static final Color mojaveDarkGraphiteAccentColor = new Color(140, 140, 140);
     public static final Color mojaveLightGraphiteHighContrastAccentColor = new Color(107, 107, 107);
     public static final Color mojaveDarkGraphiteHighContrastAccentColor = new Color(140, 140, 140);
@@ -102,6 +96,7 @@ public class ModernUIAquaAppearanceAdapter {
 
             return null;
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logging.trace(ModernUIAquaAppearanceAdapter.class, "Unable to ascertain system accent color. Vaqua is not on the classpath, or is not supported on the current platform. " + ex.getMessage());
             return null;
         }
     }
@@ -112,6 +107,8 @@ public class ModernUIAquaAppearanceAdapter {
         if (sac == null) {
             return SystemColorScheme.Blue;
         }
+        
+        Logging.trace(ModernUIAquaAppearanceAdapter.class, "System accent color is: " + sac);
         
         if (sac.equals(mojaveLightBlueAccentColor) ||
                 sac.equals(mojaveDarkBlueAccentColor) ||
