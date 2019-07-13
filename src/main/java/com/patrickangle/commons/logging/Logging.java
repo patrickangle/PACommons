@@ -62,20 +62,22 @@ public class Logging {
     }
 
     public static enum FilterLevel {
-        All(List.of(Level.values())),
-        AllNormal(List.of(Level.Trace, Level.Debug, Level.Info, Level.Warning)),
-        AllErrors(List.of(Level.Error, Level.Exception)),
-        Trace(List.of(Level.Trace)),
-        Debug(List.of(Level.Debug)),
-        Info(List.of(Level.Info)),
-        Warning(List.of(Level.Warning)),
-        Error(List.of(Level.Error)),
-        Exception(List.of(Level.Exception));
+        All(Level.values()),
+        AllInternal(Level.Trace, Level.Debug),
+        AllNormal(Level.Info, Level.Warning),
+        AllNormalAndInternal(Level.Trace, Level.Debug, Level.Info, Level.Warning),
+        AllErrors(Level.Error, Level.Exception),
+        Trace(Level.Trace),
+        Debug(Level.Debug),
+        Info(Level.Info),
+        Warning(Level.Warning),
+        Error(Level.Error),
+        Exception(Level.Exception);
 
         private final List<Level> permittedLevels;
 
-        FilterLevel(List<Level> permittedLevels) {
-            this.permittedLevels = permittedLevels;
+        FilterLevel(Level... permittedLevels) {
+            this.permittedLevels = List.of(permittedLevels);
         }
 
         public boolean isPermitted(Level level) {
@@ -128,7 +130,7 @@ public class Logging {
      */
     public static void registerAdditionalStream(FilterLevel filterLevel, PrintStream stream) {
         additionalStreams.computeIfAbsent(filterLevel, (t) -> {
-            return new ArrayList<>();
+            return new CopyOnWriteArrayList<>();
         }).add(stream);
     }
 
@@ -156,8 +158,6 @@ public class Logging {
         }).remove(stream);
     }
 
-//    public static final List<PrintStream> outputStreams = new CopyOnWriteArrayList<>();
-//    public static final List<PrintStream> errorStreams = new CopyOnWriteArrayList<>();
     public static boolean isInterceptSystemStreams() {
         return interceptSystemStreams;
     }
@@ -184,38 +184,26 @@ public class Logging {
 
     public static void trace(Object caller, Object message) {
         log(caller, message, Level.Trace);
-//        log(caller, message, "  [TRACE]", false, ConsoleColors.MagentaForeground);
-//        logOutAll(ConsoleColors.PURPLE + "  [TRACE] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.PURPLE, message) + ConsoleColors.RESET);
     }
 
     public static void debug(Object caller, Object message) {
         log(caller, message, Level.Debug);
-//        log(caller, message, "  [DEBUG]", false, ConsoleColors.BlueForeground);
-//        logOutAll(ConsoleColors.BLUE + "  [] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.BLUE, message) + ConsoleColors.RESET);
     }
 
     public static void info(Object caller, Object message) {
         log(caller, message, Level.Info);
-//        log(caller, message, "   [INFO]", false, ConsoleColors.Reset);
-//        logOutAll(ConsoleColors.RESET + "   [INFO] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RESET, message) + ConsoleColors.RESET);
     }
 
     public static void warning(Object caller, Object message) {
         log(caller, message, Level.Warning);
-//        log(caller, message, "[WARNING]", false, ConsoleColors.YellowForeground);
-//        logOutAll(ConsoleColors.YELLOW + "[WARNING] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.YELLOW, message) + ConsoleColors.RESET);
     }
 
     public static void error(Object caller, Object message) {
         log(caller, message, Level.Error);
-//        log(caller, message, "  [ERROR]", true, ConsoleColors.RedForeground);
-//        logErrAll(ConsoleColors.RED + "  [ERROR] " + currentTimestamp() + " " + caller.getSimpleName() + ": " + decorateAllLines(ConsoleColors.RED, message) + ConsoleColors.RESET);
     }
 
     public static void exception(Object caller, Throwable exception) {
         log(caller, Exceptions.humanReadableThrowable(exception), Level.Exception);
-//        log(caller, Exceptions.humanReadableThrowable(exception), " [THROWN] ", true, ConsoleColors.RedForeground, ConsoleColors.WhiteBackground);
-//        logErrAll(ConsoleColors.RED_BOLD_BRIGHT + ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.RED_UNDERLINED + " [THROWN] " + currentTimestamp() + " " + caller.getSimpleName() + "\n" + ConsoleColors.RESET + decorateAllLines(ConsoleColors.RED, Exceptions.humanReadableThrowable(exception)) + ConsoleColors.RESET);
     }
 
     private static void log(Object caller, Object message, Level level) {
@@ -268,33 +256,6 @@ public class Logging {
         }
     }
 
-//    private static void log(Class caller, Object message, String tag, boolean isError, ConsoleColors... consoleColors) {
-//        StringBuilder logMessage = new StringBuilder(tag);
-//        logMessage.append(" ");
-//        logMessage.append(currentTimestamp());
-//
-//        if (caller != null) {
-//            logMessage.append(" ");
-//            logMessage.append(caller.getSimpleName());
-//        }
-//
-//        logMessage.append(": ");
-//
-//        if (message != null) {
-//            logMessage.append(message);
-//        } else {
-//            logMessage.append("null");
-//        }
-//
-//        String decoratedLogMessage = decorateAllLines(ConsoleColors.getEscapeCode(consoleColors), logMessage.toString());
-//
-//        if (isError) {
-//            logErrAll(decoratedLogMessage);
-//        } else {
-//            logOutAll(decoratedLogMessage);
-//        }
-//    }
-
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd',' yyyy hh:mm:ssa").withLocale(Locale.US).withZone(ZoneId.systemDefault());
 
     private static String currentTimestamp() {
@@ -302,14 +263,6 @@ public class Logging {
     }
 
     private static void logOutAll(String message) {
-
-//        for (PrintStream stream : outputStreams) {
-//            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
-//                stream.print(message);
-//            } else {
-//                stream.println(message);
-//            }
-//        }
         if (injectIntoSystemStreams) {
             if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColor.Reset.getEscapeCode())) {
                 NATIVE_SYSTEM_OUT.print(message);
@@ -320,13 +273,6 @@ public class Logging {
     }
 
     private static void logErrAll(String message) {
-//        for (PrintStream stream : errorStreams) {
-//            if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColors.Reset.getEscapeCode())) {
-//                stream.print(message);
-//            } else {
-//                stream.println(message);
-//            }
-//        }
         if (injectIntoSystemStreams) {
             if (message.endsWith("\n") || message.endsWith("\n" + ConsoleColor.Reset.getEscapeCode())) {
                 NATIVE_SYSTEM_ERR.print(message);
