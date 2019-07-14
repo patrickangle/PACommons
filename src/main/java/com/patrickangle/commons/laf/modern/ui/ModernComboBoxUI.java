@@ -426,12 +426,6 @@ public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedCom
         return comboBoxEditor;
     }
 
-//    @Override
-//    public Dimension getPreferredSize(JComponent c) {
-//        Dimension sps = super.getPreferredSize(c);
-//        return new Dimension(sps.width + (GENERAL_PADDING * 2), sps.height + (GENERAL_PADDING * 2));
-//    }
-
     @Override
     public Dimension getPreferredSize(JComponent c) {
         return new Dimension(super.getPreferredSize(c).width, 28);

@@ -26,6 +26,7 @@ import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
+import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.util.Images;
 import com.patrickangle.commons.util.OperatingSystems;
@@ -107,6 +108,7 @@ public class ModernUIUtilities {
         ModernOptionPaneUI.installIntoDefaults(defaults);
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
+        ModernSpinnerUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
@@ -121,6 +123,14 @@ public class ModernUIUtilities {
 
     }
 
+    /**
+     * Installs defaults, as well as overrides some additional defaults, to be
+     * compatible with use on top of the Darcula LAF for the missing UIs not
+     * currently implemented here. This method will be deprecated when all UIs
+     * are implemented.
+     *
+     * @param defaults
+     */
     public static void installCompatibleDefaults(UIDefaults defaults) {
         installInputMapDefaults(defaults);
 
@@ -190,6 +200,8 @@ public class ModernUIUtilities {
 
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
+
+        ModernSpinnerUI.installIntoDefaults(defaults);
     }
 
     /**

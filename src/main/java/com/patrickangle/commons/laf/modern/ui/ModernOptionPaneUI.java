@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.BACKGROUND_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY;
 import com.patrickangle.commons.util.Images;

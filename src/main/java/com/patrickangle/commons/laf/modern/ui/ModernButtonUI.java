@@ -17,24 +17,9 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
-import com.patrickangle.commons.laf.modern.ModernUIColors;
 import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
-import com.patrickangle.commons.laf.modern.ModernUIUtilities;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_DARK_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_DARK_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_ULTRA_DARK_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.SHADOW_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI.isSearchField;
-import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.GraphicsHelpers;
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -45,15 +30,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JToggleButton;
 import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.plaf.basic.BasicGraphicsUtils;
 
 /**
  *
@@ -62,6 +42,7 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
 public class ModernButtonUI extends BasicButtonUI implements ModernShapedComponentUI {
 
     public static final String JBUTTON_QUIET_KEY = "JButton.quiet";
+    public static final String JBUTTON_PAINTS_SHADOW_KEY = "JButton.paintsShadow";
     public static final String JBUTTON_SEGMENT_POSITION_KEY = "JButton.segmentPosition";
     public static final String JBUTTON_SEGMENT_POSITION_ONLY_VALUE = "only";
     public static final String JBUTTON_SEGMENT_POSITION_FIRST_VALUE = "first";
@@ -79,11 +60,6 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         return new ModernButtonUI();
     }
 
-//    @Override
-//    public void installUI(JComponent c) {
-//        super.installUI(c);
-//        c.setOpaque(false);
-//    }
     @Override
     protected void installDefaults(AbstractButton b) {
         super.installDefaults(b);
@@ -110,7 +86,8 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         GraphicsHelpers.enableAntialiasing(g);
         GraphicsHelpers.enableStrokeNormalization(g);
 
-        if (component.getClientProperty(JBUTTON_QUIET_KEY) == null || (boolean) component.getClientProperty(JBUTTON_QUIET_KEY) == false) {
+        if ((component.getClientProperty(JBUTTON_QUIET_KEY) == null || (boolean) component.getClientProperty(JBUTTON_QUIET_KEY) == false) &&
+                (component.getClientProperty(JBUTTON_PAINTS_SHADOW_KEY) == null || (boolean) component.getClientProperty(JBUTTON_PAINTS_SHADOW_KEY) == true)) {
             ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
         }
         
@@ -136,78 +113,6 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         defaults.put("Button.border", ModernButtonUI.getDefaultBorder());
     }
 
-//    public static void paintButtonBackgroundFill(Graphics2D g, AbstractButton button, Shape buttonShape) {
-//        final ButtonModel buttonModel = button.getModel();
-//
-//        if (button.isEnabled()) {
-//            // Enabled
-//            if (buttonModel.isPressed()) {
-//                // Enabled + Pressed
-//                if (isDefaultOrSelected(button)) {
-//                    // Enabled + Pressed + Default or Selected
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-//                } else if (button.isFocusOwner()) {
-//                    // Enabled + Pressed + In Focus
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-//                } else {
-//                    // Enabled + Pressed + Normal
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-//                }
-//            } else if (buttonModel.isRollover()) {
-//                // Enabled + Hover
-//                if (isDefaultOrSelected(button)) {
-//                    // Enabled + Hover + Default or Selected
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-//                } else if (button.isFocusOwner()) {
-//                    // Enabled + Hover + In Focus
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-//                } else {
-//                    // Enabled + Hover + Normal
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-//                }
-//            } else {
-//                // Enabled + Normal
-//                if (isDefaultOrSelected(button)) {
-//                    // Enabled + Normal + Default or Selected
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-//                } else if (button.isFocusOwner()) {
-//                    // Enabled + Normal + In Focus
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-//                } else {
-//                    // Enabled + Normal + Normal
-//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-//                }
-//            }
-//        } else {
-//            // Disabled
-//            g.setColor(UIManager.getColor(PRIMARY_DARK_COLOR_KEY));
-//        }
-//
-//        g.fill(buttonShape);
-//    }
-//    public static void paintButtonBorderHighlight(Graphics2D g, AbstractButton button, Shape buttonShape) {
-//        g.setStroke(new BasicStroke(0.5f));
-//        
-//        if (button.isEnabled()) {
-//            // Enabled
-//            if (isDefaultOrSelected(button)) {
-//                // Enabled + Default or Selected
-//                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-//            } else if (button.isFocusOwner()) {
-//                // Enabled + In Focus
-//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
-//            } else {
-//                // Enabled + Normal
-//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-//            }
-//        } else {
-//            // Disabled
-//            g.setColor(UIManager.getColor(PRIMARY_DARK_COLOR_KEY));
-//        }
-//    }
-//    public static boolean isDefaultOrSelected(AbstractButton button) {
-//        return (button instanceof JButton && ((JButton) button).isDefaultButton()) || (button instanceof JToggleButton && button.isSelected());
-//    }
     @Override
     public Shape getShape(JComponent c) {
         final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);

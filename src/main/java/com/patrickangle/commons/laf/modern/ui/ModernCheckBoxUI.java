@@ -18,11 +18,7 @@ package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
 import com.patrickangle.commons.laf.modern.ui.icon.ModernCheckIcon;
-import com.patrickangle.commons.util.GraphicsHelpers;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;

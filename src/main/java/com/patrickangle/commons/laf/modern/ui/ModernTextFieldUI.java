@@ -23,8 +23,6 @@ import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_LIGH
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_ULTRA_DARK_COLOR_KEY;
-import static com.patrickangle.commons.laf.modern.ModernUIUtilities.SHADOW_COLOR_KEY;
-import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.BasicStroke;
 import java.awt.Component;
@@ -96,23 +94,7 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
     @Override
     protected void paintSafely(Graphics g) {
         JTextComponent component = getComponent();
-
-//        final Insets buttonBorderInsets = getDefaultBorder().getBorderInsets(component);
-//
-//        int cornerDiameter = 0;
-//
-//        if (isSearchField(component)) {
-//            cornerDiameter = (component.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + TEXT_FIELD_INSETS.top + TEXT_FIELD_INSETS.bottom) / 2;
-//        }
-//
-//        Shape buttonRect = new RoundRectangle2D.Double(
-//                buttonBorderInsets.left - TEXT_FIELD_INSETS.left,
-//                buttonBorderInsets.top - TEXT_FIELD_INSETS.top,
-//                component.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + TEXT_FIELD_INSETS.left + TEXT_FIELD_INSETS.right,
-//                component.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + TEXT_FIELD_INSETS.top + TEXT_FIELD_INSETS.bottom,
-//                cornerDiameter,
-//                cornerDiameter);
-
+        
         paintShape(g, component, getShape(component));
         super.paintSafely(g);
     }
@@ -122,7 +104,6 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         final Graphics2D g = (Graphics2D) graphics.create();
         GraphicsHelpers.enableAntialiasing(g);
 
-//        paintComponentShadowOrGlow(g, component, buttonRect);
         paintComponentBackgroundFill(g, component, buttonRect);
         paintComponentBorderHighlight(g, component, buttonRect);
 
@@ -141,6 +122,11 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         defaults.put("TextField.inactiveForeground", defaults.getColor(PRIMARY_MEDIUM_DARK_COLOR_KEY));
         defaults.put("TextField.selectionBackground", defaults.getColor(ACCENT_HIGHLIGHT_COLOR_KEY));
         defaults.put("TextField.selectionForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("TextField.caretForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        
+        defaults.put("FormattedTextFieldUI", ModernTextFieldUI.class.getName());
+        defaults.put("FormattedTextField.font", defaults.getFont("defaultFont"));
+        defaults.put("FormattedTextField.caretForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
     }
 
     public static void paintComponentBackgroundFill(Graphics2D g, JTextComponent component, Shape buttonShape) {
@@ -167,16 +153,6 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         }
     }
 
-//    public static void paintComponentShadowOrGlow(Graphics2D g, JTextComponent component, Shape buttonShape) {
-//        if (component.hasFocus()) {
-//            g.setColor(Colors.transparentColor(UIManager.getColor(ACCENT_HIGHLIGHT_COLOR_KEY), 0.5f));
-//            GraphicsHelpers.drawBorderShadow(g, buttonShape, 3);
-//        } else {
-//            g.setColor(Colors.transparentColor(UIManager.getColor(SHADOW_COLOR_KEY), 0.25f));
-//            GraphicsHelpers.drawBorderShadow(g, buttonShape, 3);
-//        }
-//    }
-
     public static boolean isSearchField(Component c) {
         return c instanceof JTextField && "search".equals(((JTextField) c).getClientProperty("JTextField.variant"));
     }
@@ -187,14 +163,13 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         if (c.getBorder() instanceof ModernBasicBorder) {
             buttonBorderInsets = c.getBorder().getBorderInsets(c);
         }
-//        final Insets 
 
         int cornerDiameter = 0;
 
         if (isSearchField(c)) {
-            cornerDiameter = (c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + TEXT_FIELD_INSETS.top + TEXT_FIELD_INSETS.bottom);
+            cornerDiameter = 6;
         }
-
+        
         Shape buttonRect = new RoundRectangle2D.Double(
                 buttonBorderInsets.left - TEXT_FIELD_INSETS.left,
                 buttonBorderInsets.top - TEXT_FIELD_INSETS.top,

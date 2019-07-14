@@ -19,7 +19,6 @@ package com.patrickangle.commons.laf.modern.ui;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY;
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.PRIMARY_ULTRA_DARK_COLOR_KEY;
-import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.ComponentUI;
@@ -42,25 +41,5 @@ public class ModernListUI extends BasicListUI {
         defaults.put("List.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("List.selectionBackground", defaults.getColor(ACCENT_HIGHLIGHT_COLOR_KEY));
         defaults.put("List.selectionForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("List.", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("List.", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("List.", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        defaults.put("List.", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
-//        
-//        
-//        
-//        
-//        List.background
-//List.cellRenderer
-//List.dropLineColor
-//List.focusCellHighlightBorder
-//List.focusInputMap
-//List.focusInputMap.RightToLeft
-//List.font
-//List.foreground
-//List.noFocusBorder
-//List.selectionBackground
-//List.selectionForeground
-//List.timeFactor
     }
 }
