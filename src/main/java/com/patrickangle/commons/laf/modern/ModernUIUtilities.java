@@ -27,12 +27,14 @@ import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
+import com.patrickangle.commons.laf.modern.ui.ModernTabbedPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.util.Images;
 import com.patrickangle.commons.util.OperatingSystems;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.IconUIResource;
 
@@ -109,6 +111,7 @@ public class ModernUIUtilities {
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
         ModernSpinnerUI.installIntoDefaults(defaults);
+        ModernTabbedPaneUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));
@@ -180,6 +183,8 @@ public class ModernUIUtilities {
 
         defaults.put("Viewport.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
         defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
+        
+        defaults.put("TabbedPane.background", defaults.getColor(BACKGROUND_COLOR_KEY));
 
         defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
         defaults.put("Table.selectionBackground", defaults.get(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
@@ -202,6 +207,8 @@ public class ModernUIUtilities {
         ModernRadioButtonUI.installIntoDefaults(defaults);
 
         ModernSpinnerUI.installIntoDefaults(defaults);
+        ModernTabbedPaneUI.installIntoDefaults(defaults);
+        
     }
 
     /**
@@ -222,6 +229,15 @@ public class ModernUIUtilities {
             default:
                 GTKKeyBindings.installKeybindings(defaults);
                 break;
+        }
+    }
+    
+    public static Object clientPropertyOrDefault(JComponent c, String key, Object def) {
+        Object returnObj = c.getClientProperty(key);
+        if (returnObj != null) {
+            return returnObj;
+        } else {
+            return def;
         }
     }
 }

@@ -18,8 +18,10 @@ package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
 import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
+import com.patrickangle.commons.laf.modern.ModernUIUtilities;
 import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -41,8 +43,11 @@ import javax.swing.plaf.basic.BasicButtonUI;
  */
 public class ModernButtonUI extends BasicButtonUI implements ModernShapedComponentUI {
 
-    public static final String JBUTTON_QUIET_KEY = "JButton.quiet";
-    public static final String JBUTTON_PAINTS_SHADOW_KEY = "JButton.paintsShadow";
+    public static final String JBUTTON_TYPE_KEY = "JButton.buttonType";
+    public static final String JBUTTON_TYPE_NORMAL_VALUE = "normal";
+    public static final String JBUTTON_TYPE_QUIET_VALUE = "quiet";
+    public static final String JBUTTON_TYPE_HELP_VALUE = "help";
+
     public static final String JBUTTON_SEGMENT_POSITION_KEY = "JButton.segmentPosition";
     public static final String JBUTTON_SEGMENT_POSITION_ONLY_VALUE = "only";
     public static final String JBUTTON_SEGMENT_POSITION_FIRST_VALUE = "first";
@@ -76,7 +81,13 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
     @Override
     protected void paintText(Graphics g, AbstractButton component, Rectangle textRect, String text) {
-        ModernUIComponentPainting.paintComponentText(g, component, textRect, text, getTextShiftOffset());
+        if (JBUTTON_TYPE_HELP_VALUE.equals(component.getClientProperty(JBUTTON_TYPE_KEY))) {
+            // Help buttons have a bold ? mark, and no other text.
+            component.setFont(component.getFont().deriveFont(Font.BOLD, 14f));
+            ModernUIComponentPainting.paintComponentText(g, component, textRect, "?", getTextShiftOffset());
+        } else {
+            ModernUIComponentPainting.paintComponentText(g, component, textRect, text, getTextShiftOffset());
+        }
     }
 
     public void paintShape(Graphics graphics, JComponent component, Shape buttonRect) {
@@ -86,20 +97,43 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         GraphicsHelpers.enableAntialiasing(g);
         GraphicsHelpers.enableStrokeNormalization(g);
 
-        if ((component.getClientProperty(JBUTTON_QUIET_KEY) == null || (boolean) component.getClientProperty(JBUTTON_QUIET_KEY) == false) &&
-                (component.getClientProperty(JBUTTON_PAINTS_SHADOW_KEY) == null || (boolean) component.getClientProperty(JBUTTON_PAINTS_SHADOW_KEY) == true)) {
-            ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
-        }
-        
         final ButtonModel buttonModel = button.getModel();
         
-        if ((component.getClientProperty(JBUTTON_QUIET_KEY) == null || (boolean) component.getClientProperty(JBUTTON_QUIET_KEY) == false) || button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
-            ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
-        }
-        if (component.getClientProperty(JBUTTON_QUIET_KEY) == null || (boolean) component.getClientProperty(JBUTTON_QUIET_KEY) == false) {
-            ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
+        
+        switch ((String) ModernUIUtilities.clientPropertyOrDefault(component, JBUTTON_TYPE_KEY, JBUTTON_TYPE_NORMAL_VALUE)) {
+            case JBUTTON_TYPE_QUIET_VALUE:
+                if (button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
+                    ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
+                }
+                break;
+
+            case JBUTTON_TYPE_HELP_VALUE:
+                ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
+                ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
+                ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
+                break;
+
+            case JBUTTON_TYPE_NORMAL_VALUE:
+            default:
+                ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
+                ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
+                ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
+                break;
+
         }
 
+//        if ((component.getClientProperty(JBUTTON_TYPE_KEY) == null || (boolean) component.getClientProperty(JBUTTON_TYPE_KEY) == false)) {
+//            ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
+//        }
+//        
+//        
+//        
+//        if ((component.getClientProperty(JBUTTON_TYPE_KEY) == null || component.getClientProperty(JBUTTON_TYPE_KEY).equals(g)) || button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
+//            ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
+//        }
+//        if (component.getClientProperty(JBUTTON_TYPE_KEY) == null || component.getClientProperty(JBUTTON_TYPE_KEY) == false) {
+//            ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
+//        }
         g.dispose();
     }
 
@@ -125,61 +159,82 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
                 CORNER_DIAMETER,
                 CORNER_DIAMETER);
 
-        String segmentValue = (String) c.getClientProperty(JBUTTON_SEGMENT_POSITION_KEY);
-        if (segmentValue != null && !segmentValue.equals(JBUTTON_SEGMENT_POSITION_ONLY_VALUE)) {
-            switch (segmentValue) {
-                case JBUTTON_SEGMENT_POSITION_FIRST_VALUE:
-                    Shape addonRect = new Rectangle2D.Double(
-                            buttonRect.getBounds().x + (buttonRect.getBounds().width / 2),
-                            buttonRect.getBounds().y,
-                            (buttonRect.getBounds().width / 2) + buttonBorderInsets.right,
-                            buttonRect.getBounds().height);
-
-                    Area compositeShape = new Area(buttonRect);
-                    compositeShape.add(new Area(addonRect));
-
-                    buttonRect = compositeShape;
-
-                    break;
-                case JBUTTON_SEGMENT_POSITION_MIDDLE_VALUE:
-                    Shape addonRect2 = new Rectangle2D.Double(
-                            buttonRect.getBounds().x - buttonBorderInsets.left,
-                            buttonRect.getBounds().y,
-                            buttonRect.getBounds().width + buttonBorderInsets.left + buttonBorderInsets.right,
-                            buttonRect.getBounds().height);
-
-                    Area compositeShape2 = new Area(buttonRect);
-                    compositeShape2.add(new Area(addonRect2));
-
-                    buttonRect = compositeShape2;
-                    break;
-                case JBUTTON_SEGMENT_POSITION_LAST_VALUE:
-                    Shape addonRect3 = new Rectangle2D.Double(
-                            buttonRect.getBounds().x - buttonBorderInsets.left,
-                            buttonRect.getBounds().y,
-                            buttonRect.getBounds().width / 2,
-                            buttonRect.getBounds().height);
-
-                    Area compositeShape3 = new Area(buttonRect);
-                    compositeShape3.add(new Area(addonRect3));
-
-                    buttonRect = compositeShape3;
-                    break;
-            }
+        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
+            int dims = Math.min(c.getWidth(), c.getHeight());
+            int insetDiffs = Math.max(-buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right, -buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom);
+            int origin = Math.max(buttonBorderInsets.left - BUTTON_INSETS.left, buttonBorderInsets.top - BUTTON_INSETS.top);
+            int originX = origin + ((c.getWidth() - dims) / 2);
+            buttonRect = new RoundRectangle2D.Double(
+                    originX, origin,
+                    dims + insetDiffs, dims + insetDiffs,
+                    dims, dims
+            );
         } else {
-            // Do nothing, the shape is already correct.
-        }
 
+            String segmentValue = (String) c.getClientProperty(JBUTTON_SEGMENT_POSITION_KEY);
+            if (segmentValue != null && !segmentValue.equals(JBUTTON_SEGMENT_POSITION_ONLY_VALUE)) {
+                switch (segmentValue) {
+                    case JBUTTON_SEGMENT_POSITION_FIRST_VALUE:
+                        Shape addonRect = new Rectangle2D.Double(
+                                buttonRect.getBounds().x + (buttonRect.getBounds().width / 2),
+                                buttonRect.getBounds().y,
+                                (buttonRect.getBounds().width / 2) + buttonBorderInsets.right,
+                                buttonRect.getBounds().height);
+
+                        Area compositeShape = new Area(buttonRect);
+                        compositeShape.add(new Area(addonRect));
+
+                        buttonRect = compositeShape;
+
+                        break;
+                    case JBUTTON_SEGMENT_POSITION_MIDDLE_VALUE:
+                        Shape addonRect2 = new Rectangle2D.Double(
+                                buttonRect.getBounds().x - buttonBorderInsets.left,
+                                buttonRect.getBounds().y,
+                                buttonRect.getBounds().width + buttonBorderInsets.left + buttonBorderInsets.right,
+                                buttonRect.getBounds().height);
+
+                        Area compositeShape2 = new Area(buttonRect);
+                        compositeShape2.add(new Area(addonRect2));
+
+                        buttonRect = compositeShape2;
+                        break;
+                    case JBUTTON_SEGMENT_POSITION_LAST_VALUE:
+                        Shape addonRect3 = new Rectangle2D.Double(
+                                buttonRect.getBounds().x - buttonBorderInsets.left,
+                                buttonRect.getBounds().y,
+                                buttonRect.getBounds().width / 2,
+                                buttonRect.getBounds().height);
+
+                        Area compositeShape3 = new Area(buttonRect);
+                        compositeShape3.add(new Area(addonRect3));
+
+                        buttonRect = compositeShape3;
+                        break;
+                }
+            } else {
+                // Do nothing, the shape is already correct.
+            }
+        }
         return buttonRect;
     }
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
-        return new Dimension(super.getPreferredSize(c).width, 28);
+//        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
+//            return new Dimension (28, 28);
+//        } else {
+            return new Dimension(super.getPreferredSize(c).width, 28);
+//        }
     }
 
     @Override
     public Dimension getMinimumSize(JComponent c) {
-        return new Dimension(super.getMinimumSize(c).width, 28);
+//        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
+//            return new Dimension (28, 28);
+//        } else {
+            return new Dimension(super.getMinimumSize(c).width, 28);
+//        }
+        
     }
 }

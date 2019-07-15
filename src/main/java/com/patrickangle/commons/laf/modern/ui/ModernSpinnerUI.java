@@ -510,7 +510,6 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
 
             }
         });
-        button.putClientProperty(ModernButtonUI.JBUTTON_PAINTS_SHADOW_KEY, false);
 
         return button;
     }
