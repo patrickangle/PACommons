@@ -519,7 +519,7 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         try {
             return new Dimension(super.getPreferredSize(c).width, 28);
         } catch (Exception e) {
-            return new Dimension(0, 28);
+            return new Dimension(128, 28);
         }
     }
 
@@ -529,7 +529,7 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         try {
             return new Dimension(super.getMinimumSize(c).width, 28);
         } catch (Exception e) {
-            return new Dimension(0, 28);
+            return new Dimension(64, 28);
         }
     }
 
