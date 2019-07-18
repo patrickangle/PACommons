@@ -17,12 +17,12 @@
 package com.patrickangle.commons.beansbinding;
 
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
+import com.patrickangle.commons.util.Fields;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -33,12 +33,15 @@ public class BeanBindableField<C> implements BindableField<C> {
     private String fieldName;
     private Class fieldClass;
     
+    private Field reflectionField;
+    
     private Method getter;
     private Method setter;
     
     public BeanBindableField(Class<C> containingClass, String fieldName) {
         this.containingClass = containingClass;
         this.fieldName = fieldName;
+        this.reflectionField = Fields.fieldForNameInClass(containingClass, fieldName);
 
         String getterSignature = methodSignatureForFieldName("get", this.fieldName);
         String isSignature = methodSignatureForFieldName("is", this.fieldName);
@@ -84,6 +87,11 @@ public class BeanBindableField<C> implements BindableField<C> {
 
     public Class getFieldClass() {
         return fieldClass;
+    }
+
+    @Override
+    public Field getReflectionField() {
+        return reflectionField;
     }
     
     public boolean isReadable() {

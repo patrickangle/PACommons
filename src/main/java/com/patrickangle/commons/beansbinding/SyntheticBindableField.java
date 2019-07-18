@@ -18,6 +18,8 @@ package com.patrickangle.commons.beansbinding;
 
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.util.Classes;
+import com.patrickangle.commons.util.Fields;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -38,6 +40,8 @@ public class SyntheticBindableField<C> implements BindableField<C> {
     private String beanFieldName;
     private Class fieldClass;
     
+    private Field reflectionField;
+    
     private Method getter;
     private Method setter;
     
@@ -52,6 +56,7 @@ public class SyntheticBindableField<C> implements BindableField<C> {
         this.containingClass = containingClass;
         this.fieldName = fieldName;
         this.beanFieldName = fieldName.split("\\$", 2)[0];
+        this.reflectionField = Fields.fieldForNameInClass(containingClass, beanFieldName);
         this.additionalGetterParams = additionalGetterParams;
         this.additionalSetterParams = additionalSetterParams;
         
@@ -114,6 +119,13 @@ public class SyntheticBindableField<C> implements BindableField<C> {
     public Class getFieldClass() {
         return this.fieldClass;
     }
+
+    @Override
+    public Field getReflectionField() {
+        return reflectionField;
+    }
+    
+    
 
     @Override
     public boolean isReadable() {

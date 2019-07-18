@@ -16,6 +16,8 @@
  */
 package com.patrickangle.commons.beansbinding.interfaces;
 
+import java.lang.reflect.Field;
+
 /**
  *
  * @author Patrick Angle
@@ -26,6 +28,8 @@ public interface BindableField<C> {
     public String getFieldName();
 
     public Class getFieldClass();
+    
+    public Field getReflectionField();
     
     public boolean isReadable();
     
