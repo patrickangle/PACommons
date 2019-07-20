@@ -16,9 +16,10 @@
  */
 package com.patrickangle.commons.laf.modern;
 
+import com.patrickangle.commons.Pair;
 import com.patrickangle.commons.util.Colors;
+import com.patrickangle.commons.util.CompatibleImageUtil;
 import com.patrickangle.commons.util.GraphicsHelpers;
-import static com.patrickangle.commons.util.GraphicsHelpers.enableAntialiasing;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -30,7 +31,10 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.WeakHashMap;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -44,6 +48,10 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
  * @author patrickangle
  */
 public class ModernUIComponentPainting {
+
+    private final static Map<Pair<Shape, Color>, BufferedImage> cachedShadows = new WeakHashMap<>();
+    private final static Map<Pair<Shape, Color>, BufferedImage> cachedFills = new WeakHashMap<>();
+    private final static Map<Pair<Shape, Color>, BufferedImage> cachedBorders = new WeakHashMap<>();
 
     public static void paintComponentBackgroundFill(Graphics2D g, AbstractButton button, Shape buttonShape) {
         final ButtonModel buttonModel = button.getModel();
@@ -92,11 +100,22 @@ public class ModernUIComponentPainting {
             g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
         }
 
-        g.fill(buttonShape);
+        BufferedImage fill = cachedFills.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(button.getWidth(), button.getHeight(), BufferedImage.TRANSLUCENT);
+            Graphics2D g2 = bi.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            
+            g2.setColor(pair.b);
+            g2.fill(pair.a);
+            
+            return bi;
+        });
+        g.drawImage(fill, 0, 0, button);
     }
 
     public static void paintComponentBorderHighlight(Graphics2D g, AbstractButton button, Shape buttonShape) {
-        g.setStroke(new BasicStroke(0.5f));
+        
 
         if (button.isEnabled()) {
             // Enabled
@@ -115,7 +134,20 @@ public class ModernUIComponentPainting {
             g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
         }
         
-        g.draw(buttonShape);
+        BufferedImage border = cachedBorders.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(button.getWidth(), button.getHeight(), BufferedImage.TRANSLUCENT);
+            Graphics2D g2 = bi.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g.setStroke(new BasicStroke(0.5f));
+            g2.setColor(pair.b);
+            g2.draw(pair.a);
+            
+            return bi;
+        });
+        g.drawImage(border, 0, 0, button);
+
+//        g.draw(buttonShape);
     }
 
     public static void paintComponentShadowOrFocus(Graphics2D g, Component component, Shape shape) {//Graphics graphics, int x, int y, int width, int height) {
@@ -124,26 +156,60 @@ public class ModernUIComponentPainting {
         } else {
             g.setColor(Colors.transparentColor(UIManager.getColor(ModernUIUtilities.SHADOW_COLOR_KEY), 0.25f));
         }
-        
-        Graphics2D g2 = (Graphics2D) g.create();
-        enableAntialiasing(g2);
-        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-        g2.translate(0.0,0.0);
 
-        Color baseColor = g2.getColor();
-        
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
-                int shadowWidth = 3;
-        int sw = shadowWidth * 2;
-        for (int i = sw; i >= 2; i -= 2) {
-            float pct = (float) (sw - i) / (sw - 1);
-            
-            g2.setColor(Colors.transparentColor(baseColor, pct));
-            
-            g2.setStroke(new BasicStroke(i));
-            g2.draw(shape);
-        }
-        g2.dispose();
+        BufferedImage shadow = cachedShadows.computeIfAbsent(Pair.makePair(shape, g.getColor()), (pair) -> {
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TRANSLUCENT);
+            Graphics2D g2 = bi.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            Color baseColor = pair.b;
+//            g2.translate(3, 3);
+
+//            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
+            int shadowWidth = 3;
+            int sw = shadowWidth * 2;
+            for (int i = sw; i >= 2; i -= 2) {
+                float pct = (float) (sw - i) / (sw - 1);
+
+                g2.setColor(Colors.transparentColor(baseColor, pct));
+
+                g2.setStroke(new BasicStroke(i));
+                g2.draw(pair.a);
+            }
+            g2.dispose();
+
+            return bi; //To change body of generated lambdas, choose Tools | Templates.
+        });
+
+//        BufferedImage intermediate = CompatibleImageUtil.compatibleBufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TRANSLUCENT);
+//        Graphics2D g3 = intermediate.createGraphics();
+//        g3.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g3.setColor(g.getColor());
+//        g3.fillRect(0, 0, component.getWidth(), component.getHeight());
+//        g3.setComposite(AlphaComposite.DstIn);
+//        g3.drawImage(shadowMask, 0, 0, component);
+//        g3.dispose();
+        g.drawImage(shadow, 0, 0, component);
+
+//        Graphics2D g2 = (Graphics2D) g.create();
+//        enableAntialiasing(g2);
+//        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+//        g2.translate(0.0, 0.0);
+//
+//        Color baseColor = g2.getColor();
+//
+//        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, baseColor.getAlpha() / 255.0f));
+//        int shadowWidth = 3;
+//        int sw = shadowWidth * 2;
+//        for (int i = sw; i >= 2; i -= 2) {
+//            float pct = (float) (sw - i) / (sw - 1);
+//
+//            g2.setColor(Colors.transparentColor(baseColor, pct));
+//
+//            g2.setStroke(new BasicStroke(i));
+//            g2.draw(shape);
+//        }
+//        g2.dispose();
     }
 
     public static void paintComponentText(Graphics g, JComponent component, Rectangle textRect, String text, int textShiftOffset) {
@@ -198,7 +264,7 @@ public class ModernUIComponentPainting {
             // Disabled
             g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
         }
-        
+
         g.fill(radioMark);
     }
 

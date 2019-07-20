@@ -71,6 +71,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         b.setRolloverEnabled(true);
         b.setOpaque(false);
+
     }
 
     @Override
@@ -82,8 +83,11 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     @Override
     protected void paintText(Graphics g, AbstractButton component, Rectangle textRect, String text) {
         if (JBUTTON_TYPE_HELP_VALUE.equals(component.getClientProperty(JBUTTON_TYPE_KEY))) {
-            // Help buttons have a bold ? mark, and no other text.
-            component.setFont(component.getFont().deriveFont(Font.BOLD, 14f));
+            if (component.getFont().getSize() != 14 || !component.getFont().isBold()) {
+                // Help buttons have a bold ? mark, and no other text.
+                component.setFont(component.getFont().deriveFont(Font.BOLD, 14f));
+            }
+
             ModernUIComponentPainting.paintComponentText(g, component, textRect, "?", getTextShiftOffset());
         } else {
             ModernUIComponentPainting.paintComponentText(g, component, textRect, text, getTextShiftOffset());
@@ -98,8 +102,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         GraphicsHelpers.enableStrokeNormalization(g);
 
         final ButtonModel buttonModel = button.getModel();
-        
-        
+
         switch ((String) ModernUIUtilities.clientPropertyOrDefault(component, JBUTTON_TYPE_KEY, JBUTTON_TYPE_NORMAL_VALUE)) {
             case JBUTTON_TYPE_QUIET_VALUE:
                 if (button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
@@ -224,7 +227,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 //        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
 //            return new Dimension (28, 28);
 //        } else {
-            return new Dimension(super.getPreferredSize(c).width, 28);
+        return new Dimension(super.getPreferredSize(c).width, 28);
 //        }
     }
 
@@ -233,8 +236,8 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 //        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
 //            return new Dimension (28, 28);
 //        } else {
-            return new Dimension(super.getMinimumSize(c).width, 28);
+        return new Dimension(super.getMinimumSize(c).width, 28);
 //        }
-        
+
     }
 }
