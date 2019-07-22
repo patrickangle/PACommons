@@ -1,11 +1,4 @@
-/*
- * WorldStage Waltz
- * 
- * This software is the sole property of WorldStage. WorldStage retains all
- * rights to any code or APIs contained herein.
- * 
- * (C) 2018 WorldStage. All rights reserved.
- */
+
 package com.patrickangle.commons.json.serialization;
 
 import com.fasterxml.jackson.core.JsonParser;

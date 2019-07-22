@@ -64,7 +64,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     public static ComponentUI createUI(JComponent c) {
         return new ModernButtonUI();
     }
-
+    
     @Override
     protected void installDefaults(AbstractButton b) {
         super.installDefaults(b);

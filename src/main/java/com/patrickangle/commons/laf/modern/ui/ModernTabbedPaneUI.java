@@ -1,14 +1,4 @@
-/*
- * WorldStage Waltz
- * 
- * Copyright © 2018 WorldStage.
- * All rights reserved.
- * 
- * Unauthorized tampering, copying, or distribution of this file,
- *   via any medium, is strictly prohibited.
- * 
- * The contents of this file are proprietary and confidential.
- */
+
 package com.patrickangle.commons.laf.modern.ui;
 
 //import com.bulenkov.iconloader.util.JBInsets;
