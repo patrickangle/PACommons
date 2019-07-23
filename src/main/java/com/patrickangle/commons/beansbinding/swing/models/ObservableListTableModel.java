@@ -19,6 +19,7 @@ package com.patrickangle.commons.beansbinding.swing.models;
 import com.patrickangle.commons.beansbinding.BoundFields;
 import com.patrickangle.commons.beansbinding.interfaces.BindableField;
 import com.patrickangle.commons.beansbinding.interfaces.BoundField;
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.collections.ObservableListListener;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;
@@ -75,6 +76,7 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
                 }
                 
                 tableModelSupport.fireInserted(startIndex, startIndex+ length, TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
@@ -84,6 +86,7 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
                 });
                 
                 tableModelSupport.fireDeleted(startIndex, startIndex + oldElements.size(), TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
@@ -91,11 +94,12 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
                 unbindColumnsFor((E)oldElement);
                 bindColumnsFor(ObservableListTableModel.this.items.get(index));
                 tableModelSupport.fireUpdated(index, index, TableModelEvent.ALL_COLUMNS);
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
 
             @Override
             public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
-                //
+                propertyChangeSupport.firePropertyChange("items", null, items);
             }
         };
         
@@ -198,7 +202,22 @@ public class ObservableListTableModel<E> extends ObservableListModel<E> implemen
 
     @Override
     public void setValueAt(Object newValue, int rowIndex, int columnIndex) {
+        Logging.warning(this, "Setting value at " + rowIndex + ":" + columnIndex + ". Value is: " + newValue);
+        printCondensedStackTrace();
         columns.get(columnIndex).getBinding().setValue(getElementAt(rowIndex), newValue);
+    }
+    
+    public static void printCondensedStackTrace() {
+        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+        StringBuilder print = new StringBuilder("Tracing Thread `").append(Thread.currentThread().getName()).append("`: ");
+        for (int i = traces.length - 1; i >= 2; i--) {
+            if (i != traces.length - 1) {
+                print.append("»");
+            }
+            String[] classNameParts = traces[i].getClassName().split("\\.");
+            print.append(classNameParts[classNameParts.length - 1]).append(".").append(traces[i].getMethodName()).append(":").append(traces[i].getLineNumber());
+        }
+        Logging.trace(ObservableListTableModel.class, print);
     }
 
     @Override

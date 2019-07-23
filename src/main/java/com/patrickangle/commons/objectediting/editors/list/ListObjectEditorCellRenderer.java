@@ -50,15 +50,18 @@ public class ListObjectEditorCellRenderer extends AbstractCellEditor implements 
 
     @Override
     public Object getCellEditorValue() {
-        return null;
+        return activeObject;
     }
 
     public ListObjectEditorCellRenderer() {
         super();
     }
+    
+    private Object activeObject;
 
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        
         if (!cachedEditors.containsKey(value)) {
             // No editor is cached, we need to create one.
             JComponent newComponent;
@@ -100,10 +103,13 @@ public class ListObjectEditorCellRenderer extends AbstractCellEditor implements 
     @Override
     public Component getTableCellEditorComponent(JTable jtable, Object value, boolean isSelected, int row, int column) {
         // We always know that our renderer returns a JComponent, and more specifically a JPanel.
+        activeObject = value;
         JComponent c = (JComponent) getTableCellRendererComponent(jtable, value, isSelected, false, row, column);
         c.setBorder(selectedBorder);
         return c;
     }
+    
+    
     
     public void invalidateCache() {
         cachedEditors.clear();

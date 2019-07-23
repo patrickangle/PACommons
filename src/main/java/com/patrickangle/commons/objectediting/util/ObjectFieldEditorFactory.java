@@ -34,8 +34,10 @@ import com.patrickangle.commons.objectediting.annotations.NestedObjectEditingPro
 import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.editors.Point2dObjectEditor;
 import com.patrickangle.commons.objectediting.editors.list.ListObjectEditor;
+import com.patrickangle.commons.objectediting.editors.map.MapObjectEditor;
 import com.patrickangle.commons.objectediting.interfaces.CustomObjectEditingComponent;
 import com.patrickangle.commons.objectediting.util.list2deditor.ObjectEditingList2dTableEditorDialog;
+import com.patrickangle.commons.observable.collections.ObservableMutableMapEntry;
 import com.patrickangle.commons.util.Annotations;
 import com.patrickangle.commons.util.Classes;
 import com.patrickangle.commons.util.Lists;
@@ -101,10 +103,10 @@ public class ObjectFieldEditorFactory {
 
         BoundField objectField = BoundFields.boundField(containingObject, bindableField);
         Class fieldClass = Classes.primitiveClassFor(bindableField.getFieldClass());
-        
+
         // If undo is disabled for this editor, pass null as the UndoManager.
         UndoManager realizedUndoManager = configInfo.prohibitsUndo() ? null : undoManager;
-        
+
         ComponentReturn componentReturn;
 
         if (!configInfo.mutable()) {
@@ -118,7 +120,7 @@ public class ObjectFieldEditorFactory {
             button.addActionListener((ActionEvent ae) -> {
                 new ObjectEditingDialog((Frame) null, true, objectField.getValue()).setVisible(true);
             });
-            
+
             componentReturn = new ComponentReturn(button, true);
 
         } else if (Enum.class.isAssignableFrom(fieldClass)) {
@@ -134,19 +136,23 @@ public class ObjectFieldEditorFactory {
         } else if (Point2D.class.isAssignableFrom(objectField.getFieldClass())) {
             componentReturn = Point2dObjectEditor.createBoundComponentForPoint2D(objectField, bindingGroup);
         } else if (List.class.isAssignableFrom(objectField.getFieldClass())) {
-            int depth = Lists.depthOfMultiDimensionalList((List) objectField.getValue());
-            switch (depth) {
-                case 0:
-                // Zero is returned if the list is empty, so it really should be treated as a depth of one.
-                case 1:
-                    componentReturn = ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
-                    break;
-                case 2:
-                    componentReturn = createBoundComponentFor2dList(objectField, bindingGroup);
-                    break;
-                default:
-                    componentReturn = new ComponentReturn(new JLabel("List too deep at " + depth + "."), false);
-                    break;
+            if (configInfo.listNewItemClass().isAssignableFrom(ObservableMutableMapEntry.class)) {
+                componentReturn = MapObjectEditor.createBoundComponentForMap(objectField, bindingGroup);
+            } else {
+                int depth = Lists.depthOfMultiDimensionalList((List) objectField.getValue());
+                switch (depth) {
+                    case 0:
+                    // Zero is returned if the list is empty, so it really should be treated as a depth of one.
+                    case 1:
+                        componentReturn = ListObjectEditor.createBoundComponentForList(objectField, bindingGroup);
+                        break;
+                    case 2:
+                        componentReturn = createBoundComponentFor2dList(objectField, bindingGroup);
+                        break;
+                    default:
+                        componentReturn = new ComponentReturn(new JLabel("List too deep at " + depth + "."), false);
+                        break;
+                }
             }
         } else {
             if (configInfo.useMultiLineTextEditor()) {
@@ -154,10 +160,9 @@ public class ObjectFieldEditorFactory {
             } else {
                 componentReturn = createBoundComponentForString(objectField, bindingGroup, realizedUndoManager);
             }
-            
+
         }
-        
-        
+
         if (!configInfo.trackBooleanPropertyNamedForEnabled().equals("")) {
             Binding enabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForEnabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY);
             bindingGroup.add(enabledBinding);
@@ -165,7 +170,7 @@ public class ObjectFieldEditorFactory {
             Binding disabledBinding = new BasicBinding(containingObject, configInfo.trackBooleanPropertyNamedForDisabled(), componentReturn.getComponent(), "enabled", Binding.UpdateStrategy.READ_ONLY, new FlipBooleanBindingConverter());
             bindingGroup.add(disabledBinding);
         }
-        
+
         return componentReturn;
     }
 
@@ -243,7 +248,7 @@ public class ObjectFieldEditorFactory {
 
     private static ComponentReturn createBoundComponentForString(BoundField objectField, BindingGroup bindingGroup, UndoManager undoManager) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
-        
+
         JTextField textField = new JTextField();
 
         String setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
@@ -258,18 +263,18 @@ public class ObjectFieldEditorFactory {
                 setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
                 break;
         }
-        
+
         textField.getDocument().addUndoableEditListener(undoManager);
-        
+
         BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, setOn), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
 
         return new ComponentReturn(textField, false);
     }
-    
+
     private static ComponentReturn createBoundComponentForMultiLineString(BoundField objectField, BindingGroup bindingGroup, UndoManager undoManager) {
         ObjectEditingProperty configInfo = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(objectField.getBindableField()), ObjectEditingProperty.class);
-        
+
         JEditorPane textField = new JEditorPane() {
             @Override
             public Dimension getPreferredSize() {
@@ -277,11 +282,10 @@ public class ObjectFieldEditorFactory {
                 preferredSize.height = 150;
                 return preferredSize;
             }
-            
+
         };
-        
+
         textField.setFont(new Font(Font.DIALOG_INPUT, Font.PLAIN, 12));
-        
 
         String setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT;
         switch (configInfo.setOn()) {
@@ -295,9 +299,9 @@ public class ObjectFieldEditorFactory {
                 setOn = JTextComponentBoundField.SYNTHETIC_FIELD_TEXT_ON_ACTION_OR_FOCUS_LOST;
                 break;
         }
-        
+
         textField.getDocument().addUndoableEditListener(undoManager);
-        
+
         BasicBinding binding = new BasicBinding(objectField, BoundFields.boundField(textField, setOn), Binding.UpdateStrategy.READ_WRITE);
         bindingGroup.add(binding);
 
