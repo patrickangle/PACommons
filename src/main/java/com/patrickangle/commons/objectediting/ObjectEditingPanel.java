@@ -37,6 +37,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.undo.UndoManager;
 
@@ -45,27 +46,29 @@ import javax.swing.undo.UndoManager;
  * @author patrickangle
  */
 public class ObjectEditingPanel extends JPanel implements Scrollable {
+
     protected Object editingObject;
-    
+
     protected BindingGroup bindingGroup;
-    
+
     protected boolean treatAllAsMultilineEditor = false;
-    
+    protected boolean groupingByClass = true;
+
     protected UndoManager undoManager = null;
-    
+
     public ObjectEditingPanel() {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.bindingGroup = new BindingGroup();
     }
-    
+
     public ObjectEditingPanel(Object editingObject) {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        
+
         this.editingObject = editingObject;
         this.bindingGroup = new BindingGroup();
-        
+
         if (this.editingObject != null) {
             build();
         }
@@ -80,7 +83,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         Object oldEditingObject = this.editingObject;
         this.editingObject = editingObject;
         this.firePropertyChange("editingObject", oldEditingObject, this.editingObject);
-        
+
         if (this.editingObject != null) {
             build();
         }
@@ -96,6 +99,14 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         this.firePropertyChange("treatAllAsMultilineEditor", oldTreatAllAsMultilineEditor, this.treatAllAsMultilineEditor);
     }
 
+    public boolean isGroupingByClass() {
+        return groupingByClass;
+    }
+
+    public void setGroupingByClass(boolean groupingByClass) {
+        this.firePropertyChange("groupingByClass", this.groupingByClass, this.groupingByClass = groupingByClass);
+    }
+
     public UndoManager getUndoManager() {
         return undoManager;
     }
@@ -105,23 +116,21 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         this.undoManager = undoManager;
         this.firePropertyChange("undoManager", oldUndoManager, this.undoManager);
     }
-    
-    
-    
+
     protected void tearDown() {
         bindingGroup.unbind();
         bindingGroup.clear();
-        
+
         this.removeAll();
-        
+
         this.revalidate();
         this.repaint();
     }
-    
+
     protected void build() {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         LinkedHashMap<String, JPanel> sectionPanels = new LinkedHashMap<>();
-        
+
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 0;
@@ -129,27 +138,27 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         c.insets = new Insets(1, 1, 1, 1);
         c.anchor = GridBagConstraints.NORTH;
 //        c.weighty = 1;
-        
+
         int runningGridY = 0;
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {
             ObjectEditingProperty config = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(field), ObjectEditingProperty.class);
             String declaringClass = ObjectEditingBindings.getGroupNameForBindableField(field);
             sectionPanels.putIfAbsent(declaringClass, new JPanel(new GridBagLayout()));
-            
+
             ObjectFieldEditorFactory.ComponentReturn componentReturn = ObjectFieldEditorFactory.createEditorForObject(editingObject, field, bindingGroup, undoManager);
-            
+
             c.gridy = runningGridY;
             c.gridwidth = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 2 : 1;
-            
+
             JLabel label = null;
             if (!componentReturn.isSelfLabeled()) {
                 c.gridx = 0;
                 c.weightx = 0.0;
-                
-                
+
                 label = new JLabel(ObjectEditingBindings.nameForBindableField(field) + ": ", JLabel.TRAILING);
                 if (componentReturn.multiLineEditor || this.treatAllAsMultilineEditor) {
                     label.setHorizontalAlignment(JLabel.LEADING);
+                    label.setBorder(new EmptyBorder(4, 0, 0, 0));
                 }
                 label.setLabelFor(componentReturn.getComponent());
                 if (!config.help().equals("")) {
@@ -163,30 +172,31 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
             }
             c.gridx = componentReturn.isSelfLabeled() || componentReturn.isMultiLineEditor() || this.treatAllAsMultilineEditor ? 0 : 1;
             c.weightx = 1.0;
-            
+
 //            Dimension preferredDimension = componentReturn.getComponent().getPreferredSize();
 //            componentReturn.getComponent().setMinimumSize(new Dimension(preferredDimension.width, Math.max(preferredDimension.height, label != null ? label.getPreferredSize().height : 0)));
-            
 //            componentReturn.getComponent().setMinimumSize(componentReturn.getComponent().getPreferredSize());
             sectionPanels.get(declaringClass).add(componentReturn.getComponent(), c);
-            
+
             runningGridY++;
         }
-        
+
         List<String> sectionPanelNames = new ArrayList<>(sectionPanels.keySet());
         Collections.reverse(sectionPanelNames);
         sectionPanelNames.forEach((sectionPanelName) -> {
             JPanel sectionPanel = sectionPanels.get(sectionPanelName);
-            
-            TitledBorder border = new TitledBorder(sectionPanelName);
-            sectionPanel.setBorder(border);
-            
+
+            if (groupingByClass) {
+                TitledBorder border = new TitledBorder(sectionPanelName);
+                sectionPanel.setBorder(border);
+            }
+
             this.add(sectionPanel);
         });
 
         // This filler glue is needed when the panel is stretched taller than its contents.
         this.add(Box.createVerticalGlue());
-        
+
         bindingGroup.bind();
         this.revalidate();
         this.repaint();
