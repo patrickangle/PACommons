@@ -46,6 +46,34 @@ public class MathUtils {
         long clampedOutputNumber = (normalizedClampedNumber * (outputMaximum - outputMinimum)) + outputMinimum;
         return clampedOutputNumber;
     }
+    
+    public static double rerangeUnclamped(double number, double inputMinimum, double inputMaximum, double outputMinimum, double outputMaximum) {
+//        double clampedNumber = MathUtils.clamp(inputMinimum, number, inputMaximum);
+        double normalizedClampedNumber = (number - inputMinimum) / (inputMaximum - inputMinimum);
+        double clampedOutputNumber = (normalizedClampedNumber * (outputMaximum - outputMinimum)) + outputMinimum;
+        return clampedOutputNumber;
+    }
+    
+    public static float rerangeUnclamped(float number, float inputMinimum, float inputMaximum, float outputMinimum, float outputMaximum) {
+//        float clampedNumber = MathUtils.clamp(inputMinimum, number, inputMaximum);
+        float normalizedClampedNumber = (number - inputMinimum) / (inputMaximum - inputMinimum);
+        float clampedOutputNumber = (normalizedClampedNumber * (outputMaximum - outputMinimum)) + outputMinimum;
+        return clampedOutputNumber;
+    }
+    
+    public static int rerangeUnclamped(int number, int inputMinimum, int inputMaximum, int outputMinimum, int outputMaximum) {
+//        int clampedNumber = MathUtils.clamp(inputMinimum, number, inputMaximum);
+        int normalizedClampedNumber = (number - inputMinimum) / (inputMaximum - inputMinimum);
+        int clampedOutputNumber = (normalizedClampedNumber * (outputMaximum - outputMinimum)) + outputMinimum;
+        return clampedOutputNumber;
+    }
+    
+    public static long rerangeUnclamped(long number, long inputMinimum, long inputMaximum, long outputMinimum, long outputMaximum) {
+//        long clampedNumber = MathUtils.clamp(inputMinimum, number, inputMaximum);
+        long normalizedClampedNumber = (number - inputMinimum) / (inputMaximum - inputMinimum);
+        long clampedOutputNumber = (normalizedClampedNumber * (outputMaximum - outputMinimum)) + outputMinimum;
+        return clampedOutputNumber;
+    }
 
     public static int clamp(int minimum, int number, int maximum) {
         return Math.min(maximum, Math.max(minimum, number));
