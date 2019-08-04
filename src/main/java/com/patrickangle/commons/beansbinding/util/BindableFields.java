@@ -145,10 +145,12 @@ public class BindableFields {
         }).collect(Collectors.toList());
     }
 
+    // In a prior life, BindableField instances did not a reflectionField member. This method now simply returns that value, unless the bindableField provided is null, in which case null is returned.
     public static Field reflectionFieldForBindableField(BindableField bindableField) {
         if (bindableField == null) {
             return null;
         }
-        return Fields.fieldForNameInClass(bindableField.getContainingClass(), bindableField.getFieldName());
+        return bindableField.getReflectionField();
+//        return Fields.fieldForNameInClass(bindableField.getContainingClass(), bindableField.getFieldName());
     }
 }
