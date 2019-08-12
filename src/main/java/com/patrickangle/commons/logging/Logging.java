@@ -37,12 +37,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Logging {
 
     public static enum Level {
-        Trace("Trace", List.of(ConsoleColor.MagentaForeground)),
-        Debug("Debug", List.of(ConsoleColor.BlueForeground)),
-        Info("Info", List.of(ConsoleColor.Reset)),
+        Trace("  Trace", List.of(ConsoleColor.MagentaForeground)),
+        Debug("  Debug", List.of(ConsoleColor.BlueForeground)),
+        Info("   Info", List.of(ConsoleColor.Reset)),
         Warning("Warning", List.of(ConsoleColor.YellowForeground)),
-        Error("Error", List.of(ConsoleColor.RedForeground)),
-        Exception("Thrown", List.of(ConsoleColor.RedForeground, ConsoleColor.WhiteBackground));
+        Error("  Error", List.of(ConsoleColor.RedForeground)),
+        Exception(" Thrown", List.of(ConsoleColor.RedForeground, ConsoleColor.WhiteBackground));
 
         private final String tag;
         private final List<ConsoleColor> consoleColors;
@@ -100,6 +100,9 @@ public class Logging {
     private static final PrintStream REPLACEMENT_SYSTEM_OUT = new PrintStream(new StringOutputStream() {
         @Override
         public void wroteString(String s) {
+            if (s.endsWith("\n")) {
+                s = s.substring(0, s.length() - 1);
+            }
             Logging.info(Logging.class, s);
         }
     });
@@ -107,6 +110,9 @@ public class Logging {
     private static final PrintStream REPLACEMENT_SYSTEM_ERR = new PrintStream(new StringOutputStream() {
         @Override
         public void wroteString(String s) {
+            if (s.endsWith("\n")) {
+                s = s.substring(0, s.length() - 1);
+            }
             Logging.error(Logging.class, s);
         }
     });
@@ -217,8 +223,11 @@ public class Logging {
         // Append the current time
         logMessage.append(currentTimestamp());
 
-        // Append the class name
-        if (caller instanceof Class) {
+        // Append the class name, or the provided caller string.
+        if (caller instanceof String) {
+            logMessage.append(" ");
+            logMessage.append(caller);
+        } else if (caller instanceof Class) {
             logMessage.append(" ");
             logMessage.append(((Class) caller).getSimpleName());
         } else if (caller != null) {
