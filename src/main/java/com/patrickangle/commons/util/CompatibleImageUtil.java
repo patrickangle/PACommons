@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.VolatileImage;
 import java.awt.image.WritableRaster;
-import java.util.Objects;
 
 /**
  * Utilities for working with BufferedImage and VolatileImage objects focused on
@@ -309,7 +308,7 @@ public class CompatibleImageUtil {
      */
     public static boolean areEqual(BufferedImage imageA, BufferedImage imageB) {
         // If both images are the same object, they match.
-        if (Objects.equals(imageA, imageB)) {
+        if (imageA == imageB) {
             return true;
         }
 
