@@ -9,18 +9,22 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.VolatileImage;
 import java.awt.image.WritableRaster;
+import java.util.Objects;
 
 /**
- * Utilities for working with BufferedImage and VolatileImage objects focused on performance. All methods strive to keep
- * images accelerated as long as possible, and will log a warning if they have to unmanage an image. There are also
- * utilities for converting an image to a managed image for situations where an image starts unmanaged, but could later
- * benefit from being managed.
+ * Utilities for working with BufferedImage and VolatileImage objects focused on
+ * performance. All methods strive to keep images accelerated as long as
+ * possible, and will log a warning if they have to unmanage an image. There are
+ * also utilities for converting an image to a managed image for situations
+ * where an image starts unmanaged, but could later benefit from being managed.
  *
  * @author Patrick Angle
  */
 public class CompatibleImageUtil {
+
     /**
-     * Returns the default GraphicsConfiguration for the default ScreenDevice for the local GraphicsEnvironment.
+     * Returns the default GraphicsConfiguration for the default ScreenDevice
+     * for the local GraphicsEnvironment.
      *
      * @return
      */
@@ -29,10 +33,11 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns a VolatileImage with a data layout and color model compatible with the local GraphicsEnvironment's
-     * default ScreenDevice's default GraphicsConfiguration. The returned VolatileImage may have data that is stored
-     * optimally for the underlying graphics device and may therefore benefit from platform-specific rendering
-     * acceleration.
+     * Returns a VolatileImage with a data layout and color model compatible
+     * with the local GraphicsEnvironment's default ScreenDevice's default
+     * GraphicsConfiguration. The returned VolatileImage may have data that is
+     * stored optimally for the underlying graphics device and may therefore
+     * benefit from platform-specific rendering acceleration.
      *
      * @param width
      * @param height
@@ -44,10 +49,12 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns a BufferedImage that supports the specified transparency and has a data layout and color model compatible
-     * with this GraphicsConfiguration. This method has nothing to do with memory-mapping a device. The returned
-     * BufferedImage has a layout and color model that can be optimally blitted to a device with the local
-     * GraphicsEnvironment's default ScreenDevice's default GraphicsConfiguration
+     * Returns a BufferedImage that supports the specified transparency and has
+     * a data layout and color model compatible with this GraphicsConfiguration.
+     * This method has nothing to do with memory-mapping a device. The returned
+     * BufferedImage has a layout and color model that can be optimally blitted
+     * to a device with the local GraphicsEnvironment's default ScreenDevice's
+     * default GraphicsConfiguration
      *
      * @param width
      * @param height
@@ -59,9 +66,11 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns a BufferedImage that is a duplicate of the provided BufferedImage. The returned BufferedImage has a
-     * layout and color model that can be optimally blitted to a device with the local GraphicsEnvironment's default
-     * ScreenDevice's default GraphicsConfiguration.
+     * Returns a BufferedImage that is a duplicate of the provided
+     * BufferedImage. The returned BufferedImage has a layout and color model
+     * that can be optimally blitted to a device with the local
+     * GraphicsEnvironment's default ScreenDevice's default
+     * GraphicsConfiguration.
      *
      * @param bufferedImage
      * @return
@@ -77,9 +86,11 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns a BufferedImage that is a duplicate of the provided VolatileImage. The returned BufferedImage has a
-     * layout and color model that can be optimally blitted to a device with the local GraphicsEnvironment's default
-     * ScreenDevice's default GraphicsConfiguration.
+     * Returns a BufferedImage that is a duplicate of the provided
+     * VolatileImage. The returned BufferedImage has a layout and color model
+     * that can be optimally blitted to a device with the local
+     * GraphicsEnvironment's default ScreenDevice's default
+     * GraphicsConfiguration.
      *
      * @param volatileImage
      * @return
@@ -95,10 +106,12 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns a BufferedImage that has a layout and color model that can be optimally blitted to a device with the
-     * local GraphicsEnvironment's default ScreenDevice's default GraphicsConfiguration. If the provided image is
-     * already optimally stored, then the image is simply returned. If the provided image is not currently optimal, it
-     * is duplicated using the duplicateCompatibleBufferedImageFrom(bufferedImage) function.
+     * Returns a BufferedImage that has a layout and color model that can be
+     * optimally blitted to a device with the local GraphicsEnvironment's
+     * default ScreenDevice's default GraphicsConfiguration. If the provided
+     * image is already optimally stored, then the image is simply returned. If
+     * the provided image is not currently optimal, it is duplicated using the
+     * duplicateCompatibleBufferedImageFrom(bufferedImage) function.
      *
      * @param bufferedImage
      * @return
@@ -112,11 +125,14 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns true if the provided BufferedImage has a layout and color model that can be optimally blitted to a device
-     * with the local GraphicsEnvironment's default ScreenDevice's default GraphicsConfiguration.
+     * Returns true if the provided BufferedImage has a layout and color model
+     * that can be optimally blitted to a device with the local
+     * GraphicsEnvironment's default ScreenDevice's default
+     * GraphicsConfiguration.
      * <p>
-     * Specifically, the ColorModel of the provided image is checked against that of the default GraphicsConfiguration,
-     * and the image type is checked to make sure it is equal to BufferedImage.TYPE_INT_ARGB,
+     * Specifically, the ColorModel of the provided image is checked against
+     * that of the default GraphicsConfiguration, and the image type is checked
+     * to make sure it is equal to BufferedImage.TYPE_INT_ARGB,
      * BufferedImage.TYPE_INT_ARGB_PRE, or BufferedImage.TYPE_INT_RGB.
      *
      * @param bufferedImage
@@ -125,14 +141,15 @@ public class CompatibleImageUtil {
     public static boolean isCompatibleBufferedImage(final BufferedImage bufferedImage) {
         int imageType = bufferedImage.getType();
         return (bufferedImage.getColorModel().equals(defaultGraphicsConfiguration().getColorModel())
-            || bufferedImage.getColorModel().equals(defaultGraphicsConfiguration().getColorModel(Transparency.TRANSLUCENT))) && (imageType == BufferedImage.TYPE_INT_ARGB
-            || imageType == BufferedImage.TYPE_INT_ARGB_PRE
-            || imageType == BufferedImage.TYPE_INT_RGB);
+                || bufferedImage.getColorModel().equals(defaultGraphicsConfiguration().getColorModel(Transparency.TRANSLUCENT))) && (imageType == BufferedImage.TYPE_INT_ARGB
+                || imageType == BufferedImage.TYPE_INT_ARGB_PRE
+                || imageType == BufferedImage.TYPE_INT_RGB);
     }
 
     /**
-     * Returns a BufferedImage that has a layout and color model that can be optimally blitted to a device with the
-     * local GraphicsEnvironment's default ScreenDevice's default GraphicsConfiguration. The image is then
+     * Returns a BufferedImage that has a layout and color model that can be
+     * optimally blitted to a device with the local GraphicsEnvironment's
+     * default ScreenDevice's default GraphicsConfiguration. The image is then
      *
      * @param pixels
      * @param width
@@ -146,8 +163,9 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns an array of pixels, stored as integers, from a BufferedImage. The pixels are grabbed from a rectangular
-     * area specified. Calling this method on an image of type other than BufferedImage.TYPE_INT_ARGB or
+     * Returns an array of pixels, stored as integers, from a BufferedImage. The
+     * pixels are grabbed from a rectangular area specified. Calling this method
+     * on an image of type other than BufferedImage.TYPE_INT_ARGB or
      * BufferedImage.TYPE_INT_RGB will unmanage the image.
      *
      * @param bufferedImage the source image
@@ -158,22 +176,26 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns an array of pixels, stored as integers, from a BufferedImage. The pixels are grabbed from a rectangular
-     * area specified. Calling this method on an image of type other than BufferedImage.TYPE_INT_ARGB or
+     * Returns an array of pixels, stored as integers, from a BufferedImage. The
+     * pixels are grabbed from a rectangular area specified. Calling this method
+     * on an image of type other than BufferedImage.TYPE_INT_ARGB or
      * BufferedImage.TYPE_INT_RGB will unmanage the image.
      *
      * @param bufferedImage the source image
-     * @param pixels a pre-allocated array of pixels of size width * height; can be null
+     * @param pixels a pre-allocated array of pixels of size width * height; can
+     * be null
      * @return an array of pixels stored as integers
-     * @throws IllegalArgumentException if pixels is non-null and of length &lt; width * height;
+     * @throws IllegalArgumentException if pixels is non-null and of length &lt;
+     * width * height;
      */
     public static int[] getPixelsFrom(final BufferedImage bufferedImage, int[] pixels) {
         return CompatibleImageUtil.getPixelsFrom(bufferedImage, 0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), pixels);
     }
 
     /**
-     * Returns an array of pixels, stored as integers, from a BufferedImage. The pixels are grabbed from a rectangular
-     * area specified. Calling this method on an image of type other than BufferedImage.TYPE_INT_ARGB or
+     * Returns an array of pixels, stored as integers, from a BufferedImage. The
+     * pixels are grabbed from a rectangular area specified. Calling this method
+     * on an image of type other than BufferedImage.TYPE_INT_ARGB or
      * BufferedImage.TYPE_INT_RGB will unmanage the image.
      *
      * @param bufferedImage the source image
@@ -188,18 +210,22 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Returns an array of pixels, stored as integers, from a BufferedImage. The pixels are grabbed from a rectangular
-     * area specified. Calling this method on an image of type other than BufferedImage.TYPE_INT_ARGB,
-     * BufferedImage.TYPE_INT_ARGB_PRE, or BufferedImage.TYPE_INT_RGB will unmanage the image.
+     * Returns an array of pixels, stored as integers, from a BufferedImage. The
+     * pixels are grabbed from a rectangular area specified. Calling this method
+     * on an image of type other than BufferedImage.TYPE_INT_ARGB,
+     * BufferedImage.TYPE_INT_ARGB_PRE, or BufferedImage.TYPE_INT_RGB will
+     * unmanage the image.
      *
      * @param bufferedImage the source image
      * @param x the x location at which to start reading pixels
      * @param y the y location at which to start reading pixels
      * @param width the width of the rectangle of pixels to read
      * @param height the height of the rectangle of pixels to read
-     * @param pixels a pre-allocated array of pixels of size width * height; can be null
+     * @param pixels a pre-allocated array of pixels of size width * height; can
+     * be null
      * @return an array of pixels stored as integers
-     * @throws IllegalArgumentException if pixels is non-null and of length &lt; width * height;
+     * @throws IllegalArgumentException if pixels is non-null and of length &lt;
+     * width * height;
      */
     public static int[] getPixelsFrom(final BufferedImage bufferedImage, final int x, final int y, final int width, final int height, int[] pixels) {
         if (width == 0 || height == 0) {
@@ -224,21 +250,25 @@ public class CompatibleImageUtil {
     }
 
     /**
-     * Writes a rectangular area of pixels on the destination BufferedImage. Calling this method on an image of type
-     * other than BufferedImage.TYPE_INT_ARGB or BufferedImage.TYPE_INT_RGB will unmanage the image.
+     * Writes a rectangular area of pixels on the destination BufferedImage.
+     * Calling this method on an image of type other than
+     * BufferedImage.TYPE_INT_ARGB or BufferedImage.TYPE_INT_RGB will unmanage
+     * the image.
      *
      * @param bufferedImage the destination image
      * @param pixels an array of pixels stored as integers.
-     * @throws IllegalArgumentException if pixels is non-null and of length &lt; width * height
+     * @throws IllegalArgumentException if pixels is non-null and of length &lt;
+     * width * height
      */
     public static void setPixelsOn(final BufferedImage bufferedImage, final int[] pixels) {
         setPixelsOn(bufferedImage, 0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), pixels);
     }
 
     /**
-     * Writes a rectangular area of pixels on the destination BufferedImage. Calling this method on an image of type
-     * other than BufferedImage.TYPE_INT_ARGB, BufferedImage.TYPE_INT_ARGB_PRE, or BufferedImage.TYPE_INT_RGB will
-     * unmanage the image.
+     * Writes a rectangular area of pixels on the destination BufferedImage.
+     * Calling this method on an image of type other than
+     * BufferedImage.TYPE_INT_ARGB, BufferedImage.TYPE_INT_ARGB_PRE, or
+     * BufferedImage.TYPE_INT_RGB will unmanage the image.
      *
      * @param bufferedImage the destination image
      * @param x the x location at which to start writing pixels
@@ -246,7 +276,8 @@ public class CompatibleImageUtil {
      * @param width the width of the rectangle of pixels to write
      * @param height the height of the rectangle of pixels to write
      * @param pixels an array of pixels stored as integers.
-     * @throws IllegalArgumentException if pixels is non-null and of length &lt; width * height
+     * @throws IllegalArgumentException if pixels is non-null and of length &lt;
+     * width * height
      */
     public static void setPixelsOn(final BufferedImage bufferedImage, final int x, final int y, final int width, final int height, final int[] pixels) {
         if (pixels == null || width == 0 || height == 0) {
@@ -264,5 +295,52 @@ public class CompatibleImageUtil {
             Logging.trace(CompatibleImageUtil.class, "setPixelsOn(...) had to unmanage image to write pixels. Image is no longer accelerated.");
             bufferedImage.setRGB(x, y, width, height, pixels, 0, width);
         }
+    }
+
+    /**
+     * Compare two images, attempting to establish if they have the same
+     * contents. This operation eventually iterates through every pixel to check
+     * equality, but first performs basic checks to see if the images match. As
+     * soon as a difference is found, false is returned.
+     *
+     * @param imageA
+     * @param imageB
+     * @return
+     */
+    public static boolean areEqual(BufferedImage imageA, BufferedImage imageB) {
+        // If both images are the same object, they match.
+        if (Objects.equals(imageA, imageB)) {
+            return true;
+        }
+
+        // If only one of the images in null, they don't match.
+        if (imageA == null ^ imageB == null) {
+            return false;
+        }
+
+        // If the types don't match, the images don't match.
+        if (imageA.getType() != imageB.getType()) {
+            return false;
+        }
+
+        // The images must be the same size.
+        if (imageA.getWidth() != imageB.getWidth() || imageA.getHeight() != imageB.getHeight()) {
+            return false;
+        }
+
+        int width = imageA.getWidth();
+        int height = imageA.getHeight();
+
+        // Loop over every pixel.
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Compare the pixels for equality.
+                if (imageA.getRGB(x, y) != imageB.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
