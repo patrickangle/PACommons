@@ -214,7 +214,6 @@ public class JTearawayDialog extends JWindow {
      * based on the look and feel.
      */
     private void initComponents() {
-//        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -245,11 +244,6 @@ public class JTearawayDialog extends JWindow {
         this.contentPanel.setBorder(getUI().getDialogBorder(this, attached, SwingConstants.NORTH));
         this.setContentPane(contentPanel);
 
-//        this.windowDragAdapter = new WindowDragAdapter(() -> {
-//            setAttached(false);
-//        });
-//        this.addMouseListener(windowDragAdapter);
-//        this.addMouseMotionListener(windowDragAdapter);
         new WindowMouseInputAdapter(this, () -> {
             setAttached(false);
         });
@@ -272,8 +266,6 @@ public class JTearawayDialog extends JWindow {
         };
         this.addWindowFocusListener(windowFocusAdapter);
 
-//        getParent().addMouseListener(windowDragAdapter);
-//        getParent().addMouseMotionListener(windowDragAdapter);
         JComponent headerComponent = getUI().createHeaderComponent(this);
         if (headerComponent != null) {
             this.contentPanel.add(headerComponent, BorderLayout.NORTH);
@@ -285,7 +277,6 @@ public class JTearawayDialog extends JWindow {
         this.bodyPanel.setBorder(new EmptyBorder(getUI().getBodyInsets(this)));
         this.contentPanel.add(this.bodyPanel, BorderLayout.CENTER);
 
-//        this.setMinimumSize(new Dimension(300, 50));
         setAttached(attachedTo != null);
     }
 
@@ -349,14 +340,6 @@ public class JTearawayDialog extends JWindow {
             this.contentPanel.setBorder(getUI().getDialogBorder(this, attached, SwingConstants.NORTH));
         }
 
-//        if (this.attached) {
-//            int x = (attachedTo.getLocationOnScreen().x + (attachedTo.getWidth() / 2)) - (this.getWidth() / 2);
-//            int y = (attachedTo.getLocationOnScreen().y + attachedTo.getHeight() + 2);
-//            setLocation(x, y);
-//        } else {
-//
-//        }
-        
         revalidate();
     }
 

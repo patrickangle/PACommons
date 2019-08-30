@@ -122,11 +122,11 @@ public class HelpPopoverEntry {
 //                                dialog.setVisible(false);
 //                                dialog.dispose();
 //                                component.putClientProperty(HELP_TIP_DIALOG_CLIENT_PROPERTY_KEY, null);
-////                                dialog.removeKeyListener(keyListener);
+//                                dialog.getParent().removeKeyListener(keyListener);
 //                            }
 //                        });
 
-//                        dialog.addKeyListener(keyListener);
+//                        dialog.getParent().addKeyListener(keyListener);
                         dialog.setVisible(true);
 //                        dialog.requestFocus();
 //                    }
@@ -135,16 +135,16 @@ public class HelpPopoverEntry {
 
             @Override
             public void mouseExited(MouseEvent e) {
-//                Component c = e.getComponent();
-//                if (c != null && c instanceof JComponent) {
-//                    JComponent component = (JComponent) c;
+                Component c = e.getComponent();
+                if (c != null && c instanceof JComponent) {
+                    JComponent component = (JComponent) c;
                     Object window = component.getClientProperty(HELP_TIP_DIALOG_CLIENT_PROPERTY_KEY);
                     if (window != null && window instanceof Window) {
                         
                         ((Window) window).dispatchEvent(new WindowEvent((Window) window, WindowEvent.WINDOW_CLOSING));
                         
                     }
-//                }
+                }
             }
         };
 
@@ -179,12 +179,9 @@ public class HelpPopoverEntry {
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-                System.out.println("Focus lost, time to move on...");
                 Object window = component.getClientProperty(HELP_TIP_DIALOG_CLIENT_PROPERTY_KEY);
-                System.out.println(window);
                 if (window != null && window instanceof Window) {
-//                    ((Window) window).dispatchEvent(new WindowEvent((Window) window, WindowEvent.WINDOW_CLOSING));
-                    ((Window) window).dispose();
+                    ((Window) window).dispatchEvent(new WindowEvent((Window) window, WindowEvent.WINDOW_CLOSING));
                 }
             }
         });
@@ -211,7 +208,6 @@ public class HelpPopoverEntry {
         JComponent c = component.get();
         if (c != null) {
             c.addMouseListener(mouseListener);
-//            c.addKeyListener(keyListener);
         }
     }
 
@@ -219,7 +215,6 @@ public class HelpPopoverEntry {
         JComponent c = component.get();
         if (c != null) {
             c.removeMouseListener(mouseListener);
-//            c.removeKeyListener(keyListener);
         }
     }
 

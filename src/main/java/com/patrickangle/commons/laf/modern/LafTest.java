@@ -37,7 +37,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author patrickangle
  */
 public class LafTest extends javax.swing.JFrame {
-    
+
     private HelpPopoverManager helpTipManager = new HelpPopoverManager(this);
 
     /**
@@ -45,13 +45,12 @@ public class LafTest extends javax.swing.JFrame {
      */
     public LafTest() {
         initComponents();
-        
+
         this.getRootPane().setDoubleBuffered(true);
-        
+
         jButton2.putClientProperty(ModernButtonUI.JBUTTON_TYPE_KEY, ModernButtonUI.JBUTTON_TYPE_HELP_VALUE);
         jButton8.putClientProperty(ModernButtonUI.JBUTTON_TYPE_KEY, ModernButtonUI.JBUTTON_TYPE_QUIET_VALUE);
-        
-        
+
         HelpPopoverEntry.assign(jButton2, "My fabulous tip", "This is where you learn about the thing!", null);
         HelpPopoverEntry.assign(jButton8, "My other good tip", "This is where you learn about the thing!", "");
     }
@@ -96,6 +95,13 @@ public class LafTest extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jToggleButton1 = new javax.swing.JToggleButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -249,6 +255,28 @@ public class LafTest extends javax.swing.JFrame {
             }
         });
 
+        jMenu1.setText("File");
+
+        jMenuItem1.setText("jMenuItem1");
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("jMenuItem2");
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+
+        jMenuItem3.setText("jMenuItem3");
+        jMenu2.add(jMenuItem3);
+
+        jMenuItem4.setText("jMenuItem4");
+        jMenu2.add(jMenuItem4);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -284,7 +312,7 @@ public class LafTest extends javax.swing.JFrame {
                                     .addComponent(jRadioButton3)
                                     .addComponent(jToggleButton1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                                .addComponent(jTabbedPane1)
                                 .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -416,7 +444,7 @@ public class LafTest extends javax.swing.JFrame {
             HelpPopoverEntry.assign(button, "Happy Button", "This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test.", "");
             d.getBodyPanel().add(button);
             JCheckBox checkbox = new JCheckBox("This is a test");
-                        HelpPopoverEntry.assign(checkbox, "Curios Checkbox", "This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test.", "");
+            HelpPopoverEntry.assign(checkbox, "Curios Checkbox", "This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test. This is a test, it is only a test.", "");
 
             d.getBodyPanel().add(checkbox);
             d.getBodyPanel().add(new JTextField("This is a test"));
@@ -465,12 +493,15 @@ public class LafTest extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        UIManager.getInstalledLookAndFeels(); // Needed to prevent "java.lang.UnsatisfiedLinkError: com.apple.laf.ScreenMenu.addMenuListeners"
+
         try {
             UIManager.setLookAndFeel(new ModernLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(LafTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -498,6 +529,13 @@ public class LafTest extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

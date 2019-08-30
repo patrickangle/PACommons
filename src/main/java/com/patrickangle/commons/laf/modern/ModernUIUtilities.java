@@ -36,6 +36,7 @@ import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.plaf.IconUIResource;
 
 /**
@@ -123,6 +124,8 @@ public class ModernUIUtilities {
         defaults.put("Table.selectionBackground", defaults.get(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
         defaults.put("Table.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
         defaults.put("Table.forground", defaults.get(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
+        
+        defaults.put("TextArea.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
 
     }
 

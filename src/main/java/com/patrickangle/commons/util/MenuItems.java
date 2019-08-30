@@ -35,6 +35,9 @@ public class MenuItems {
     public static final int SYSTEM_SHIFT_MODIFIER = SYSTEM_MODIFIER | SHIFT_MODIFIER;
     public static final int SYSTEM_ALT_SHIFT_MODIFIER = SYSTEM_MODIFIER | ALT_MOFIFIER | SHIFT_MODIFIER;
     
+    // For macOS only; useful for toggling full screen.
+    public static final int SYSTEM_CTRL_MODIFIER = SYSTEM_MODIFIER | InputEvent.CTRL_DOWN_MASK;
+    
     public static JMenuItem item(String title, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(title);
         menuItem.addActionListener(actionListener);
