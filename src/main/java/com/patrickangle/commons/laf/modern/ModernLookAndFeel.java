@@ -16,6 +16,9 @@
  */
 package com.patrickangle.commons.laf.modern;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JWindow;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.basic.BasicLookAndFeel;
 
@@ -28,7 +31,8 @@ public final class ModernLookAndFeel extends BasicLookAndFeel {
     public static final String NAME = "Modern";
 
     public ModernLookAndFeel() {
-
+        JDialog.setDefaultLookAndFeelDecorated(true);
+    JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
 

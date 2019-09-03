@@ -25,10 +25,12 @@ import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
+import com.patrickangle.commons.laf.modern.ui.ModernRootPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTabbedPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
+import com.patrickangle.commons.laf.modern.ui.ModernToolBarUI;
 import com.patrickangle.commons.util.Images;
 import com.patrickangle.commons.util.OperatingSystems;
 import java.awt.Color;
@@ -36,7 +38,6 @@ import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import javax.swing.plaf.IconUIResource;
 
 /**
@@ -113,6 +114,8 @@ public class ModernUIUtilities {
         ModernRadioButtonUI.installIntoDefaults(defaults);
         ModernSpinnerUI.installIntoDefaults(defaults);
         ModernTabbedPaneUI.installIntoDefaults(defaults);
+        ModernToolBarUI.installIntoDefaults(defaults);
+        ModernRootPaneUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));

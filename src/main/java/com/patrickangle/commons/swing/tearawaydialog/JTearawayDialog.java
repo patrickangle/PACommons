@@ -21,19 +21,19 @@ import com.patrickangle.commons.swing.util.WindowDragAdapter;
 import com.patrickangle.commons.swing.util.WindowMouseInputAdapter;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
+import java.awt.Window.Type;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.beans.BeanProperty;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -51,7 +51,7 @@ import javax.swing.border.EmptyBorder;
  *
  * @author patrickangle
  */
-public class JTearawayDialog extends JWindow {
+public class JTearawayDialog extends JDialog {
 
     private static final String uiClassID = "TearawayDialogUI";
 
@@ -214,15 +214,19 @@ public class JTearawayDialog extends JWindow {
      * based on the look and feel.
      */
     private void initComponents() {
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 dispose();
             }
-
         });
         
-        setType(Type.POPUP);
+        setType(Type.UTILITY);
+        setUndecorated(true);
+//        showWithParent = true;
+//        setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);
+//        setF
 
         // Must be set before we continue. Changing this isn't really supported yet.
         this.setUI(getLookAndFeelDeclaredUI());
@@ -261,6 +265,7 @@ public class JTearawayDialog extends JWindow {
             @Override
             public void windowGainedFocus(WindowEvent e) {
                 e.getWindow().repaint();
+//                getOwner().toFront();
             }
 
         };
