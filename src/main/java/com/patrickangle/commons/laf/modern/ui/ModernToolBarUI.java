@@ -39,6 +39,15 @@ public class ModernToolBarUI extends BasicToolBarUI {
     }
 
     @Override
+    protected void installListeners() {
+        super.installListeners(); //To change body of generated methods, choose Tools | Templates.
+        toolBar.removeMouseListener(dockingListener);
+        toolBar.removeMouseMotionListener(dockingListener);
+    }
+    
+    
+
+    @Override
     public void paint(Graphics g, JComponent c) {
         if (c.isOpaque()) {
             g.setColor(UIManager.getColor("ToolBar.background"));

@@ -27,14 +27,15 @@ import com.patrickangle.commons.beansbinding.interfaces.BoundField;
  * @author patrickangle
  */
 public class BasicBinding<B, F> extends AbstractBinding<B, F> {
+
     protected PropertyChangeListener backObjectListener;
     protected PropertyChangeListener frontObjectListener;
     protected boolean locked = false;
-    
+
     public BasicBinding(BoundField<B> backBoundField, BoundField<F> frontBoundField, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
         super(backBoundField, frontBoundField, updateStrategy, converter);
     }
-    
+
     public BasicBinding(BoundField<B> backBoundField, BoundField<F> frontBoundField, Binding.UpdateStrategy updateStrategy) {
         super(backBoundField, frontBoundField, updateStrategy);
     }
@@ -42,7 +43,7 @@ public class BasicBinding<B, F> extends AbstractBinding<B, F> {
     public BasicBinding(B backContainingObject, String backObjectFieldName, F frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
         super(backContainingObject, backObjectFieldName, frontContainingObject, frontObjectFieldName, updateStrategy, converter);
     }
-    
+
     public BasicBinding(B backObject, String backObjectFieldName, F frontObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy) {
         super(backObject, backObjectFieldName, frontObject, frontObjectFieldName, updateStrategy);
     }
@@ -54,8 +55,7 @@ public class BasicBinding<B, F> extends AbstractBinding<B, F> {
         } else {
             this.updateBackward(frontBoundField.getValue());
         }
-        
-        
+
         backObjectListener = (propertyChangeEvent) -> {
             if (!this.locked && propertyChangeEvent.getPropertyName().equals(this.backBoundField.getFieldName())) {
                 if (this.updateStrategy.isForward()) {
@@ -63,7 +63,7 @@ public class BasicBinding<B, F> extends AbstractBinding<B, F> {
                 }
             }
         };
-        
+
         frontObjectListener = (propertyChangeEvent) -> {
             if (!this.locked && propertyChangeEvent.getPropertyName().equals(this.frontBoundField.getFieldName())) {
                 if (this.updateStrategy.isBackward()) {
@@ -71,30 +71,46 @@ public class BasicBinding<B, F> extends AbstractBinding<B, F> {
                 }
             }
         };
-        
+
         PropertyChangeObservable.addPropertyChangeListener(backBoundField, backObjectListener);
         PropertyChangeObservable.addPropertyChangeListener(frontBoundField, frontObjectListener);
     }
-    
+
     @Override
     protected void unbind() {
         PropertyChangeObservable.removePropertyChangeListener(backBoundField.getContainingObject(), backObjectListener);
         PropertyChangeObservable.removePropertyChangeListener(frontBoundField.getContainingObject(), frontObjectListener);
     }
-    
+
     protected void updateForward(Object newValue) {
         this.locked = true;
-        
+
         this.frontBoundField.setValue(converter.convertForward(newValue));
-        
+
         this.locked = false;
     }
-    
+
     protected void updateBackward(Object newValue) {
         this.locked = true;
-        
+
         this.backBoundField.setValue(converter.convertBackward(newValue));
-        
+
         this.locked = false;
+    }
+
+    public static <B extends Object, F extends Object> void bind(BoundField<B> backBoundField, BoundField<F> frontBoundField, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
+        new BasicBinding<B, F>(backBoundField, frontBoundField, updateStrategy, converter).bind();
+    }
+
+    public static <B extends Object, F extends Object> void bind(BoundField<B> backBoundField, BoundField<F> frontBoundField, Binding.UpdateStrategy updateStrategy) {
+        new BasicBinding<B, F>(backBoundField, frontBoundField, updateStrategy).bind();
+    }
+    
+    public static <B extends Object, F extends Object> void bind(B backContainingObject, String backObjectFieldName, F frontContainingObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy, Binding.Converter converter) {
+        new BasicBinding<B, F>(backContainingObject, backObjectFieldName, frontContainingObject, frontObjectFieldName, updateStrategy, converter).bind();
+    }
+    
+    public static <B extends Object, F extends Object> void bind(B backObject, String backObjectFieldName, F frontObject, String frontObjectFieldName, Binding.UpdateStrategy updateStrategy) {
+        new BasicBinding<B, F>(backObject, backObjectFieldName, frontObject, frontObjectFieldName, updateStrategy).bind();
     }
 }

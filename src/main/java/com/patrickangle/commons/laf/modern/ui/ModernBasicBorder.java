@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
@@ -38,7 +39,8 @@ public class ModernBasicBorder implements Border, UIResource {
 
     @Override
     public void paintBorder(Component component, Graphics graphics, int x, int y, int width, int height) {
-
+//        graphics.setColor(Color.red);
+//        graphics.drawRect(x, y, width, height);
     }
 
     @Override

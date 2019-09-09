@@ -20,6 +20,7 @@ import com.patrickangle.commons.swing.tearawaydialog.JTearawayDialog;
 import com.patrickangle.commons.swing.tearawaydialog.TearawayDialogUI;
 import java.awt.Component;
 import java.awt.Window;
+import javax.swing.plaf.basic.BasicRootPaneUI;
 
 /**
  * A special type of JTearawayDialog that provides active help, when help has
@@ -33,6 +34,8 @@ public class JHelpPopover extends JTearawayDialog {
 
     public JHelpPopover(Window parent, Component attachedTo, String identifier) {
         super(parent, attachedTo, identifier);
+        this.setType(Type.POPUP);
+        this.getRootPane().setUI(new BasicRootPaneUI());
     }
 
     @Override

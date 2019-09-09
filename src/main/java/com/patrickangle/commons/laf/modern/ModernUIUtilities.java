@@ -24,10 +24,12 @@ import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
+import com.patrickangle.commons.laf.modern.ui.ModernPanelUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRootPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
+import com.patrickangle.commons.laf.modern.ui.ModernSplitPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTabbedPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.laf.modern.ui.ModernToolBarUI;
@@ -93,7 +95,7 @@ public class ModernUIUtilities {
         defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
 
-        defaults.put("Panel.background", defaults.getColor(BACKGROUND_COLOR_KEY));
+        
         defaults.put("Viewport.background", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("ScrollPane.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
 
@@ -104,6 +106,7 @@ public class ModernUIUtilities {
 
         defaults.put("defaultFont", systemFont);
 
+        ModernPanelUI.installIntoDefaults(defaults);
         ModernButtonUI.installIntoDefaults(defaults);
         ModernTextFieldUI.installIntoDefaults(defaults);
         ModernComboBoxUI.installIntoDefaults(defaults);
@@ -116,6 +119,7 @@ public class ModernUIUtilities {
         ModernTabbedPaneUI.installIntoDefaults(defaults);
         ModernToolBarUI.installIntoDefaults(defaults);
         ModernRootPaneUI.installIntoDefaults(defaults);
+        ModernSplitPaneUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));
         defaults.put("OptionPane.questionIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneQuestion.png"))));

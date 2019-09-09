@@ -64,7 +64,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     public static ComponentUI createUI(JComponent c) {
         return new ModernButtonUI();
     }
-    
+
     @Override
     protected void installDefaults(AbstractButton b) {
         super.installDefaults(b);
@@ -79,6 +79,8 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         paintShape(graphics, component, getShape(component));
         super.paint(graphics, component);
     }
+    
+    
 
     @Override
     protected void paintText(Graphics g, AbstractButton component, Rectangle textRect, String text) {
@@ -143,6 +145,22 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     public static ModernBasicBorder getDefaultBorder() {
         return new ModernBasicBorder(BUTTON_INSETS);
     }
+    
+
+//    @Override
+    protected int getTextShiftOffset(JComponent c) {
+        String segmentValue = (String) c.getClientProperty(JBUTTON_SEGMENT_POSITION_KEY);
+        if (segmentValue != null && !segmentValue.equals(JBUTTON_SEGMENT_POSITION_ONLY_VALUE)) {
+            switch (segmentValue) {
+                case JBUTTON_SEGMENT_POSITION_FIRST_VALUE:
+                    return super.getTextShiftOffset() + (BUTTON_INSETS.right / 2);
+                case JBUTTON_SEGMENT_POSITION_LAST_VALUE:
+                    return super.getTextShiftOffset() + (BUTTON_INSETS.left / 2);
+            }
+        }
+
+        return super.getTextShiftOffset(); //To change body of generated methods, choose Tools | Templates.
+    }
 
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("ButtonUI", ModernButtonUI.class.getName());
@@ -206,7 +224,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
                         Shape addonRect3 = new Rectangle2D.Double(
                                 buttonRect.getBounds().x - buttonBorderInsets.left,
                                 buttonRect.getBounds().y,
-                                buttonRect.getBounds().width / 2,
+                                (buttonRect.getBounds().width / 2) + buttonBorderInsets.left,
                                 buttonRect.getBounds().height);
 
                         Area compositeShape3 = new Area(buttonRect);
@@ -222,14 +240,15 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         return buttonRect;
     }
 
-    @Override
-    public Dimension getPreferredSize(JComponent c) {
-//        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
-//            return new Dimension (28, 28);
-//        } else {
-        return new Dimension(super.getPreferredSize(c).width, 28);
-//        }
-    }
+//    @Override
+//    public Dimension getPreferredSize(JComponent c) {
+////        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
+////            return new Dimension (28, 28);
+////        } else {
+////        return new Dimension(super.getPreferredSize(c).width, 28);
+////        }
+//return super.getPreferredSize(c);
+//    }
 
     @Override
     public Dimension getMinimumSize(JComponent c) {

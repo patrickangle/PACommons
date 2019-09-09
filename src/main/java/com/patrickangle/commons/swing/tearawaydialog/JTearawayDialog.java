@@ -19,6 +19,7 @@ package com.patrickangle.commons.swing.tearawaydialog;
 import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.swing.util.WindowDragAdapter;
 import com.patrickangle.commons.swing.util.WindowMouseInputAdapter;
+import com.patrickangle.commons.util.IDs;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -39,6 +40,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicRootPaneUI;
 
 /**
  * A JTearawayDialog is a special dialog that is initially visually attached to
@@ -116,6 +118,10 @@ public class JTearawayDialog extends JDialog {
         return JTearawayDialog.showOrFocusDialog(parent, attachedTo, identifier, (p, a, i) -> {
             return new JTearawayDialog(p, a, i);
         });
+    }
+    
+    public static JTearawayDialog showOrFocusDialog(Window parent, Creator creator) {
+        return JTearawayDialog.showOrFocusDialog(parent, null, IDs.uuidString(), creator);
     }
 
     /**
@@ -214,6 +220,7 @@ public class JTearawayDialog extends JDialog {
      * based on the look and feel.
      */
     private void initComponents() {
+        this.getRootPane().setUI(new BasicRootPaneUI());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override

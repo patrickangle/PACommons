@@ -17,8 +17,8 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernUIColors;
+import com.patrickangle.commons.laf.modern.ui.util.GradientTexturePaint;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,7 +28,6 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -105,7 +104,8 @@ public class ModernRootPaneUI extends AbstractModernRootPaneUI {
     public void paintBackground(Graphics g, JRootPane rootPane, Rectangle bounds) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+//        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         if (rootPane.getClientProperty(CPK_UNIFY_WINDOW_CHROME) == Boolean.TRUE) {
             g2.setPaint(new GradientPaint(
                     0,
@@ -155,7 +155,7 @@ public class ModernRootPaneUI extends AbstractModernRootPaneUI {
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("RootPaneUI", ModernRootPaneUI.class.getName());
         defaults.put(UID_CORNER_DIAMETER, 8);
-        defaults.put(UID_BACKGROUND_TOP, ModernUIColors.backgroundColor);
-        defaults.put(UID_BACKGROUND_BOTTOM, ModernUIColors.primaryUltraDarkColor);
+        defaults.put(UID_BACKGROUND_TOP, ModernUIColors.primaryDarkColor);
+        defaults.put(UID_BACKGROUND_BOTTOM, ModernUIColors.backgroundColor);
     }
 }

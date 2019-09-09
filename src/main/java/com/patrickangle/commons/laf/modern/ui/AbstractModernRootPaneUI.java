@@ -16,12 +16,15 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.swing.util.ComponentMover;
+import com.patrickangle.commons.swing.util.ComponentResizer;
 import com.patrickangle.commons.swing.util.WindowMouseInputAdapter;
 import com.patrickangle.commons.util.Windows;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.LayoutManager;
@@ -60,8 +63,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     private Window window;
 
     /**
-     * <code>JComponent</code> providing window decorations. This will be
-     * null if not providing window decorations.
+     * <code>JComponent</code> providing window decorations. This will be null
+     * if not providing window decorations.
      */
     private JComponent titlePane;
 
@@ -72,8 +75,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     private WindowMouseInputAdapter mouseInputListener;
 
     /**
-     * The <code>LayoutManager</code> that is set on the
-     * <code>JRootPane</code>.
+     * The <code>LayoutManager</code> that is set on the <code>JRootPane</code>.
      */
     private LayoutManager layoutManager;
 
@@ -89,36 +91,32 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     private JRootPane root;
 
     /**
-     * <code>Cursor</code> used to track the cursor set by the user.
-     * This is initially <code>Cursor.DEFAULT_CURSOR</code>.
+     * <code>Cursor</code> used to track the cursor set by the user. This is
+     * initially <code>Cursor.DEFAULT_CURSOR</code>.
      */
-    private Cursor lastCursor =
-            Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-
+    private Cursor lastCursor
+            = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
     /**
-     * Invokes supers implementation of <code>installUI</code> to install
-     * the necessary state onto the passed in <code>JRootPane</code>
-     * to render the metal look and feel implementation of
-     * <code>RootPaneUI</code>. If
-     * the <code>windowDecorationStyle</code> property of the
-     * <code>JRootPane</code> is other than <code>JRootPane.NONE</code>,
-     * this will add a custom <code>Component</code> to render the widgets to
-     * <code>JRootPane</code>, as well as installing a custom
-     * <code>Border</code> and <code>LayoutManager</code> on the
-     * <code>JRootPane</code>.
+     * Invokes supers implementation of <code>installUI</code> to install the
+     * necessary state onto the passed in <code>JRootPane</code> to render the
+     * metal look and feel implementation of <code>RootPaneUI</code>. If the
+     * <code>windowDecorationStyle</code> property of the <code>JRootPane</code>
+     * is other than <code>JRootPane.NONE</code>, this will add a custom
+     * <code>Component</code> to render the widgets to <code>JRootPane</code>,
+     * as well as installing a custom <code>Border</code> and
+     * <code>LayoutManager</code> on the <code>JRootPane</code>.
      *
      * @param c the JRootPane to install state onto
      */
     public void installUI(JComponent c) {
         super.installUI(c);
-        root = (JRootPane)c;
+        root = (JRootPane) c;
         int style = root.getWindowDecorationStyle();
         if (style != JRootPane.NONE) {
             installClientDecorations(root);
         }
     }
-
 
     /**
      * Invokes supers implementation to uninstall any of its state. This will
@@ -126,8 +124,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
      * If a <code>Component</code> has been added to the <code>JRootPane</code>
      * to render the window decoration style, this method will remove it.
      * Similarly, this will revert the Border and LayoutManager of the
-     * <code>JRootPane</code> to what it was before <code>installUI</code>
-     * was invoked.
+     * <code>JRootPane</code> to what it was before <code>installUI</code> was
+     * invoked.
      *
      * @param c the JRootPane to uninstall state from
      */
@@ -149,9 +147,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
 
         if (style == JRootPane.NONE) {
             LookAndFeel.uninstallBorder(root);
-        }
-        else {
-            root.setBorder(new EmptyBorder(0,0,0,0));
+        } else {
+            root.setBorder(new EmptyBorder(0, 0, 0, 0));
 //            LookAndFeel.installBorder(root, borderKeys[style]);
         }
     }
@@ -164,31 +161,38 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     }
 
     /**
-     * Installs the necessary Listeners on the parent <code>Window</code>,
-     * if there is one.
+     * Installs the necessary Listeners on the parent <code>Window</code>, if
+     * there is one.
      * <p>
      * This takes the parent so that cleanup can be done from
-     * <code>removeNotify</code>, at which point the parent hasn't been
-     * reset yet.
+     * <code>removeNotify</code>, at which point the parent hasn't been reset
+     * yet.
      *
      * @param parent The parent of the JRootPane
      */
     private void installWindowListeners(JRootPane root, Component parent) {
         if (parent instanceof Window) {
-            window = (Window)parent;
-        }
-        else {
+            window = (Window) parent;
+        } else {
             window = SwingUtilities.getWindowAncestor(parent);
         }
         if (window != null) {
-            if (mouseInputListener == null) {
-                mouseInputListener = new WindowMouseInputAdapter();
+            if (window instanceof Frame && ((Frame) window).isResizable()) {
+                ComponentResizer cr = new ComponentResizer(window);
+                ComponentMover cm = new ComponentMover(window, window);
+                cm.setDragInsets(cr.getDragInsets());
+            } else {
+                ComponentMover cm = new ComponentMover(window, window);
+
             }
-            window.addMouseListener(mouseInputListener);
-            window.addMouseMotionListener(mouseInputListener);
-            
+
+//            if (mouseInputListener == null) {
+//                mouseInputListener = new WindowMouseInputAdapter();
+//            }
+//            window.addMouseListener(mouseInputListener);
+//            window.addMouseMotionListener(mouseInputListener);
             Windows.makeNonOpaque(window);
-            
+
         }
     }
 
@@ -198,14 +202,14 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
      */
     private void uninstallWindowListeners(JRootPane root) {
         if (window != null) {
-            window.removeMouseListener(mouseInputListener);
-            window.removeMouseMotionListener(mouseInputListener);
+//            window.removeMouseListener(mouseInputListener);
+//            window.removeMouseMotionListener(mouseInputListener);
         }
     }
 
     /**
-     * Installs the appropriate LayoutManager on the <code>JRootPane</code>
-     * to render the window decorations.
+     * Installs the appropriate LayoutManager on the <code>JRootPane</code> to
+     * render the window decorations.
      */
     private void installLayout(JRootPane root) {
         if (layoutManager == null) {
@@ -227,8 +231,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
 
     /**
      * Installs the necessary state onto the JRootPane to render client
-     * decorations. This is ONLY invoked if the <code>JRootPane</code>
-     * has a decoration style other than <code>JRootPane.NONE</code>.
+     * decorations. This is ONLY invoked if the <code>JRootPane</code> has a
+     * decoration style other than <code>JRootPane.NONE</code>.
      */
     private void installClientDecorations(JRootPane root) {
         installBorder(root);
@@ -248,8 +252,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
      * Uninstalls any state that <code>installClientDecorations</code> has
      * installed.
      * <p>
-     * NOTE: This may be called if you haven't installed client decorations
-     * yet (ie before <code>installClientDecorations</code> has been invoked).
+     * NOTE: This may be called if you haven't installed client decorations yet
+     * (ie before <code>installClientDecorations</code> has been invoked).
      */
     private void uninstallClientDecorations(JRootPane root) {
         uninstallBorder(root);
@@ -268,8 +272,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
         }
         // Reset the cursor, as we may have changed it to a resize cursor
         if (window != null) {
-            window.setCursor(Cursor.getPredefinedCursor
-                             (Cursor.DEFAULT_CURSOR));
+            window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
         window = null;
     }
@@ -289,13 +292,14 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     }
 
     /**
-     * Sets the window title pane -- the JComponent used to provide a plaf a
-     * way to override the native operating system's window title pane with
-     * one whose look and feel are controlled by the plaf.  The plaf creates
-     * and sets this value; the default is null, implying a native operating
-     * system window title pane.
+     * Sets the window title pane -- the JComponent used to provide a plaf a way
+     * to override the native operating system's window title pane with one
+     * whose look and feel are controlled by the plaf. The plaf creates and sets
+     * this value; the default is null, implying a native operating system
+     * window title pane.
      *
-     * @param titlePane the <code>JComponent</code> to use for the window title pane.
+     * @param titlePane the <code>JComponent</code> to use for the window title
+     * pane.
      */
     private void setTitlePane(JRootPane root, JComponent titlePane) {
         JLayeredPane layeredPane = root.getLayeredPane();
@@ -325,8 +329,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     }
 
     /**
-     * Returns the <code>JRootPane</code> we're providing the look and
-     * feel for.
+     * Returns the <code>JRootPane</code> we're providing the look and feel for.
      */
     private JRootPane getRootPane() {
         return root;
@@ -335,30 +338,29 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
     /**
      * Invoked when a property changes. <code>MetalRootPaneUI</code> is
      * primarily interested in events originating from the
-     * <code>JRootPane</code> it has been installed on identifying the
-     * property <code>windowDecorationStyle</code>. If the
-     * <code>windowDecorationStyle</code> has changed to a value other
-     * than <code>JRootPane.NONE</code>, this will add a <code>Component</code>
-     * to the <code>JRootPane</code> to render the window decorations, as well
-     * as installing a <code>Border</code> on the <code>JRootPane</code>.
-     * On the other hand, if the <code>windowDecorationStyle</code> has
-     * changed to <code>JRootPane.NONE</code>, this will remove the
-     * <code>Component</code> that has been added to the <code>JRootPane</code>
-     * as well resetting the Border to what it was before
-     * <code>installUI</code> was invoked.
+     * <code>JRootPane</code> it has been installed on identifying the property
+     * <code>windowDecorationStyle</code>. If the
+     * <code>windowDecorationStyle</code> has changed to a value other than
+     * <code>JRootPane.NONE</code>, this will add a <code>Component</code> to
+     * the <code>JRootPane</code> to render the window decorations, as well as
+     * installing a <code>Border</code> on the <code>JRootPane</code>. On the
+     * other hand, if the <code>windowDecorationStyle</code> has changed to
+     * <code>JRootPane.NONE</code>, this will remove the <code>Component</code>
+     * that has been added to the <code>JRootPane</code> as well resetting the
+     * Border to what it was before <code>installUI</code> was invoked.
      *
-     * @param e A PropertyChangeEvent object describing the event source
-     *          and the property that has changed.
+     * @param e A PropertyChangeEvent object describing the event source and the
+     * property that has changed.
      */
     public void propertyChange(PropertyChangeEvent e) {
         super.propertyChange(e);
 
         String propertyName = e.getPropertyName();
-        if(propertyName == null) {
+        if (propertyName == null) {
             return;
         }
 
-        if(propertyName.equals("windowDecorationStyle")) {
+        if (propertyName.equals("windowDecorationStyle")) {
             JRootPane root = (JRootPane) e.getSource();
             int style = root.getWindowDecorationStyle();
 
@@ -370,11 +372,10 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             if (style != JRootPane.NONE) {
                 installClientDecorations(root);
             }
-        }
-        else if (propertyName.equals("ancestor")) {
+        } else if (propertyName.equals("ancestor")) {
             uninstallWindowListeners(root);
-            if (((JRootPane)e.getSource()).getWindowDecorationStyle() !=
-                                           JRootPane.NONE) {
+            if (((JRootPane) e.getSource()).getWindowDecorationStyle()
+                    != JRootPane.NONE) {
                 installWindowListeners(root, root.getParent());
             }
         }
@@ -383,16 +384,17 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
 
     /**
      * A custom layout manager that is responsible for the layout of
-     * layeredPane, glassPane, menuBar and titlePane, if one has been
-     * installed.
+     * layeredPane, glassPane, menuBar and titlePane, if one has been installed.
      */
     // NOTE: Ideally this would extends JRootPane.RootLayout, but that
     //       would force this to be non-static.
     private static class MetalRootLayout implements LayoutManager2 {
+
         /**
          * Returns the amount of space the layout would like to have.
          *
-         * @param parent the Container for which this layout manager is being used
+         * @param parent the Container for which this layout manager is being
+         * used
          * @return a Dimension object containing the layout's preferred size
          */
         public Dimension preferredLayoutSize(Container parent) {
@@ -406,7 +408,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             Insets i = parent.getInsets();
             JRootPane root = (JRootPane) parent;
 
-            if(root.getContentPane() != null) {
+            if (root.getContentPane() != null) {
                 cpd = root.getContentPane().getPreferredSize();
             } else {
                 cpd = root.getSize();
@@ -416,7 +418,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                 cpHeight = cpd.height;
             }
 
-            if(root.getJMenuBar() != null) {
+            if (root.getJMenuBar() != null) {
                 mbd = root.getJMenuBar().getPreferredSize();
                 if (mbd != null) {
                     mbWidth = mbd.width;
@@ -424,10 +426,10 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                 }
             }
 
-            if (root.getWindowDecorationStyle() != JRootPane.NONE &&
-                     (root.getUI() instanceof AbstractModernRootPaneUI)) {
-                JComponent titlePane = ((AbstractModernRootPaneUI)root.getUI()).
-                                       getTitlePane();
+            if (root.getWindowDecorationStyle() != JRootPane.NONE
+                    && (root.getUI() instanceof AbstractModernRootPaneUI)) {
+                JComponent titlePane = ((AbstractModernRootPaneUI) root.getUI()).
+                        getTitlePane();
                 if (titlePane != null) {
                     tpd = titlePane.getPreferredSize();
                     if (tpd != null) {
@@ -438,13 +440,14 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             }
 
             return new Dimension(Math.max(Math.max(cpWidth, mbWidth), tpWidth) + i.left + i.right,
-                                 cpHeight + mbHeight + tpWidth + i.top + i.bottom);
+                    cpHeight + mbHeight + tpWidth + i.top + i.bottom);
         }
 
         /**
          * Returns the minimum amount of space the layout needs.
          *
-         * @param parent the Container for which this layout manager is being used
+         * @param parent the Container for which this layout manager is being
+         * used
          * @return a Dimension object containing the layout's minimum size
          */
         public Dimension minimumLayoutSize(Container parent) {
@@ -458,7 +461,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             Insets i = parent.getInsets();
             JRootPane root = (JRootPane) parent;
 
-            if(root.getContentPane() != null) {
+            if (root.getContentPane() != null) {
                 cpd = root.getContentPane().getMinimumSize();
             } else {
                 cpd = root.getSize();
@@ -468,17 +471,17 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                 cpHeight = cpd.height;
             }
 
-            if(root.getJMenuBar() != null) {
+            if (root.getJMenuBar() != null) {
                 mbd = root.getJMenuBar().getMinimumSize();
                 if (mbd != null) {
                     mbWidth = mbd.width;
                     mbHeight = mbd.height;
                 }
             }
-            if (root.getWindowDecorationStyle() != JRootPane.NONE &&
-                     (root.getUI() instanceof AbstractModernRootPaneUI)) {
-                JComponent titlePane = ((AbstractModernRootPaneUI)root.getUI()).
-                                       getTitlePane();
+            if (root.getWindowDecorationStyle() != JRootPane.NONE
+                    && (root.getUI() instanceof AbstractModernRootPaneUI)) {
+                JComponent titlePane = ((AbstractModernRootPaneUI) root.getUI()).
+                        getTitlePane();
                 if (titlePane != null) {
                     tpd = titlePane.getMinimumSize();
                     if (tpd != null) {
@@ -489,13 +492,14 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             }
 
             return new Dimension(Math.max(Math.max(cpWidth, mbWidth), tpWidth) + i.left + i.right,
-                                 cpHeight + mbHeight + tpWidth + i.top + i.bottom);
+                    cpHeight + mbHeight + tpWidth + i.top + i.bottom);
         }
 
         /**
          * Returns the maximum amount of space the layout can use.
          *
-         * @param target the Container for which this layout manager is being used
+         * @param target the Container for which this layout manager is being
+         * used
          * @return a Dimension object containing the layout's maximum size
          */
         public Dimension maximumLayoutSize(Container target) {
@@ -509,7 +513,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             Insets i = target.getInsets();
             JRootPane root = (JRootPane) target;
 
-            if(root.getContentPane() != null) {
+            if (root.getContentPane() != null) {
                 cpd = root.getContentPane().getMaximumSize();
                 if (cpd != null) {
                     cpWidth = cpd.width;
@@ -517,7 +521,7 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                 }
             }
 
-            if(root.getJMenuBar() != null) {
+            if (root.getJMenuBar() != null) {
                 mbd = root.getJMenuBar().getMaximumSize();
                 if (mbd != null) {
                     mbWidth = mbd.width;
@@ -525,12 +529,11 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                 }
             }
 
-            if (root.getWindowDecorationStyle() != JRootPane.NONE &&
-                     (root.getUI() instanceof AbstractModernRootPaneUI)) {
-                JComponent titlePane = ((AbstractModernRootPaneUI)root.getUI()).
-                                       getTitlePane();
-                if (titlePane != null)
-                {
+            if (root.getWindowDecorationStyle() != JRootPane.NONE
+                    && (root.getUI() instanceof AbstractModernRootPaneUI)) {
+                JComponent titlePane = ((AbstractModernRootPaneUI) root.getUI()).
+                        getTitlePane();
+                if (titlePane != null) {
                     tpd = titlePane.getMaximumSize();
                     if (tpd != null) {
                         tpWidth = tpd.width;
@@ -559,7 +562,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
          * Instructs the layout manager to perform the layout for the specified
          * container.
          *
-         * @param parent the Container for which this layout manager is being used
+         * @param parent the Container for which this layout manager is being
+         * used
          */
         public void layoutContainer(Container parent) {
             JRootPane root = (JRootPane) parent;
@@ -569,18 +573,18 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
             int w = b.width - i.right - i.left;
             int h = b.height - i.top - i.bottom;
 
-            if(root.getLayeredPane() != null) {
+            if (root.getLayeredPane() != null) {
                 root.getLayeredPane().setBounds(i.left, i.top, w, h);
             }
-            if(root.getGlassPane() != null) {
+            if (root.getGlassPane() != null) {
                 root.getGlassPane().setBounds(i.left, i.top, w, h);
             }
             // Note: This is laying out the children in the layeredPane,
             // technically, these are not our children.
-            if (root.getWindowDecorationStyle() != JRootPane.NONE &&
-                     (root.getUI() instanceof AbstractModernRootPaneUI)) {
-                JComponent titlePane = ((AbstractModernRootPaneUI)root.getUI()).
-                                       getTitlePane();
+            if (root.getWindowDecorationStyle() != JRootPane.NONE
+                    && (root.getUI() instanceof AbstractModernRootPaneUI)) {
+                JComponent titlePane = ((AbstractModernRootPaneUI) root.getUI()).
+                        getTitlePane();
                 if (titlePane != null) {
                     Dimension tpd = titlePane.getPreferredSize();
                     if (tpd != null) {
@@ -590,24 +594,37 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
                     }
                 }
             }
-            if(root.getJMenuBar() != null) {
+            if (root.getJMenuBar() != null) {
                 Dimension mbd = root.getJMenuBar().getPreferredSize();
                 root.getJMenuBar().setBounds(0, nextY, w, mbd.height);
                 nextY += mbd.height;
             }
-            if(root.getContentPane() != null) {
+            if (root.getContentPane() != null) {
                 Dimension cpd = root.getContentPane().getPreferredSize();
                 root.getContentPane().setBounds(0, nextY, w,
-                h < nextY ? 0 : h - nextY);
+                        h < nextY ? 0 : h - nextY);
             }
         }
 
-        public void addLayoutComponent(String name, Component comp) {}
-        public void removeLayoutComponent(Component comp) {}
-        public void addLayoutComponent(Component comp, Object constraints) {}
-        public float getLayoutAlignmentX(Container target) { return 0.0f; }
-        public float getLayoutAlignmentY(Container target) { return 0.0f; }
-        public void invalidateLayout(Container target) {}
+        public void addLayoutComponent(String name, Component comp) {
+        }
+
+        public void removeLayoutComponent(Component comp) {
+        }
+
+        public void addLayoutComponent(Component comp, Object constraints) {
+        }
+
+        public float getLayoutAlignmentX(Container target) {
+            return 0.0f;
+        }
+
+        public float getLayoutAlignmentY(Container target) {
+            return 0.0f;
+        }
+
+        public void invalidateLayout(Container target) {
+        }
     }
 
     @Override
@@ -616,10 +633,8 @@ public abstract class AbstractModernRootPaneUI extends BasicRootPaneUI {
         paintBorder(g, (JRootPane) c, c.getBounds());
     }
 
-    
-
     public abstract void paintBackground(Graphics g, JRootPane rootPane, Rectangle bounds);
-    
+
     public abstract void paintBorder(Graphics g, JRootPane rootPane, Rectangle bounds);
-            
+
 }
