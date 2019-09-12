@@ -5,11 +5,9 @@
 
 package com.patrickangle.commons.observable.collections;
 
-import java.util.AbstractList;
+import java.beans.PropertyChangeListener;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @author sky
  */
+@Deprecated(forRemoval = true)
 public final class ObservableCollections {
     /**
      * Creates and returns an {@code ObservableMap} wrapping the supplied
@@ -34,27 +33,27 @@ public final class ObservableCollections {
      * @return an {@code ObservableMap}
      * @throws IllegalArgumentException if {@code map} is {@code null}
      */
-    public static <K,V> ObservableMap<K,V> observableMap(Map<K,V> map) {
-        if (map == null) {
-            throw new IllegalArgumentException("Map must be non-null");
-        }
-        return new ObservableMapImpl<K,V>(map);
-    }
-    
-    public static <K,V> ObservableMap<K,V> observableMap(Class<K> keyClass, Class<V> valueClass) {
-        return ObservableCollections.observableMap(new HashMap<K, V>());
-    }
-    
-    public static <K,V> ObservableMap<K,V> concurrentObservableMap(Map<K,V> map) {
-        if (map == null) {
-            throw new IllegalArgumentException("Map must be non-null");
-        }
-        return ObservableCollections.observableMap(new ConcurrentHashMap<>(map));
-    }
-    
-    public static <K,V> ObservableMap<K,V> concurrentObservableMap(Class<K> keyClass, Class<V> valueClass) {
-        return ObservableCollections.observableMap(new ConcurrentHashMap<K,V>());
-    } 
+//    public static <K,V> ObservableMapOld<K,V> observableMap(Map<K,V> map) {
+//        if (map == null) {
+//            throw new IllegalArgumentException("Map must be non-null");
+//        }
+//        return new ObservableMapImpl<K,V>(map);
+//    }
+//    
+//    public static <K,V> ObservableMapOld<K,V> observableMap(Class<K> keyClass, Class<V> valueClass) {
+//        return ObservableCollections.observableMap(new HashMap<K, V>());
+//    }
+//    
+//    public static <K,V> ObservableMapOld<K,V> concurrentObservableMap(Map<K,V> map) {
+//        if (map == null) {
+//            throw new IllegalArgumentException("Map must be non-null");
+//        }
+//        return ObservableCollections.observableMap(new ConcurrentHashMap<>(map));
+//    }
+//    
+//    public static <K,V> ObservableMapOld<K,V> concurrentObservableMap(Class<K> keyClass, Class<V> valueClass) {
+//        return ObservableCollections.observableMap(new ConcurrentHashMap<K,V>());
+//    } 
 
     /**
      * Creates and returns an {@code ObservableList} wrapping the supplied
@@ -143,154 +142,159 @@ public final class ObservableCollections {
 //        }
 //    }
 
-    public static final class ObservableMapImpl<K,V> extends AbstractMap<K,V> 
-            implements ObservableMap<K,V> {
-        private Map<K,V> map;
-        private List<ObservableMapListener> listeners;
-        private Set<Map.Entry<K,V>> entrySet;
-        
-        ObservableMapImpl(Map<K,V> map) {
-            this.map = map;
-            listeners = new CopyOnWriteArrayList<ObservableMapListener>();
-        }
-        
-        public void clear() {
-            // Remove all elements via iterator to trigger notification
-            Iterator<K> iterator = keySet().iterator();
-            while (iterator.hasNext()) {
-                iterator.next();
-                iterator.remove();
-            }
-        }
-
-        public boolean containsKey(Object key) {
-            return map.containsKey(key);
-        }
-
-        public boolean containsValue(Object value) {
-            return map.containsValue(value);
-        }
-
-        public Set<Map.Entry<K,V>> entrySet() {
-            Set<Map.Entry<K,V>> es = entrySet;
-            return es != null ? es : (entrySet = new EntrySet());
-        }
-        
-        public V get(Object key) {
-            return map.get(key);
-        }
-
-        public boolean isEmpty() {
-            return map.isEmpty();
-        }
-        
-        public V put(K key, V value) {
-            V lastValue;
-            if (containsKey(key)) {
-                lastValue = map.put(key, value);
-                for (ObservableMapListener listener : listeners) {
-                    listener.mapKeyValueChanged(this, key, lastValue);
-                }
-            } else {
-                lastValue = map.put(key, value);
-                for (ObservableMapListener listener : listeners) {
-                    listener.mapKeyAdded(this, key);
-                }
-            }
-            return lastValue;
-        }
-        
-        public void putAll(Map<? extends K, ? extends V> m) {
-            for (K key : m.keySet()) {
-                put(key, m.get(key));
-            }
-        }
-        
-        public V remove(Object key) {
-            if (containsKey(key)) {
-                V value = map.remove(key);
-                for (ObservableMapListener listener : listeners) {
-                    listener.mapKeyRemoved(this, key, value);
-                }
-                return value;
-            }
-            return null;
-        }
-        
-        public int size() {
-            return map.size();
-        }
-        
-        public void addObservableMapListener(ObservableMapListener listener) {
-            listeners.add(listener);
-        }
-
-        public void removeObservableMapListener(ObservableMapListener listener) {
-            listeners.remove(listener);
-        }
-        
-        
-        private class EntryIterator implements Iterator<Map.Entry<K,V>> {
-            private Iterator<Map.Entry<K,V>> realIterator;
-            private Map.Entry<K,V> last;
-            
-            EntryIterator() {
-                realIterator = map.entrySet().iterator();
-            }
-            public boolean hasNext() {
-                return realIterator.hasNext();
-            }
-
-            public Map.Entry<K,V> next() {
-                last = realIterator.next();
-                return last;
-            }
-
-            public void remove() {
-                if (last == null) {
-                    throw new IllegalStateException();
-                }
-                Object toRemove = last.getKey();
-                last = null;
-                ObservableMapImpl.this.remove(toRemove);
-            }
-        }
-
-        
-        private class EntrySet extends AbstractSet<Map.Entry<K,V>> {
-            public Iterator<Map.Entry<K,V>> iterator() {
-                return new EntryIterator();
-            }
-            @SuppressWarnings("unchecked")
-            public boolean contains(Object o) {
-                if (!(o instanceof Map.Entry)) {
-                    return false;
-                }
-                Map.Entry<K,V> e = (Map.Entry<K,V>)o;
-                return containsKey(e.getKey());
-            }
-
-            @SuppressWarnings("unchecked")
-            public boolean remove(Object o) {
-                if (o instanceof Map.Entry) {
-                    K key = ((Map.Entry<K,V>)o).getKey();
-                    if (containsKey(key)) {
-                        remove(key);
-                        return true;
-                    }
-                }
-                return false;
-            }
-            
-            public int size() {
-                return ObservableMapImpl.this.size();
-            }
-            public void clear() {
-                ObservableMapImpl.this.clear();
-            }
-        }
-    }
-    
+//    public static final class ObservableMapImpl<K,V> extends AbstractMap<K,V> 
+//            implements ObservableMapOld<K,V> {
+//        private Map<K,V> map;
+//        private List<ObservableMapListener> listeners;
+//        private Set<Map.Entry<K,V>> entrySet;
+////        private PropertyChangeListener valueChangeListener = (pce) -> {
+////            for (ObservableMapListener listener : listeners) {
+////                    listener.mapKeyValueChanged(this, key, lastValue);
+////                }
+////        };
+//        
+//        ObservableMapImpl(Map<K,V> map) {
+//            this.map = map;
+//            listeners = new CopyOnWriteArrayList<ObservableMapListener>();
+//        }
+//        
+//        public void clear() {
+//            // Remove all elements via iterator to trigger notification
+//            Iterator<K> iterator = keySet().iterator();
+//            while (iterator.hasNext()) {
+//                iterator.next();
+//                iterator.remove();
+//            }
+//        }
+//
+//        public boolean containsKey(Object key) {
+//            return map.containsKey(key);
+//        }
+//
+//        public boolean containsValue(Object value) {
+//            return map.containsValue(value);
+//        }
+//
+//        public Set<Map.Entry<K,V>> entrySet() {
+//            Set<Map.Entry<K,V>> es = entrySet;
+//            return es != null ? es : (entrySet = new EntrySet());
+//        }
+//        
+//        public V get(Object key) {
+//            return map.get(key);
+//        }
+//
+//        public boolean isEmpty() {
+//            return map.isEmpty();
+//        }
+//        
+//        public V put(K key, V value) {
+//            V lastValue;
+//            if (containsKey(key)) {
+//                lastValue = map.put(key, value);
+//                for (ObservableMapListener listener : listeners) {
+//                    listener.mapKeyValueChanged(this, key, lastValue);
+//                }
+//            } else {
+//                lastValue = map.put(key, value);
+//                for (ObservableMapListener listener : listeners) {
+//                    listener.mapKeyAdded(this, key);
+//                }
+//            }
+//            return lastValue;
+//        }
+//        
+//        public void putAll(Map<? extends K, ? extends V> m) {
+//            for (K key : m.keySet()) {
+//                put(key, m.get(key));
+//            }
+//        }
+//        
+//        public V remove(Object key) {
+//            if (containsKey(key)) {
+//                V value = map.remove(key);
+//                for (ObservableMapListener listener : listeners) {
+//                    listener.mapKeyRemoved(this, key, value);
+//                }
+//                return value;
+//            }
+//            return null;
+//        }
+//        
+//        public int size() {
+//            return map.size();
+//        }
+//        
+//        public void addObservableMapListener(ObservableMapListener listener) {
+//            listeners.add(listener);
+//        }
+//
+//        public void removeObservableMapListener(ObservableMapListener listener) {
+//            listeners.remove(listener);
+//        }
+//        
+//        
+//        private class EntryIterator implements Iterator<Map.Entry<K,V>> {
+//            private Iterator<Map.Entry<K,V>> realIterator;
+//            private Map.Entry<K,V> last;
+//            
+//            EntryIterator() {
+//                realIterator = map.entrySet().iterator();
+//            }
+//            public boolean hasNext() {
+//                return realIterator.hasNext();
+//            }
+//
+//            public Map.Entry<K,V> next() {
+//                last = realIterator.next();
+//                return last;
+//            }
+//
+//            public void remove() {
+//                if (last == null) {
+//                    throw new IllegalStateException();
+//                }
+//                Object toRemove = last.getKey();
+//                last = null;
+//                ObservableMapImpl.this.remove(toRemove);
+//            }
+//        }
+//
+//        
+//        private class EntrySet extends AbstractSet<Map.Entry<K,V>> {
+//            public Iterator<Map.Entry<K,V>> iterator() {
+//                return new EntryIterator();
+//            }
+//            @SuppressWarnings("unchecked")
+//            public boolean contains(Object o) {
+//                if (!(o instanceof Map.Entry)) {
+//                    return false;
+//                }
+//                Map.Entry<K,V> e = (Map.Entry<K,V>)o;
+//                return containsKey(e.getKey());
+//            }
+//
+//            @SuppressWarnings("unchecked")
+//            public boolean remove(Object o) {
+//                if (o instanceof Map.Entry) {
+//                    K key = ((Map.Entry<K,V>)o).getKey();
+//                    if (containsKey(key)) {
+//                        remove(key);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//            
+//            public int size() {
+//                return ObservableMapImpl.this.size();
+//            }
+//            public void clear() {
+//                ObservableMapImpl.this.clear();
+//            }
+//        }
+//    }
+//    
 
 //    public static final class ObservableListImpl<E> extends AbstractList<E>
 //            implements ObservableList<E> {

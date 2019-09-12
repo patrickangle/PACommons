@@ -118,7 +118,7 @@ public class ModernUIUtilities {
         ModernSpinnerUI.installIntoDefaults(defaults);
         ModernTabbedPaneUI.installIntoDefaults(defaults);
         ModernToolBarUI.installIntoDefaults(defaults);
-        ModernRootPaneUI.installIntoDefaults(defaults);
+//        ModernRootPaneUI.installIntoDefaults(defaults);
         ModernSplitPaneUI.installIntoDefaults(defaults);
 
         defaults.put("OptionPane.informationIcon", new IconUIResource(new ImageIcon(Images.fromClasspath("com/patrickangle/commons/laf/modern/icons/OptionPaneInfo.png"))));

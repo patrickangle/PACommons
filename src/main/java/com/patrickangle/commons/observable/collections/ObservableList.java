@@ -41,7 +41,7 @@ public interface ObservableList<E> extends List<E> {
             return true;
         } else {
             try {
-                list.getClass().getMethod(ADD_OBSERVABLE_LIST_LISTENER_METHOD_SIGNATURE, PropertyChangeListener.class).invoke(list, observableListListener);
+                list.getClass().getMethod(ADD_OBSERVABLE_LIST_LISTENER_METHOD_SIGNATURE, ObservableListListener.class).invoke(list, observableListListener);
                 return true;
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 return false;
@@ -59,7 +59,7 @@ public interface ObservableList<E> extends List<E> {
             return true;
         } else {
             try {
-                list.getClass().getMethod(REMOVE_OBSERVABLE_LIST_LISTENER_METHOD_SIGNATURE, PropertyChangeListener.class).invoke(list, observableListListener);
+                list.getClass().getMethod(REMOVE_OBSERVABLE_LIST_LISTENER_METHOD_SIGNATURE, ObservableListListener.class).invoke(list, observableListListener);
                 return true;
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 return false;
