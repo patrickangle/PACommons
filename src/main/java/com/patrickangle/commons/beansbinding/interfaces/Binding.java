@@ -93,8 +93,9 @@ public interface Binding {
         public BF convertBackward(FF object);
     }
     
-    public abstract class ForwardConverter<BF, FF> implements Converter<BF, FF> {
-        public BF convertBackward(FF object) {
+    @FunctionalInterface
+    public interface ForwardConverter<BF, FF> extends Converter<BF, FF> {
+        public default BF convertBackward(FF object) {
             throw new UnsupportedOperationException("Illegal backward conversion.");
         }
     }

@@ -143,7 +143,12 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         for (BindableField field : ObjectEditingBindings.bindableFieldsForObject(editingObject)) {
             ObjectEditingProperty config = Annotations.valueFromAnnotationOnField(BindableFields.reflectionFieldForBindableField(field), ObjectEditingProperty.class);
             String declaringClass = ObjectEditingBindings.getGroupNameForBindableField(field);
-            sectionPanels.putIfAbsent(declaringClass, new JPanel(new GridBagLayout()));
+            sectionPanels.computeIfAbsent(declaringClass, (dc) -> {
+                JPanel panel = new JPanel(new GridBagLayout());
+                panel.setOpaque(false);
+                return panel;
+            });
+//            sectionPanels.putIfAbsent(declaringClass, new JPanel(new GridBagLayout()));
 
             ObjectFieldEditorFactory.ComponentReturn componentReturn = ObjectFieldEditorFactory.createEditorForObject(editingObject, field, bindingGroup, undoManager);
 

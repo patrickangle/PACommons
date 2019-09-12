@@ -26,7 +26,6 @@ import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernPanelUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
-import com.patrickangle.commons.laf.modern.ui.ModernRootPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSplitPaneUI;
@@ -37,6 +36,10 @@ import com.patrickangle.commons.util.Images;
 import com.patrickangle.commons.util.OperatingSystems;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.geom.AffineTransform;
+import java.lang.reflect.Field;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
@@ -95,7 +98,6 @@ public class ModernUIUtilities {
         defaults.put("OptionPane.messageForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("link.forground", defaults.getColor(ACCENT_LIGHT_COLOR_KEY));
 
-        
         defaults.put("Viewport.background", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("ScrollPane.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
 
@@ -131,7 +133,7 @@ public class ModernUIUtilities {
         defaults.put("Table.selectionBackground", defaults.get(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
         defaults.put("Table.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
         defaults.put("Table.forground", defaults.get(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
-        
+
         defaults.put("TextArea.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
 
     }
@@ -193,7 +195,7 @@ public class ModernUIUtilities {
 
         defaults.put("Viewport.background", defaults.getColor(WORKSPACE_BACKGROUND_COLOR_KEY));
         defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
-        
+
         defaults.put("TabbedPane.background", defaults.getColor(BACKGROUND_COLOR_KEY));
 
         defaults.put("ScrollPane.background", defaults.get(ModernUIUtilities.WORKSPACE_BACKGROUND_COLOR_KEY));
@@ -206,19 +208,33 @@ public class ModernUIUtilities {
 
         defaults.put("defaultFont", systemFont);
 
+//        ModernButtonUI.installIntoDefaults(defaults);
+//        ModernTextFieldUI.installIntoDefaults(defaults);
+//        ModernComboBoxUI.installIntoDefaults(defaults);
+//        ModernListUI.installIntoDefaults(defaults);
+//        ModernScrollBarUI.installIntoDefaults(defaults);
+//        ModernOptionPaneUI.installIntoDefaults(defaults);
+//
+//        ModernCheckBoxUI.installIntoDefaults(defaults);
+//        ModernRadioButtonUI.installIntoDefaults(defaults);
+//
+//        ModernSpinnerUI.installIntoDefaults(defaults);
+//        ModernTabbedPaneUI.installIntoDefaults(defaults);
+//        ModernPanelUI.installIntoDefaults(defaults);
         ModernButtonUI.installIntoDefaults(defaults);
         ModernTextFieldUI.installIntoDefaults(defaults);
         ModernComboBoxUI.installIntoDefaults(defaults);
         ModernListUI.installIntoDefaults(defaults);
         ModernScrollBarUI.installIntoDefaults(defaults);
         ModernOptionPaneUI.installIntoDefaults(defaults);
-
         ModernCheckBoxUI.installIntoDefaults(defaults);
         ModernRadioButtonUI.installIntoDefaults(defaults);
-
         ModernSpinnerUI.installIntoDefaults(defaults);
         ModernTabbedPaneUI.installIntoDefaults(defaults);
-        
+        ModernToolBarUI.installIntoDefaults(defaults);
+//        ModernRootPaneUI.installIntoDefaults(defaults);
+        ModernSplitPaneUI.installIntoDefaults(defaults);
+
     }
 
     /**
@@ -241,7 +257,7 @@ public class ModernUIUtilities {
                 break;
         }
     }
-    
+
     public static Object clientPropertyOrDefault(JComponent c, String key, Object def) {
         Object returnObj = c.getClientProperty(key);
         if (returnObj != null) {
@@ -249,5 +265,36 @@ public class ModernUIUtilities {
         } else {
             return def;
         }
+    }
+
+    public static double getDisplayScale() {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        final GraphicsDevice device = env.getDefaultScreenDevice();
+        try {
+            Field field = device.getClass().getDeclaredField("scale");
+            if (field != null) {
+                field.setAccessible(true);
+                Object scale = field.get(device);
+                if (scale instanceof Number && ((Number) scale).doubleValue() > 0) {
+                    return ((Number) scale).doubleValue();
+                } else {
+                    System.out.println("Scale is: " + scale);
+                }
+            }
+        } catch (Exception ignore) {
+        }
+        return 1.0;
+    }
+    
+    public static double getDisplayScaleInverse() {
+        return 1.0 / getDisplayScale();
+    }
+    
+    public static AffineTransform getDisplayScaleTransform() {
+        return AffineTransform.getScaleInstance(getDisplayScale(), getDisplayScale());
+    }
+    
+    public static AffineTransform getDisplayScaleInverseTransform() {
+        return AffineTransform.getScaleInstance(getDisplayScaleInverse(), getDisplayScaleInverse());
     }
 }

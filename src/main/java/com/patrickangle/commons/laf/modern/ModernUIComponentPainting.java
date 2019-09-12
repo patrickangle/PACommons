@@ -101,17 +101,21 @@ public class ModernUIComponentPainting {
         }
 
         BufferedImage fill = cachedFills.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
-            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(button.getWidth(), button.getHeight(), BufferedImage.TRANSLUCENT);
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(
+                    (int) (button.getWidth() * ModernUIUtilities.getDisplayScale()),
+                    (int) (button.getHeight() * ModernUIUtilities.getDisplayScale()),
+                    BufferedImage.TRANSLUCENT);
             Graphics2D g2 = bi.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g2.transform(ModernUIUtilities.getDisplayScaleTransform());
             
             g2.setColor(pair.b);
             g2.fill(pair.a);
             
             return bi;
         });
-        g.drawImage(fill, 0, 0, button);
+        g.drawImage(fill, ModernUIUtilities.getDisplayScaleInverseTransform(), button);
     }
 
     public static void paintComponentBorderHighlight(Graphics2D g, AbstractButton button, Shape buttonShape) {
@@ -135,17 +139,22 @@ public class ModernUIComponentPainting {
         }
         
         BufferedImage border = cachedBorders.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
-            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(button.getWidth(), button.getHeight(), BufferedImage.TRANSLUCENT);
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(
+                    (int) (button.getWidth() * ModernUIUtilities.getDisplayScale()),
+                    (int) (button.getHeight() * ModernUIUtilities.getDisplayScale()),
+                    BufferedImage.TRANSLUCENT);
             Graphics2D g2 = bi.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g2.transform(ModernUIUtilities.getDisplayScaleTransform());
+            
             g.setStroke(new BasicStroke(0.5f));
             g2.setColor(pair.b);
             g2.draw(pair.a);
             
             return bi;
         });
-        g.drawImage(border, 0, 0, button);
+        g.drawImage(border, ModernUIUtilities.getDisplayScaleInverseTransform(), button);
 
 //        g.draw(buttonShape);
     }
@@ -158,10 +167,15 @@ public class ModernUIComponentPainting {
         }
 
         BufferedImage shadow = cachedShadows.computeIfAbsent(Pair.makePair(shape, g.getColor()), (pair) -> {
-            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TRANSLUCENT);
+            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(
+                    (int) (component.getWidth() * ModernUIUtilities.getDisplayScale()),
+                    (int) (component.getHeight() * ModernUIUtilities.getDisplayScale()),
+                    BufferedImage.TRANSLUCENT);
             Graphics2D g2 = bi.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g2.transform(ModernUIUtilities.getDisplayScaleTransform());
+            
             Color baseColor = pair.b;
 //            g2.translate(3, 3);
 
@@ -189,7 +203,7 @@ public class ModernUIComponentPainting {
 //        g3.setComposite(AlphaComposite.DstIn);
 //        g3.drawImage(shadowMask, 0, 0, component);
 //        g3.dispose();
-        g.drawImage(shadow, 0, 0, component);
+        g.drawImage(shadow, ModernUIUtilities.getDisplayScaleInverseTransform(), component);
 
 //        Graphics2D g2 = (Graphics2D) g.create();
 //        enableAntialiasing(g2);
