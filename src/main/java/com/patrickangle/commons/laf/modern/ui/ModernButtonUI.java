@@ -34,6 +34,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -42,6 +43,20 @@ import javax.swing.plaf.basic.BasicButtonUI;
  * @author patrickangle
  */
 public class ModernButtonUI extends BasicButtonUI implements ModernShapedComponentUI {
+    
+    public final static String CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND";
+
+    public final static String CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND";
+
+    public final static String CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND";
+    public final static String CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND";
+
+    public final static String CPK_BUTTON_DISABLED_BACKGROUND = "CPK_BUTTON_DISABLED_BACKGROUND";
 
     public static final String JBUTTON_TYPE_KEY = "JButton.buttonType";
     public static final String JBUTTON_TYPE_NORMAL_VALUE = "normal";
@@ -71,7 +86,6 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         b.setRolloverEnabled(true);
         b.setOpaque(false);
-
     }
 
     @Override
