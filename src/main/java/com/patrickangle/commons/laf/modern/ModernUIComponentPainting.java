@@ -57,6 +57,9 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
  */
 public class ModernUIComponentPainting {
 
+    public final static String CPK_COMPONENT_ENABLED_FOREGROUND = "CPK_COMPONENT_ENABLED_FOREGROUND";
+    public final static String CPK_COMPONENT_DISABLED_FOREGROUND = "CPK_COMPONENT_DISABLED_FOREGROUND";
+
 //    public final static String CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND";
 //    public final static String CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND";
 //    public final static String CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND";
@@ -70,7 +73,6 @@ public class ModernUIComponentPainting {
 //    public final static String CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND";
 //
 //    public final static String CPK_BUTTON_DISABLED_BACKGROUND = "CPK_BUTTON_DISABLED_BACKGROUND";
-
     private final static Map<Pair<Shape, Color>, BufferedImage> cachedShadows = new WeakHashMap<>();
     private final static Map<Pair<Shape, Color>, BufferedImage> cachedFills = new WeakHashMap<>();
     private final static Map<Pair<Shape, Color>, BufferedImage> cachedBorders = new WeakHashMap<>();
@@ -157,10 +159,10 @@ public class ModernUIComponentPainting {
         } else {
             // Disabled
             g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_DISABLED_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
-                    ));
+                    button,
+                    CPK_BUTTON_DISABLED_BACKGROUND,
+                    UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
+            ));
         }
 
         BufferedImage fill = cachedFills.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
@@ -298,10 +300,18 @@ public class ModernUIComponentPainting {
     public static void paintComponentText(Graphics2D g, JComponent component, Rectangle textRect, String text, int textShiftOffset) {
         if (component.isEnabled()) {
             // Enabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
+            g.setColor(getClientPropertyOrDefault(
+                    component,
+                    CPK_COMPONENT_ENABLED_FOREGROUND,
+                    UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY)
+            ));
         } else {
             // Disabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+            g.setColor(getClientPropertyOrDefault(
+                    component,
+                    CPK_COMPONENT_DISABLED_FOREGROUND,
+                    UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY)
+            ));
         }
 
         int mnemonicIndex = (component instanceof AbstractButton) ? ((AbstractButton) component).getDisplayedMnemonicIndex() : -1;
