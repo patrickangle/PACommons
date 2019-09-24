@@ -40,6 +40,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 import java.lang.reflect.Field;
+import java.security.PrivilegedAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
@@ -67,6 +68,8 @@ public class ModernUIUtilities {
     public static final String WORKSPACE_BACKGROUND_COLOR_KEY = "ModernLAF.WorkspaceBackgroundColor";
 
     public static final String SHADOW_COLOR_KEY = "ModernLAF.ShadowColor";
+    
+    
 
     public static void installLafDefaults(UIDefaults defaults) {
         installInputMapDefaults(defaults);
@@ -235,6 +238,10 @@ public class ModernUIUtilities {
 //        ModernRootPaneUI.installIntoDefaults(defaults);
         ModernSplitPaneUI.installIntoDefaults(defaults);
 
+        if (OperatingSystems.current() == OperatingSystems.Macintosh) {
+            defaults.put("RootPaneUI", "com.apple.laf.AquaRootPaneUI");
+        }
+
     }
 
     /**
@@ -285,15 +292,15 @@ public class ModernUIUtilities {
         }
         return 1.0;
     }
-    
+
     public static double getDisplayScaleInverse() {
         return 1.0 / getDisplayScale();
     }
-    
+
     public static AffineTransform getDisplayScaleTransform() {
         return AffineTransform.getScaleInstance(getDisplayScale(), getDisplayScale());
     }
-    
+
     public static AffineTransform getDisplayScaleInverseTransform() {
         return AffineTransform.getScaleInstance(getDisplayScaleInverse(), getDisplayScaleInverse());
     }

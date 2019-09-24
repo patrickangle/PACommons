@@ -17,6 +17,9 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import static com.patrickangle.commons.laf.modern.ModernUIUtilities.BACKGROUND_COLOR_KEY;
+import com.patrickangle.commons.laf.modern.ModernUIAquaUtils;
+import com.patrickangle.commons.util.OperatingSystems;
+import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.ComponentUI;
@@ -33,12 +36,19 @@ public class ModernPanelUI extends BasicPanelUI {
         super.installUI(c); //To change body of generated methods, choose Tools | Templates.
         c.setOpaque(false);
     }
-    
-    
+
     public static ComponentUI createUI(final JComponent x) {
         return new ModernPanelUI();
     }
-    
+
+    @Override
+    public final void update(final Graphics g, final JComponent c) {
+        if (c.isOpaque() && OperatingSystems.current() == OperatingSystems.Macintosh) {
+            ModernUIAquaUtils.fillRect(g, c);
+        }
+        paint(g, c);
+    }
+
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("PanelUI", ModernPanelUI.class.getName());
         defaults.put("Panel.background", defaults.getColor(BACKGROUND_COLOR_KEY));
