@@ -16,15 +16,13 @@
  */
 package com.patrickangle.commons.swing.tearawaydialog;
 
-import com.patrickangle.commons.swing.util.WindowResizeComponentMouseAdapter;
+import com.patrickangle.commons.swing.util.WindowMouseInputAdapter;
 import com.patrickangle.commons.util.OperatingSystems;
 import com.patrickangle.commons.util.Windows;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -34,6 +32,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Window.Type;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.geom.AffineTransform;
@@ -103,11 +102,18 @@ public class BasicTearawayDialogUI implements TearawayDialogUI {
     public void installUI(JTearawayDialog dialog) {
         this.closeButton = createCloseButton(dialog);
         this.titleLabel = createTitleLabel(dialog);
+        
+        dialog.setType(Type.UTILITY);
+        dialog.setUndecorated(true);
 
         dialog.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", Boolean.FALSE);
 //        dialog.setUndecorated(true);
         dialog.getRootPane().setOpaque(false);
         Windows.makeNonOpaque(dialog);
+        
+        new WindowMouseInputAdapter(dialog, () -> {
+            dialog.setAttached(false);
+        });
 
         dialog.addWindowFocusListener(focusListener);
         dialog.addPropertyChangeListener("title", titlePropertyChangeListener);

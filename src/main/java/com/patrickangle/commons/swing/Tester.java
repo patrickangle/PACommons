@@ -16,11 +16,16 @@
  */
 package com.patrickangle.commons.swing;
 
+import com.patrickangle.commons.logging.Logging;
 import com.patrickangle.commons.util.AquaUtils;
 import com.patrickangle.commons.util.Colors;
 import java.awt.SystemColor;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.PanelUI;
+import javax.swing.plaf.RootPaneUI;
 
 /**
  *
@@ -32,9 +37,23 @@ public class Tester extends javax.swing.JFrame {
      * Creates new form Tester
      */
     public Tester() {
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.setTitle("Testing Dialog");
         this.getRootPane().putClientProperty(AquaUtils.WINDOW_STYLE, AquaUtils.WINDOW_STYLE_VALUE_HUD);
         this.getRootPane().putClientProperty(AquaUtils.WINDOW_BRUSH_METAL_LOOK, Boolean.TRUE);
+        this.getRootPane().putClientProperty(AquaUtils.WINDOW_TRANSPARENT_TITLE_BAR, Boolean.TRUE);
 
+        try {
+            Class aquaPanelUiClass = this.getClass().getClassLoader().loadClass("com.apple.laf.AquaPanelUI");
+            if (this.getContentPane() instanceof JPanel) {
+                ((JPanel) this.getContentPane()).setUI((PanelUI) aquaPanelUiClass.getConstructor().newInstance());
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logging.exception(this, ex);
+        }
+        
+        this.getContentPane().setBackground(new ColorUIResource(SystemColor.window));
+        
         initComponents();
         
         System.out.println(SystemColor.textHighlight.getRed());
@@ -83,6 +102,8 @@ public class Tester extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         new TesterDialog(this, true).setVisible(true);
+        this.getRootPane().putClientProperty(AquaUtils.WINDOW_TRANSPARENT_TITLE_BAR, Boolean.FALSE);
+        this.revalidate();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -27,6 +27,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.Window.Type;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -119,7 +121,7 @@ public class JTearawayDialog extends JDialog {
             return new JTearawayDialog(p, a, i);
         });
     }
-    
+
     public static JTearawayDialog showOrFocusDialog(Window parent, Creator creator) {
         return JTearawayDialog.showOrFocusDialog(parent, null, IDs.uuidString(), creator);
     }
@@ -228,12 +230,6 @@ public class JTearawayDialog extends JDialog {
                 dispose();
             }
         });
-        
-        setType(Type.UTILITY);
-        setUndecorated(true);
-//        showWithParent = true;
-//        setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);
-//        setF
 
         // Must be set before we continue. Changing this isn't really supported yet.
         this.setUI(getLookAndFeelDeclaredUI());
@@ -255,9 +251,9 @@ public class JTearawayDialog extends JDialog {
         this.contentPanel.setBorder(getUI().getDialogBorder(this, attached, SwingConstants.NORTH));
         this.setContentPane(contentPanel);
 
-        new WindowMouseInputAdapter(this, () -> {
-            setAttached(false);
-        });
+        
+
+        
 
         // If this dialog is current attached and the user clicks away, close the dialog. Also repaint the window if focus changes.
         this.windowFocusAdapter = new WindowAdapter() {
@@ -294,22 +290,41 @@ public class JTearawayDialog extends JDialog {
 
     @Override
     public void setVisible(boolean b) {
-        if (b) {
-            this.pack();
-        }
+//        if (b) {
+//            this.pack();
+//        }
         super.setVisible(b); //To change body of generated methods, choose Tools | Templates.
+        
+        
     }
 
     @Override
     public void validate() {
         super.validate(); //To change body of generated methods, choose Tools | Templates.
         
-        if (attached) {
+        reattachToComponent();
+    }
+    
+    public void reattachToComponent() {
+        if (isAttached() && !isVisible()) {
             int x = (attachedTo.getLocationOnScreen().x + (attachedTo.getWidth() / 2)) - (this.getWidth() / 2);
             int y = (attachedTo.getLocationOnScreen().y + attachedTo.getHeight() + 2);
             setLocation(x, y);
         }
     }
+
+    @Override
+    public void move(int x, int y) {
+        if (x == this.getX() && y == this.getY()) {
+            // Don't set the window to the same position.
+            return;
+        }
+        super.move(x, y); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+    
 
     @Override
     public void dispose() {
@@ -323,8 +338,6 @@ public class JTearawayDialog extends JDialog {
             disposeDelay.start();
         });
     }
-    
-    
 
     /**
      * Get the current attachment state of the dialog.
@@ -332,7 +345,7 @@ public class JTearawayDialog extends JDialog {
      * @return
      */
     public boolean isAttached() {
-        return attached;
+        return attached && attachedTo != null;
     }
 
     /**
@@ -344,9 +357,10 @@ public class JTearawayDialog extends JDialog {
      * @param attached
      */
     public void setAttached(boolean attached) {
+        printCondensedStackTrace();
         boolean oldAttached = this.attached;
-        // The provided state is only honored if there is a component to which this dialog was initally attached;
-        this.firePropertyChange("attached", this.attached, this.attached = attached && (attachedTo != null));
+        this.attached = attached && (attachedTo != null);
+        this.firePropertyChange("attached", (Object) oldAttached, (Object) this.attached);
 
         if (oldAttached != this.attached) {
             this.contentPanel.setBorder(getUI().getDialogBorder(this, attached, SwingConstants.NORTH));
@@ -364,6 +378,19 @@ public class JTearawayDialog extends JDialog {
      */
     public Component getAttachedTo() {
         return attachedTo;
+    }
+    
+    public static void printCondensedStackTrace() {
+        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+        StringBuilder print = new StringBuilder("Tracing Thread `").append(Thread.currentThread().getName()).append("`: ");
+        for (int i = traces.length - 1; i >= 2; i--) {
+            if (i != traces.length - 1) {
+                print.append("»");
+            }
+            String[] classNameParts = traces[i].getClassName().split("\\.");
+            print.append(classNameParts[classNameParts.length - 1]).append(".").append(traces[i].getMethodName()).append(":").append(traces[i].getLineNumber());
+        }
+        Logging.trace(JTearawayDialog.class, print);
     }
 
     /**

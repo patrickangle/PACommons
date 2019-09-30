@@ -19,6 +19,7 @@ package com.patrickangle.commons.laf.modern;
 import com.patrickangle.commons.laf.modern.keybindings.GTKKeyBindings;
 import com.patrickangle.commons.laf.modern.keybindings.MacKeyBindings;
 import com.patrickangle.commons.laf.modern.keybindings.WindowsKeyBindings;
+import com.patrickangle.commons.laf.modern.ui.MacTearawayDialogUI;
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
@@ -239,7 +240,8 @@ public class ModernUIUtilities {
         ModernSplitPaneUI.installIntoDefaults(defaults);
 
         if (OperatingSystems.current() == OperatingSystems.Macintosh) {
-            defaults.put("RootPaneUI", "com.apple.laf.AquaRootPaneUI");
+//            defaults.put("RootPaneUI", "com.apple.laf.AquaRootPaneUI");
+            defaults.put("TearawayDialogUI", MacTearawayDialogUI.class.getName());
         }
 
     }

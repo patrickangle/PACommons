@@ -16,6 +16,15 @@
  */
 package com.patrickangle.commons.util;
 
+import java.awt.SystemColor;
+import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.PanelUI;
+import javax.swing.plaf.RootPaneUI;
+
 /**
  *
  * @author patrickangle
@@ -222,4 +231,45 @@ public class AquaUtils {
     public static final String WINDOW_FULLSCREENABLE = "apple.awt.fullscreenable";
     public static final String WINDOW_FULL_CONTENT = "apple.awt.fullWindowContent";
     public static final String WINDOW_TRANSPARENT_TITLE_BAR = "apple.awt.transparentTitleBar";
+    
+    public static void installAquaRootPaneUiIfAvailable(JRootPane rootPane) {
+        try {
+            Class aquaRootPaneUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaRootPaneUI");
+            rootPane.getRootPane().setUI((RootPaneUI) aquaRootPaneUiClass.getConstructor().newInstance());
+            rootPane.setBackground(new ColorUIResource(SystemColor.window));
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        }
+    }
+    
+    public static void installAquaPaneUiIfAvailable(JPanel panel) {
+        try {
+            Class aquaPanelUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaPanelUI");
+            panel.setUI((PanelUI) aquaPanelUiClass.getConstructor().newInstance());
+            panel.setBackground(new ColorUIResource(SystemColor.window));
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        }
+    }
+    
+    public static boolean isWindowNativeFullScreen(Window window) {
+        // TODO: Access this reflectively.
+//        final Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
+//        if (!(peer instanceof LWWindowPeer)) return false;
+//        Object platformWindow = ((LWWindowPeer) peer).getPlatformWindow();
+//        if (!(platformWindow instanceof CPlatformWindow)) return false;
+//        return ((CPlatformWindow)platformWindow).isFullScreenMode();
+    return false;
+    }
+    
+    public static void setWindowNativeFullScreen(Window window, boolean fullscreen) {
+        // TODO: Access this reflectively.
+//        final Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
+//        if (!(peer instanceof LWWindowPeer)) return;
+//        Object platformWindow = ((LWWindowPeer) peer).getPlatformWindow();
+//        if (!(platformWindow instanceof CPlatformWindow)) return;
+//        if (fullscreen) {
+//            ((CPlatformWindow) platformWindow).enterFullScreenMode();
+//        } else {
+//            ((CPlatformWindow) platformWindow).exitFullScreenMode();
+//        }
+    }
 }

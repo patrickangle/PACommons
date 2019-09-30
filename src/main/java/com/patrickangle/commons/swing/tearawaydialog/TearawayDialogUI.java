@@ -21,7 +21,10 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.plaf.PanelUI;
 
 /**
  *
@@ -100,4 +103,9 @@ public interface TearawayDialogUI {
      * @param attachedTo
      */
     public void paintBorder(Graphics g, JTearawayDialog dialog, Rectangle bounds, Point attachedTo);
+    
+    default public void installContentPaneUI(JPanel c) {
+        c.setUI((PanelUI)UIManager.getUI(c));
+//        return (PanelUI)UIManager.getUI(c);
+    }
 }
