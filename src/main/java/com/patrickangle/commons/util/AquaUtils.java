@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.util;
 
+import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
@@ -231,7 +232,7 @@ public class AquaUtils {
     public static final String WINDOW_FULLSCREENABLE = "apple.awt.fullscreenable";
     public static final String WINDOW_FULL_CONTENT = "apple.awt.fullWindowContent";
     public static final String WINDOW_TRANSPARENT_TITLE_BAR = "apple.awt.transparentTitleBar";
-    
+
     public static void installAquaRootPaneUiIfAvailable(JRootPane rootPane) {
         try {
             Class aquaRootPaneUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaRootPaneUI");
@@ -240,7 +241,7 @@ public class AquaUtils {
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
     }
-    
+
     public static void installAquaPaneUiIfAvailable(JPanel panel) {
         try {
             Class aquaPanelUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaPanelUI");
@@ -249,7 +250,22 @@ public class AquaUtils {
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
     }
-    
+
+    public static boolean isSystemUsingDarkAppearance() {
+        return true;
+//        // If the window color is darker than 50% gray, we are in dark mode. If we aren't on macOS, we aren't in dark mode.
+//        try {
+//            Class aquaImageFactory = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaNativeResources");
+//            Color windowBackgroundColor = (Color) aquaImageFactory.getMethod("getWindowBackgroundColorUIResource").invoke(null);
+//
+//            long color = windowBackgroundColor.getRed() + windowBackgroundColor.getGreen() + windowBackgroundColor.getBlue();
+//            System.out.println("Color:" + color);
+//            return color < ((255 * 3) / 2);
+//        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+//            return false;
+//        }
+    }
+
     public static boolean isWindowNativeFullScreen(Window window) {
         // TODO: Access this reflectively.
 //        final Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
@@ -257,9 +273,9 @@ public class AquaUtils {
 //        Object platformWindow = ((LWWindowPeer) peer).getPlatformWindow();
 //        if (!(platformWindow instanceof CPlatformWindow)) return false;
 //        return ((CPlatformWindow)platformWindow).isFullScreenMode();
-    return false;
+        return false;
     }
-    
+
     public static void setWindowNativeFullScreen(Window window, boolean fullscreen) {
         // TODO: Access this reflectively.
 //        final Object peer = AWTAccessor.getComponentAccessor().getPeer(window);

@@ -72,6 +72,14 @@ public class Colors {
     public static Color transparentColor(Color color, float alpha) {
         return Colors.transparentColor(color, (int)((float)color.getAlpha() * alpha));
     }
+    
+    public static Color grey(int grey) {
+        return new Color(grey, grey, grey);
+    }
+    
+    public static Color grey(float grey) {
+        return new Color(grey, grey, grey);
+    }
 
     public static Color randomColor() {
         return new Color((float) Math.random(), (float) Math.random(), (float) Math.random());

@@ -34,14 +34,15 @@ import com.patrickangle.commons.laf.modern.ui.ModernTabbedPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.laf.modern.ui.ModernToolBarUI;
 import com.patrickangle.commons.util.Images;
+import com.patrickangle.commons.util.ObjCRuntime;
 import com.patrickangle.commons.util.OperatingSystems;
+import com.sun.jna.Pointer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 import java.lang.reflect.Field;
-import java.security.PrivilegedAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
@@ -151,6 +152,14 @@ public class ModernUIUtilities {
      * @param defaults
      */
     public static void installCompatibleDefaults(UIDefaults defaults) {
+        if (OperatingSystems.current() == OperatingSystems.Macintosh) {
+            // Force dark mode all day every day.
+//            Pointer nsAppClass = ObjCRuntime.objc_lookUpClass("NSApplication");
+//            Pointer sharedApplication = ObjCRuntime.class_getProperty(nsAppClass, "sharedApplication");
+//            Pointer nsAppAppearanceProperty = ObjCRuntime.class_getProperty(nsAppClass, "appearance");
+//            ObjCRuntime.objc_msgSend(nsAppClass, nsAppClass, arguments)
+        }
+        
         installInputMapDefaults(defaults);
 
         defaults.put(ACCENT_HIGHLIGHT_COLOR_KEY, ModernUIColors.accentHighlightColor);
