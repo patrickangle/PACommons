@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import javax.swing.AbstractButton;
@@ -86,6 +87,15 @@ public class ModernToolBarUI extends BasicToolBarUI {
     @Override
     protected void setBorderToNormal(Component c) {
     }
+
+    @Override
+    public void update(Graphics g, JComponent c) {
+        super.update(g, c); //To change body of generated methods, choose Tools | Templates.
+        g.setColor(Color.BLACK);
+        g.drawLine(0, c.getHeight() - 1, c.getWidth(), c.getHeight() - 1);
+    }
+    
+    
     
     
 

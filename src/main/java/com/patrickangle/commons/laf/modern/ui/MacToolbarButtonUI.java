@@ -95,10 +95,11 @@ public class MacToolbarButtonUI extends BasicButtonUI {
     private static final LightDarkPair<Color> BUTTON_BACKGROUND_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 0.0f), Colors.grey(0.25f));
     private static final LightDarkPair<Color> BUTTON_TEXT_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.27f), Colors.grey(0.51f));
 
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.02f), Colors.grey(0.43f));
+    private static final LightDarkPair<Color> BUTTON_BACKGROUND_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.02f), Colors.grey(0.54f));
     private static final LightDarkPair<Color> BUTTON_TEXT_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.75f), Colors.grey(1.0f));
 
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_SHADOW = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.04f), Colors.grey(0.5f));
+    private static final LightDarkPair<Color> BUTTON_BACKGROUND_SHADOW_NORMAL = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.04f), Colors.grey(0.5f));
+    private static final LightDarkPair<Color> BUTTON_BACKGROUND_SHADOW_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.04f), Colors.grey(0.32f));
 
     // Special for the toggle-type buttons.
     private static final LightDarkPair<Color> TOGGLE_BUTTON_BACKGROUND_SELECTED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.42f), Colors.grey(0.8f));
@@ -120,7 +121,7 @@ public class MacToolbarButtonUI extends BasicButtonUI {
     private WindowAdapter windowFocusListener;
 
     private HierarchyListener buttonHierarchyListener;
-    
+
     protected Window currentWindow;
 
     public static enum ToolbarButtonUIType {
@@ -142,7 +143,7 @@ public class MacToolbarButtonUI extends BasicButtonUI {
     @Override
     public void installUI(JComponent c) {
         AbstractButton button = (AbstractButton) c;
-        
+
         windowFocusListener = new WindowAdapter() {
             @Override
             public void windowLostFocus(WindowEvent e) {
@@ -164,7 +165,7 @@ public class MacToolbarButtonUI extends BasicButtonUI {
                 c.repaint();
             }
         };
-        
+
         buttonHierarchyListener = new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
@@ -174,7 +175,7 @@ public class MacToolbarButtonUI extends BasicButtonUI {
 
         super.installUI(button);
         button.setBorder(new EmptyBorder(4, 8, 4, 8));
-        button.setMinimumSize(new Dimension(44, 24));
+        button.setMinimumSize(new Dimension(46, 24));
         button.setMaximumSize(new Dimension(-1, 24));
 //        button.setPreferredSize(new Dimension(, 24));
         button.setHorizontalAlignment(SwingConstants.CENTER);
@@ -193,19 +194,17 @@ public class MacToolbarButtonUI extends BasicButtonUI {
         uninstallFocusListener();
         b.removeHierarchyListener(buttonHierarchyListener);
     }
-    
-    
 
     protected void updateFocusListener(AbstractButton b) {
         uninstallFocusListener();
-        
+
         Window w = SwingUtilities.getWindowAncestor(b);
         if (w != null) {
             this.currentWindow = w;
             w.addWindowListener(windowFocusListener);
         }
     }
-    
+
     protected void uninstallFocusListener() {
         if (currentWindow != null) {
             currentWindow.removeWindowListener(windowFocusListener);
@@ -262,10 +261,8 @@ public class MacToolbarButtonUI extends BasicButtonUI {
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
-        return new Dimension(super.getPreferredSize(c).width, 24);
+        return new Dimension(Math.max(super.getPreferredSize(c).width, 46), 24);
     }
-    
-    
 
     protected static Icon getIcon(AbstractButton button, boolean isDarkAppearance) {
         // TODO: Support disabling the template image formatting.
@@ -317,11 +314,23 @@ public class MacToolbarButtonUI extends BasicButtonUI {
     }
 
     protected static Color getShadowColor(AbstractButton button, boolean isDarkAppearance) {
-        if (isDarkAppearance) {
-            return BUTTON_BACKGROUND_SHADOW.getDark();
+        Window owner = SwingUtilities.getWindowAncestor(button);
+        boolean active = button.isEnabled() && (owner == null || owner.isActive());
+
+        if (active) {
+            if (isDarkAppearance) {
+                return BUTTON_BACKGROUND_SHADOW_NORMAL.getDark();
+            } else {
+                return BUTTON_BACKGROUND_SHADOW_NORMAL.getLight();
+            }
         } else {
-            return BUTTON_BACKGROUND_SHADOW.getLight();
+            if (isDarkAppearance) {
+                return BUTTON_BACKGROUND_SHADOW_INACTIVE.getDark();
+            } else {
+                return BUTTON_BACKGROUND_SHADOW_INACTIVE.getLight();
+            }
         }
+
     }
 
     protected static Color getBackgroundColor(AbstractButton button, boolean isDarkAppearance) {
@@ -358,6 +367,7 @@ public class MacToolbarButtonUI extends BasicButtonUI {
             if (!active) {
                 return BUTTON_INACTIVE;
             } else if (button.getModel().isPressed()) {
+                System.out.println("BINGO!!");
                 return BUTTON_PRESSED;
             } else {
                 return BUTTON_NORMAL;

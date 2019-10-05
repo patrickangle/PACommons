@@ -17,6 +17,8 @@
 package com.patrickangle.commons.swing;
 
 import com.patrickangle.commons.laf.modern.ui.MacToolbarButtonUI;
+import com.patrickangle.commons.util.Colors;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,18 +27,22 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
  * @author patrickangle
  */
 public class JToolbarItem extends JPanel {
+    private static final Color LABEL_COLOR_ACTIVE = Colors.grey(0.7f);
+    private static final Color LABEL_COLOR_INACTIVE = Colors.grey(0.43f);
+    private static final float LABEL_FONT_SIZE = 11f;
+    
     private AbstractButton button;
     private JLabel label;
     
@@ -58,9 +64,16 @@ public class JToolbarItem extends JPanel {
         this.button.setFocusable(false);
         this.label = new JLabel(actionName);
         this.label.setFocusable(false);
+        this.label.setForeground(LABEL_COLOR_ACTIVE);
+        this.label.setFont(this.label.getFont().deriveFont(LABEL_FONT_SIZE));
         
         this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(4, 0, 0, 0), 0, 0));
+        
+        this.setMaximumSize(this.getLayout().minimumLayoutSize(this));
+        this.setSize(this.getLayout().minimumLayoutSize(this));
+        
+        this.setBorder(new EmptyBorder(0, 6, 0, 6));
     }
     
     public JToolbarItem(Icon icon, String label, ActionListener actionListener) {

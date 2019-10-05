@@ -233,11 +233,19 @@ public class AquaUtils {
     public static final String WINDOW_FULL_CONTENT = "apple.awt.fullWindowContent";
     public static final String WINDOW_TRANSPARENT_TITLE_BAR = "apple.awt.transparentTitleBar";
 
+    /**
+     * The magic color on macOS that allows a component to paint through to the
+     * native window background, which is generally either a gradient texture or
+     * a translucent effect depending on the configuration of the JRootPane of
+     * the Window containing the component.
+     */
+    public static final ColorUIResource MAGIC_ERASER_COLOR = new ColorUIResource(SystemColor.window);
+
     public static void installAquaRootPaneUiIfAvailable(JRootPane rootPane) {
         try {
             Class aquaRootPaneUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaRootPaneUI");
             rootPane.getRootPane().setUI((RootPaneUI) aquaRootPaneUiClass.getConstructor().newInstance());
-            rootPane.setBackground(new ColorUIResource(SystemColor.window));
+            rootPane.setBackground(MAGIC_ERASER_COLOR);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
     }
@@ -246,7 +254,7 @@ public class AquaUtils {
         try {
             Class aquaPanelUiClass = AquaUtils.class.getClassLoader().loadClass("com.apple.laf.AquaPanelUI");
             panel.setUI((PanelUI) aquaPanelUiClass.getConstructor().newInstance());
-            panel.setBackground(new ColorUIResource(SystemColor.window));
+            panel.setBackground(MAGIC_ERASER_COLOR);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
     }
