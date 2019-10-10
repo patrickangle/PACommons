@@ -296,4 +296,6 @@ public class AquaUtils {
 //            ((CPlatformWindow) platformWindow).exitFullScreenMode();
 //        }
     }
+    
+    public static final String FONT_SYSTEM_DISPLAY_ULTRALIGHT = "";
 }

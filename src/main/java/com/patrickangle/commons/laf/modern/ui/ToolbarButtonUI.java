@@ -20,6 +20,7 @@ import com.patrickangle.commons.laf.modern.ui.icon.TemplateImageIcon;
 import com.patrickangle.commons.util.AquaUtils;
 import com.patrickangle.commons.util.Colors;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -48,7 +49,7 @@ import sun.swing.SwingUtilities2;
  *
  * @author patrickangle
  */
-public class MacToolbarButtonUI extends BasicButtonUI {
+public class ToolbarButtonUI extends BasicButtonUI {
 
     private static class BackgroundTextPair<T> {
 
@@ -124,20 +125,36 @@ public class MacToolbarButtonUI extends BasicButtonUI {
 
     protected Window currentWindow;
 
-    public static enum ToolbarButtonUIType {
-        // TODO: Abstract this to a class between MacToolbarButtonUI and BasicButtonUI.
-        Normal,
+    public static enum ButtonUIStyle {
+        Default,
         SegmentedFirst,
         SegmentedMiddle,
         SegmentedLast,
         DropDown;
 
-        public static final String KEY = "ToolbarButtonUIType";
+        public static final String KEY = ButtonUIStyle.class.getName();
+
+        public static ButtonUIStyle forComponent(JComponent c) {
+            ButtonUIStyle value = (ButtonUIStyle) c.getClientProperty(KEY);
+            return value != null ? value : Default;
+        }
+    }
+
+    public static enum ButtonUIIconType {
+        Default,
+        Template;
+
+        public static final String KEY = ButtonUIIconType.class.getName();
+
+        public static ButtonUIIconType forComponent(JComponent c) {
+            ButtonUIIconType value = (ButtonUIIconType) c.getClientProperty(KEY);
+            return value != null ? value : Default;
+        }
     }
 
     @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static ComponentUI createUI(JComponent c) {
-        return new MacToolbarButtonUI();
+        return new ToolbarButtonUI();
     }
 
     @Override
@@ -246,17 +263,23 @@ public class MacToolbarButtonUI extends BasicButtonUI {
 
     @Override
     protected void paintIcon(Graphics graphics, JComponent component, Rectangle iconRect) {
-        super.paintIcon(graphics, component, iconRect);
-        final AbstractButton button = (AbstractButton) component;
+//        super.paintIcon(graphics, component, iconRect);
 
-        Icon icon = getIcon(button, AquaUtils.isSystemUsingDarkAppearance()); // TODO: Support light mode.
+        if (ButtonUIIconType.forComponent(component) == ButtonUIIconType.Template) {
+            final AbstractButton button = (AbstractButton) component;
 
-        if (icon != null) {
-            int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
-            int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
+            Icon icon = getIcon(button, AquaUtils.isSystemUsingDarkAppearance()); // TODO: Support light mode.
 
-            icon.paintIcon(component, graphics, x, y);
+            if (icon != null) {
+                int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
+                int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
+
+                icon.paintIcon(component, graphics, x, y);
+            }
+        } else {
+
         }
+
     }
 
     @Override
