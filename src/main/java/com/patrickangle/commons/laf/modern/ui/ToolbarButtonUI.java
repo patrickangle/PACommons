@@ -390,7 +390,6 @@ public class ToolbarButtonUI extends BasicButtonUI {
             if (!active) {
                 return BUTTON_INACTIVE;
             } else if (button.getModel().isPressed()) {
-                System.out.println("BINGO!!");
                 return BUTTON_PRESSED;
             } else {
                 return BUTTON_NORMAL;
