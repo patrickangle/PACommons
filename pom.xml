@@ -49,6 +49,11 @@
             <artifactId>jna</artifactId>
             <version>[5.4.0,)</version>
         </dependency>
+        <dependency>
+            <groupId>ca.weblite</groupId>
+            <artifactId>java-objc-bridge</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

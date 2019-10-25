@@ -33,6 +33,7 @@ import com.patrickangle.commons.laf.modern.ui.ModernSplitPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTabbedPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.laf.modern.ui.ModernToolBarUI;
+import com.patrickangle.commons.util.AquaUtils;
 import com.patrickangle.commons.util.Images;
 import com.patrickangle.commons.util.ObjCRuntime;
 import com.patrickangle.commons.util.OperatingSystems;
@@ -47,6 +48,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.IconUIResource;
+import javax.swing.plaf.basic.BasicLabelUI;
 
 /**
  *
@@ -109,7 +111,7 @@ public class ModernUIUtilities {
         defaults.put("window", defaults.getColor(BACKGROUND_COLOR_KEY));
         defaults.put("control", defaults.getColor(BACKGROUND_COLOR_KEY));
 
-        Font systemFont = new Font(Font.DIALOG, Font.PLAIN, 14);
+        Font systemFont = AquaUtils.SYSTEM_FONT.deriveFont(13);
 
         defaults.put("defaultFont", systemFont);
 
@@ -217,9 +219,10 @@ public class ModernUIUtilities {
         defaults.put("Table.forground", defaults.get(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("ToolBar.background", defaults.get(ModernUIUtilities.BACKGROUND_COLOR_KEY));
 
-        Font systemFont = new Font(Font.DIALOG, Font.PLAIN, 14);
-
+        Font systemFont = AquaUtils.SYSTEM_FONT.deriveFont(13f);
+        System.out.println("SystemFont is: " + systemFont);
         defaults.put("defaultFont", systemFont);
+        defaults.put("Label.font", systemFont);
 
 //        ModernButtonUI.installIntoDefaults(defaults);
 //        ModernTextFieldUI.installIntoDefaults(defaults);
@@ -247,6 +250,7 @@ public class ModernUIUtilities {
         ModernToolBarUI.installIntoDefaults(defaults);
 //        ModernRootPaneUI.installIntoDefaults(defaults);
         ModernSplitPaneUI.installIntoDefaults(defaults);
+        defaults.put("LabelUI", BasicLabelUI.class.getName());
 
         if (OperatingSystems.current() == OperatingSystems.Macintosh) {
 //            defaults.put("RootPaneUI", "com.apple.laf.AquaRootPaneUI");

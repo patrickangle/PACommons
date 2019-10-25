@@ -17,6 +17,7 @@
 package com.patrickangle.commons.swing;
 
 import com.patrickangle.commons.laf.modern.ui.ToolbarButtonUI;
+import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
 import com.patrickangle.commons.util.Colors;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,26 +49,26 @@ public class JToolbarItem extends JPanel {
     private JLabel label;
     
     public JToolbarItem(Action action) {
-        this(action, ToolbarButtonUI.ButtonUIStyle.Default);
+        this(action, ToolbarConstants.ButtonUIStyle.Default);
     }
     
     public JToolbarItem(Action action, boolean toggleable) {
-        this(action, ToolbarButtonUI.ButtonUIStyle.Default);
+        this(action, false, ToolbarConstants.ButtonUIStyle.Default);
     }
     
     public JToolbarItem(Icon icon, String label, ActionListener actionListener) {
-        this(icon, label, actionListener, ToolbarButtonUI.ButtonUIStyle.Default);
+        this(icon, label, actionListener, ToolbarConstants.ButtonUIStyle.Default);
     }
     
     public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable) {
-        this(icon, label, actionListener, toggleable, ToolbarButtonUI.ButtonUIStyle.Default);
+        this(icon, label, actionListener, toggleable, ToolbarConstants.ButtonUIStyle.Default);
     }
     
-    public JToolbarItem(Action action, ToolbarButtonUI.ButtonUIStyle style) {
+    public JToolbarItem(Action action, ToolbarConstants.ButtonUIStyle style) {
         this(action, false, style);
     }
     
-    public JToolbarItem(Action action, boolean toggleable, ToolbarButtonUI.ButtonUIStyle style) {
+    public JToolbarItem(Action action, boolean toggleable, ToolbarConstants.ButtonUIStyle style) {
         super();
         
         this.setOpaque(false);
@@ -77,7 +78,7 @@ public class JToolbarItem extends JPanel {
         action.putValue(Action.NAME, "");
         
         this.button = toggleable ? new JToggleButton(action) : new JButton(action);
-        this.button.putClientProperty(ToolbarButtonUI.ButtonUIStyle.KEY, style);
+        this.button.putClientProperty(ToolbarConstants.ButtonUIStyle.KEY, style);
         this.button.setUI(new ToolbarButtonUI());
         this.button.setFocusable(false);
         this.label = new JLabel(actionName);
@@ -85,7 +86,7 @@ public class JToolbarItem extends JPanel {
         this.label.setForeground(LABEL_COLOR_ACTIVE);
         this.label.setFont(this.label.getFont().deriveFont(LABEL_FONT_SIZE));
         
-        this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, (style == ToolbarButtonUI.ButtonUIStyle.SegmentedFirst || style == ToolbarButtonUI.ButtonUIStyle.SegmentedMiddle || style == ToolbarButtonUI.ButtonUIStyle.SegmentedLast) ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, (style == ToolbarConstants.ButtonUIStyle.SegmentedFirst || style == ToolbarConstants.ButtonUIStyle.SegmentedMiddle || style == ToolbarConstants.ButtonUIStyle.SegmentedLast || style == ToolbarConstants.ButtonUIStyle.Dropdown) ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(4, 0, 0, 0), 0, 0));
         
         this.setMaximumSize(this.getLayout().minimumLayoutSize(this));
@@ -93,11 +94,11 @@ public class JToolbarItem extends JPanel {
         this.setBorder(new EmptyBorder(2, 6, 2, 6));
     }
     
-    public JToolbarItem(Icon icon, String label, ActionListener actionListener, ToolbarButtonUI.ButtonUIStyle style) {
+    public JToolbarItem(Icon icon, String label, ActionListener actionListener, ToolbarConstants.ButtonUIStyle style) {
         this(icon, label, actionListener, false, style);
     }
     
-    public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable, ToolbarButtonUI.ButtonUIStyle style) {
+    public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable, ToolbarConstants.ButtonUIStyle style) {
         this(new AbstractAction(label, icon) {
             @Override
             public void actionPerformed(ActionEvent e) {

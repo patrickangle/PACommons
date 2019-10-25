@@ -16,11 +16,14 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
+import com.patrickangle.commons.laf.modern.ModernUIColors;
 import com.patrickangle.commons.laf.modern.ui.icon.TemplateImageIcon;
+import com.patrickangle.commons.laf.modern.ui.util.BackgroundTextPair;
+import com.patrickangle.commons.laf.modern.ui.util.LightDarkPair;
 import com.patrickangle.commons.util.AquaUtils;
-import com.patrickangle.commons.util.Colors;
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -40,6 +43,7 @@ import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -51,106 +55,13 @@ import sun.swing.SwingUtilities2;
  */
 public class ToolbarButtonUI extends BasicButtonUI {
 
-    private static class BackgroundTextPair<T> {
-
-        private final T background;
-        private final T text;
-
-        public BackgroundTextPair(T background, T text) {
-            this.background = background;
-            this.text = text;
-        }
-
-        public T getBackground() {
-            return background;
-        }
-
-        public T getText() {
-            return text;
-        }
-    }
-
-    private static class LightDarkPair<T> {
-
-        private final T light;
-        private final T dark;
-
-        public LightDarkPair(T light, T dark) {
-            this.light = light;
-            this.dark = dark;
-        }
-
-        public T getLight() {
-            return light;
-        }
-
-        public T getDark() {
-            return dark;
-        }
-    }
-    private static final int CORNER_DIAMETER = 8;
-
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_NORMAL = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 0.12f), Colors.grey(0.43f));
-    private static final LightDarkPair<Color> BUTTON_TEXT_NORMAL = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.62f), Colors.grey(1.0f));
-
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 0.0f), Colors.grey(0.25f));
-    private static final LightDarkPair<Color> BUTTON_TEXT_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.27f), Colors.grey(0.51f));
-
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.02f), Colors.grey(0.54f));
-    private static final LightDarkPair<Color> BUTTON_TEXT_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.75f), Colors.grey(1.0f));
-
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_SHADOW_NORMAL = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.04f), Colors.grey(0.5f));
-    private static final LightDarkPair<Color> BUTTON_BACKGROUND_SHADOW_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.04f), Colors.grey(0.32f));
-
-    // Special for the toggle-type buttons.
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_BACKGROUND_SELECTED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.42f), Colors.grey(0.8f));
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_TEXT_SELECTED = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 1.0f), Colors.grey(0.25f));
-
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_BACKGROUND_SELECTED_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.50f), Colors.grey(0.94f));
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_TEXT_SELECTED_PRESSED = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 1.0f), Colors.grey(0.25f));
-
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_BACKGROUND_SELECTED_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.BLACK, 0.07f), Colors.grey(0.36f));
-    private static final LightDarkPair<Color> TOGGLE_BUTTON_TEXT_SELECTED_INACTIVE = new LightDarkPair<>(Colors.transparentColor(Color.WHITE, 0.25f), Colors.grey(0.2f));
-
-    private static final BackgroundTextPair<LightDarkPair<Color>> BUTTON_NORMAL = new BackgroundTextPair<>(BUTTON_BACKGROUND_NORMAL, BUTTON_TEXT_NORMAL);
-    private static final BackgroundTextPair<LightDarkPair<Color>> BUTTON_INACTIVE = new BackgroundTextPair<>(BUTTON_BACKGROUND_INACTIVE, BUTTON_TEXT_INACTIVE);
-    private static final BackgroundTextPair<LightDarkPair<Color>> BUTTON_PRESSED = new BackgroundTextPair<>(BUTTON_BACKGROUND_PRESSED, BUTTON_TEXT_PRESSED);
-    private static final BackgroundTextPair<LightDarkPair<Color>> TOGGLE_BUTTON_SELECTED = new BackgroundTextPair<>(TOGGLE_BUTTON_BACKGROUND_SELECTED, TOGGLE_BUTTON_TEXT_SELECTED);
-    private static final BackgroundTextPair<LightDarkPair<Color>> TOGGLE_BUTTON_SELECTED_PRESSED = new BackgroundTextPair<>(TOGGLE_BUTTON_BACKGROUND_SELECTED_PRESSED, TOGGLE_BUTTON_TEXT_SELECTED_PRESSED);
-    private static final BackgroundTextPair<LightDarkPair<Color>> TOGGLE_BUTTON_SELECTED_INACTIVE = new BackgroundTextPair<>(TOGGLE_BUTTON_BACKGROUND_SELECTED_INACTIVE, TOGGLE_BUTTON_TEXT_SELECTED_INACTIVE);
-
     private WindowAdapter windowFocusListener;
 
     private HierarchyListener buttonHierarchyListener;
 
     protected Window currentWindow;
 
-    public static enum ButtonUIStyle {
-        Default,
-        SegmentedFirst,
-        SegmentedMiddle,
-        SegmentedLast,
-        DropDown;
-
-        public static final String KEY = ButtonUIStyle.class.getName();
-
-        public static ButtonUIStyle forComponent(JComponent c) {
-            ButtonUIStyle value = (ButtonUIStyle) c.getClientProperty(KEY);
-            return value != null ? value : Default;
-        }
-    }
-
-    public static enum ButtonUIIconType {
-        Default,
-        Template;
-
-        public static final String KEY = ButtonUIIconType.class.getName();
-
-        public static ButtonUIIconType forComponent(JComponent c) {
-            ButtonUIIconType value = (ButtonUIIconType) c.getClientProperty(KEY);
-            return value != null ? value : Default;
-        }
-    }
+    
 
     @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
     public static ComponentUI createUI(JComponent c) {
@@ -194,20 +105,21 @@ public class ToolbarButtonUI extends BasicButtonUI {
         button.setBorder(new EmptyBorder(4, 8, 4, 8));
         button.setMinimumSize(new Dimension(46, 24));
         button.setMaximumSize(new Dimension(-1, 24));
-//        button.setPreferredSize(new Dimension(, 24));
-        button.setHorizontalAlignment(SwingConstants.CENTER);
+        
         button.setVerticalAlignment(SwingConstants.CENTER);
+        
+        button.setFont(UIManager.getFont("Button.font").deriveFont(12f));
     }
 
     @Override
     protected void installListeners(AbstractButton b) {
-        super.installListeners(b); //To change body of generated methods, choose Tools | Templates.
+        super.installListeners(b);
         b.addHierarchyListener(buttonHierarchyListener);
     }
 
     @Override
     protected void uninstallListeners(AbstractButton b) {
-        super.uninstallListeners(b); //To change body of generated methods, choose Tools | Templates.
+        super.uninstallListeners(b);
         uninstallFocusListener();
         b.removeHierarchyListener(buttonHierarchyListener);
     }
@@ -235,12 +147,19 @@ public class ToolbarButtonUI extends BasicButtonUI {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(getShadowColor(button, AquaUtils.isSystemUsingDarkAppearance())); // TODO: Support light mode.
-        g.fill(getShadowArea(button, AquaUtils.isSystemUsingDarkAppearance())); // TODO: Support light mode.
+        g.setColor(getShadowColor(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
+        g.fill(getShadowArea(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
 
-        g.setColor(getBackgroundColor(button, AquaUtils.isSystemUsingDarkAppearance())); // TODO: Support light mode.
-        g.fill(getBackgroundArea(button, AquaUtils.isSystemUsingDarkAppearance())); // TODO: Support light mode.
+        g.setColor(getBackgroundColor(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
+        g.fill(getBackgroundArea(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
 
+        if (ToolbarConstants.ButtonUIStyle.forComponent(button) == ToolbarConstants.ButtonUIStyle.Dropdown) {
+            paintDropdownIcon(graphics, component, new Rectangle(button.getWidth() - 16, (button.getHeight() - 4) / 2, 8, 4));
+            button.setHorizontalAlignment(SwingConstants.LEFT);
+        } else {
+            button.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        
         g.dispose();
         super.paint(graphics, component);
     }
@@ -251,7 +170,7 @@ public class ToolbarButtonUI extends BasicButtonUI {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(getTextColor(button, AquaUtils.isSystemUsingDarkAppearance())); // TODO: Support light mode.
+        g.setColor(getTextColor(button, AquaUtils.getApplicationAppearance().isDark()));
 
         FontMetrics metrics = SwingUtilities2.getFontMetrics(button, g);
         SwingUtilities2.drawStringUnderlineCharAt(button, g, text, -1,
@@ -263,24 +182,29 @@ public class ToolbarButtonUI extends BasicButtonUI {
 
     @Override
     protected void paintIcon(Graphics graphics, JComponent component, Rectangle iconRect) {
-//        super.paintIcon(graphics, component, iconRect);
+        final AbstractButton button = (AbstractButton) component;
 
-        if (ButtonUIIconType.forComponent(component) == ButtonUIIconType.Template) {
-            final AbstractButton button = (AbstractButton) component;
+        Icon icon = getIcon(button, AquaUtils.getApplicationAppearance().isDark());
 
-            Icon icon = getIcon(button, AquaUtils.isSystemUsingDarkAppearance()); // TODO: Support light mode.
+        if (icon != null) {
+            int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
+            int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
 
-            if (icon != null) {
-                int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
-                int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
-
-                icon.paintIcon(component, graphics, x, y);
-            }
-        } else {
-
+            icon.paintIcon(component, graphics, x, y);
         }
-
     }
+    
+    protected void paintDropdownIcon(Graphics graphics, JComponent component, Rectangle iconRect) {
+        final AbstractButton button = (AbstractButton) component;
+        
+        Graphics2D g = (Graphics2D) graphics.create();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(getTextColor(button, AquaUtils.getApplicationAppearance().isDark()));
+        g.setStroke(new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g.drawLine(iconRect.x, iconRect.y, iconRect.x + (iconRect.width / 2), iconRect.y + iconRect.height);
+        g.drawLine(iconRect.x + iconRect.width, iconRect.y, iconRect.x + (iconRect.width / 2), iconRect.y + iconRect.height);
+    }
+
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
@@ -294,18 +218,12 @@ public class ToolbarButtonUI extends BasicButtonUI {
             return null;
         }
 
-        return new TemplateImageIcon(icon, getTextColor(button, isDarkAppearance));
+        if (ToolbarConstants.ButtonUIIconType.forComponent(button) == ToolbarConstants.ButtonUIIconType.Template) {
+            return new TemplateImageIcon(icon, getTextColor(button, isDarkAppearance));
+        } else {
+            return icon;
+        }
 
-//        BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage((int) (icon.getIconWidth() * ModernUIUtilities.getDisplayScale()), (int) (icon.getIconHeight() * ModernUIUtilities.getDisplayScale()), BufferedImage.TRANSLUCENT);
-//        
-//        Graphics2D g = bi.createGraphics();
-//        g.setColor(getTextColor(button, isDarkAppearance));
-//        g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
-//        g.setComposite(AlphaComposite.DstIn);
-//        g.setTransform(ModernUIUtilities.getDisplayScaleTransform());
-////        g.setTransform(ModernUIUtilities.getDisplayScaleTransform());
-//        icon.paintIcon(button, g, 0, 0);
-//        return new ImageIcon(bi);
     }
 
     protected static Area getShadowArea(AbstractButton button, boolean isDarkAppearance) {
@@ -315,10 +233,8 @@ public class ToolbarButtonUI extends BasicButtonUI {
                 0,
                 button.getWidth(),
                 button.getHeight(),
-                CORNER_DIAMETER,
-                CORNER_DIAMETER));
-
-        area.subtract(getBackgroundArea(button, isDarkAppearance));
+                ToolbarConstants.CORNER_DIAMETER,
+                ToolbarConstants.CORNER_DIAMETER));
 
         return area;
     }
@@ -326,12 +242,12 @@ public class ToolbarButtonUI extends BasicButtonUI {
     protected static Area getBackgroundArea(AbstractButton button, boolean isDarkAppearance) {
         // TODO: Support segmented buttons.
         Area area = new Area(new RoundRectangle2D.Double(
+                1.0,
                 0.5,
-                isDarkAppearance ? 1.0 : 0.5,
                 button.getWidth() - 1.0,
                 button.getHeight() - 1.5,
-                CORNER_DIAMETER - 1.0,
-                CORNER_DIAMETER - 1.0));
+                ToolbarConstants.CORNER_DIAMETER - 1.0,
+                ToolbarConstants.CORNER_DIAMETER - 1.0));
 
         return area;
     }
@@ -342,15 +258,15 @@ public class ToolbarButtonUI extends BasicButtonUI {
 
         if (active) {
             if (isDarkAppearance) {
-                return BUTTON_BACKGROUND_SHADOW_NORMAL.getDark();
+                return ToolbarConstants.BUTTON_BACKGROUND_SHADOW_NORMAL.getDark();
             } else {
-                return BUTTON_BACKGROUND_SHADOW_NORMAL.getLight();
+                return ToolbarConstants.BUTTON_BACKGROUND_SHADOW_NORMAL.getLight();
             }
         } else {
             if (isDarkAppearance) {
-                return BUTTON_BACKGROUND_SHADOW_INACTIVE.getDark();
+                return ToolbarConstants.BUTTON_BACKGROUND_SHADOW_INACTIVE.getDark();
             } else {
-                return BUTTON_BACKGROUND_SHADOW_INACTIVE.getLight();
+                return ToolbarConstants.BUTTON_BACKGROUND_SHADOW_INACTIVE.getLight();
             }
         }
 
@@ -365,7 +281,12 @@ public class ToolbarButtonUI extends BasicButtonUI {
     }
 
     protected static Color getTextColor(AbstractButton button, boolean isDarkAppearance) {
-        if (isDarkAppearance) {
+        Window owner = SwingUtilities.getWindowAncestor(button);
+        boolean active = button.isEnabled() && (owner == null || owner.isActive());
+
+        if (active && button instanceof JToggleButton && ((JToggleButton) button).getModel().isSelected() && button.getModel().getGroup() == null) {
+            return isDarkAppearance ? ModernUIColors.accentHighlightColor.brighter() : ModernUIColors.accentHighlightColor;
+        } else if (isDarkAppearance) {
             return getColors(button).getText().getDark();
         } else {
             return getColors(button).getText().getLight();
@@ -377,22 +298,22 @@ public class ToolbarButtonUI extends BasicButtonUI {
         Window owner = SwingUtilities.getWindowAncestor(button);
         boolean active = button.isEnabled() && (owner == null || owner.isActive());
 
-        if (button instanceof JToggleButton && ((JToggleButton) button).getModel().isSelected()) {
+        if (button instanceof JToggleButton && ((JToggleButton) button).getModel().isSelected() && button.getModel().getGroup() != null) {
             // Special case for selected toggle buttons, as we handle their drawing specially.
             if (!active) {
-                return TOGGLE_BUTTON_SELECTED_INACTIVE;
+                return ToolbarConstants.TOGGLE_BUTTON_SELECTED_INACTIVE;
             } else if (button.getModel().isPressed()) {
-                return TOGGLE_BUTTON_SELECTED_PRESSED;
+                return ToolbarConstants.TOGGLE_BUTTON_SELECTED_PRESSED;
             } else {
-                return TOGGLE_BUTTON_SELECTED;
+                return ToolbarConstants.TOGGLE_BUTTON_SELECTED;
             }
         } else {
             if (!active) {
-                return BUTTON_INACTIVE;
+                return ToolbarConstants.BUTTON_INACTIVE;
             } else if (button.getModel().isPressed()) {
-                return BUTTON_PRESSED;
+                return ToolbarConstants.BUTTON_PRESSED;
             } else {
-                return BUTTON_NORMAL;
+                return ToolbarConstants.BUTTON_NORMAL;
             }
         }
     }

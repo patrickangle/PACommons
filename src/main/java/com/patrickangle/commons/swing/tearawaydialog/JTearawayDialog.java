@@ -357,7 +357,6 @@ public class JTearawayDialog extends JDialog {
      * @param attached
      */
     public void setAttached(boolean attached) {
-        printCondensedStackTrace();
         boolean oldAttached = this.attached;
         this.attached = attached && (attachedTo != null);
         this.firePropertyChange("attached", (Object) oldAttached, (Object) this.attached);
@@ -378,19 +377,6 @@ public class JTearawayDialog extends JDialog {
      */
     public Component getAttachedTo() {
         return attachedTo;
-    }
-    
-    public static void printCondensedStackTrace() {
-        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-        StringBuilder print = new StringBuilder("Tracing Thread `").append(Thread.currentThread().getName()).append("`: ");
-        for (int i = traces.length - 1; i >= 2; i--) {
-            if (i != traces.length - 1) {
-                print.append("»");
-            }
-            String[] classNameParts = traces[i].getClassName().split("\\.");
-            print.append(classNameParts[classNameParts.length - 1]).append(".").append(traces[i].getMethodName()).append(":").append(traces[i].getLineNumber());
-        }
-        Logging.trace(JTearawayDialog.class, print);
     }
 
     /**
