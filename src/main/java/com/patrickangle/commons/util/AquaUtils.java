@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.PanelUI;
 import javax.swing.plaf.RootPaneUI;
@@ -511,6 +512,8 @@ public class AquaUtils {
      * TODO: Document this field.
      */
     private static final String WINDOW_FADE_OUT = "apple.awt._windowFadeOut";
+    
+    public static final String APPLICATION_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
 
     /**
      * The magic color on macOS that allows a component to paint through to the
@@ -729,6 +732,11 @@ public class AquaUtils {
 //            }
 ////            c.sendProxy(new Pointer(window.), Pointer.NULL, args)
 //        }
+    }
+    
+    public static void setShouldUseScreenMenuBar(boolean useMenuBar) {
+        System.setProperty("apple.laf.useScreenMenuBar", Boolean.toString(useMenuBar));
+        UIManager.getInstalledLookAndFeels(); // Needed to prevent "java.lang.UnsatisfiedLinkError: com.apple.laf.ScreenMenu.addMenuListeners"
     }
 
     public static boolean isWindowFullScreen(Window window) {

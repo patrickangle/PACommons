@@ -35,9 +35,7 @@ import com.patrickangle.commons.laf.modern.ui.ModernTextFieldUI;
 import com.patrickangle.commons.laf.modern.ui.ModernToolBarUI;
 import com.patrickangle.commons.util.AquaUtils;
 import com.patrickangle.commons.util.Images;
-import com.patrickangle.commons.util.ObjCRuntime;
 import com.patrickangle.commons.util.OperatingSystems;
-import com.sun.jna.Pointer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
@@ -220,7 +218,6 @@ public class ModernUIUtilities {
         defaults.put("ToolBar.background", defaults.get(ModernUIUtilities.BACKGROUND_COLOR_KEY));
 
         Font systemFont = AquaUtils.SYSTEM_FONT.deriveFont(13f);
-        System.out.println("SystemFont is: " + systemFont);
         defaults.put("defaultFont", systemFont);
         defaults.put("Label.font", systemFont);
 
