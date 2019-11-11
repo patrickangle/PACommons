@@ -316,4 +316,8 @@ public class ModernUIUtilities {
     public static AffineTransform getDisplayScaleInverseTransform() {
         return AffineTransform.getScaleInstance(getDisplayScaleInverse(), getDisplayScaleInverse());
     }
+    
+    public static boolean isDark() {
+        return !AquaUtils.isMac() || AquaUtils.getApplicationAppearance().isDark();
+    }
 }

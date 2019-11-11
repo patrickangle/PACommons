@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.util.AquaUtils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -50,10 +51,15 @@ public class ModernToolBarUI extends BasicToolBarUI {
 
     @Override
     public void paint(Graphics g, JComponent c) {
-        if (c.isOpaque()) {
+        if (!AquaUtils.isMac()) {
             g.setColor(UIManager.getColor("ToolBar.background"));
             g.fillRect(0, 0, c.getWidth(), c.getHeight());
         }
+//        if (c.isOpaque()) {
+//            
+//        } else {
+//            
+//        }
     }
 
     @Override

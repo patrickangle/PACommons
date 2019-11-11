@@ -4,8 +4,10 @@ import com.patrickangle.commons.logging.Logging;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.awt.image.Raster;
 import java.awt.image.VolatileImage;
 import java.awt.image.WritableRaster;
@@ -103,6 +105,16 @@ public class CompatibleImageUtil {
 
         return newBufferedImage;
     }
+    
+    public static BufferedImage duplicateCompatibleBufferedImageFrom(final Image image) { 
+        BufferedImage newBufferedImage = compatibleBufferedImage(image.getWidth(null), image.getHeight(null), Transparency.TRANSLUCENT);
+
+        Graphics g = newBufferedImage.getGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+
+        return newBufferedImage;
+    }
 
     /**
      * Returns a BufferedImage that has a layout and color model that can be
@@ -115,11 +127,11 @@ public class CompatibleImageUtil {
      * @param bufferedImage
      * @return
      */
-    public static BufferedImage compatibleBufferedImageFrom(final BufferedImage bufferedImage) {
-        if (isCompatibleBufferedImage(bufferedImage)) {
-            return bufferedImage;
+    public static BufferedImage compatibleBufferedImageFrom(final Image image) {
+        if (image instanceof BufferedImage && isCompatibleBufferedImage((BufferedImage) image)) {
+            return (BufferedImage) image;
         } else {
-            return duplicateCompatibleBufferedImageFrom(bufferedImage);
+            return duplicateCompatibleBufferedImageFrom(image);
         }
     }
 
@@ -301,6 +313,8 @@ public class CompatibleImageUtil {
      * contents. This operation eventually iterates through every pixel to check
      * equality, but first performs basic checks to see if the images match. As
      * soon as a difference is found, false is returned.
+     * 
+     * TODO: This currently unmanages the images if they are managed.
      *
      * @param imageA
      * @param imageB

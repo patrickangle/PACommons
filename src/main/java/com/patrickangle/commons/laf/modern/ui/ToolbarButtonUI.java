@@ -18,6 +18,7 @@ package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
 import com.patrickangle.commons.laf.modern.ModernUIColors;
+import com.patrickangle.commons.laf.modern.ModernUIUtilities;
 import com.patrickangle.commons.laf.modern.ui.icon.TemplateImageIcon;
 import com.patrickangle.commons.laf.modern.ui.util.BackgroundTextPair;
 import com.patrickangle.commons.laf.modern.ui.util.LightDarkPair;
@@ -147,11 +148,11 @@ public class ToolbarButtonUI extends BasicButtonUI {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(getShadowColor(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
-        g.fill(getShadowArea(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
+        g.setColor(getShadowColor(button, ModernUIUtilities.isDark())); // TODO: Support light mode.
+        g.fill(getShadowArea(button, ModernUIUtilities.isDark())); // TODO: Support light mode.
 
-        g.setColor(getBackgroundColor(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
-        g.fill(getBackgroundArea(button, AquaUtils.getApplicationAppearance().isDark())); // TODO: Support light mode.
+        g.setColor(getBackgroundColor(button, ModernUIUtilities.isDark())); // TODO: Support light mode.
+        g.fill(getBackgroundArea(button, ModernUIUtilities.isDark())); // TODO: Support light mode.
 
         if (ToolbarConstants.ButtonUIStyle.forComponent(button) == ToolbarConstants.ButtonUIStyle.Dropdown) {
             paintDropdownIcon(graphics, component, new Rectangle(button.getWidth() - 16, (button.getHeight() - 4) / 2, 8, 4));
@@ -170,7 +171,7 @@ public class ToolbarButtonUI extends BasicButtonUI {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(getTextColor(button, AquaUtils.getApplicationAppearance().isDark()));
+        g.setColor(getTextColor(button, ModernUIUtilities.isDark()));
 
         FontMetrics metrics = SwingUtilities2.getFontMetrics(button, g);
         SwingUtilities2.drawStringUnderlineCharAt(button, g, text, -1,
@@ -184,7 +185,7 @@ public class ToolbarButtonUI extends BasicButtonUI {
     protected void paintIcon(Graphics graphics, JComponent component, Rectangle iconRect) {
         final AbstractButton button = (AbstractButton) component;
 
-        Icon icon = getIcon(button, AquaUtils.getApplicationAppearance().isDark());
+        Icon icon = getIcon(button, ModernUIUtilities.isDark());
 
         if (icon != null) {
             int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
@@ -199,7 +200,7 @@ public class ToolbarButtonUI extends BasicButtonUI {
         
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setColor(getTextColor(button, AquaUtils.getApplicationAppearance().isDark()));
+        g.setColor(getTextColor(button, ModernUIUtilities.isDark()));
         g.setStroke(new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.drawLine(iconRect.x, iconRect.y, iconRect.x + (iconRect.width / 2), iconRect.y + iconRect.height);
         g.drawLine(iconRect.x + iconRect.width, iconRect.y, iconRect.x + (iconRect.width / 2), iconRect.y + iconRect.height);
