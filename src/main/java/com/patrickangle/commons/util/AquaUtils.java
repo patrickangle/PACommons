@@ -29,6 +29,8 @@ import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -36,6 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.PanelUI;
 import javax.swing.plaf.RootPaneUI;
+import sun.awt.AWTAccessor;
 
 /**
  *
@@ -512,7 +515,7 @@ public class AquaUtils {
      * TODO: Document this field.
      */
     private static final String WINDOW_FADE_OUT = "apple.awt._windowFadeOut";
-    
+
     public static final String APPLICATION_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
 
     /**
@@ -680,14 +683,44 @@ public class AquaUtils {
             return SystemColor.activeCaption;
         }
     }
-    
-    public static void tryWindowVisualEffectStyle(Window window) {
+
+//    public static long getNativeWindowPointer(Window window) {
+//        if (isMac()) {
+//            
+//        }
+//    }
+    public static void setWindowStyleBits(final Window window, final int mask, final boolean value) {
+        if (isMac()) {
+            Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
+            try {
+
+                Class lwWindowPeerClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.LWWindowPeer");
+                Method getPlatformWindowMethod = lwWindowPeerClass.getMethod("getPlatformWindow");
+
+                Object platformWindow = getPlatformWindowMethod.invoke(peer);
+
+                Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformWindow");
+                Method setStyleBitsMethod = cPlatformWindowClass.getDeclaredMethod("setStyleBits", Integer.TYPE, Boolean.TYPE);
+                setStyleBitsMethod.setAccessible(true);
+
+                setStyleBitsMethod.invoke(platformWindow, mask, value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+//    public static void tryWindowVisualEffectStyle(Window window) {
 //        if (isMac()) {
 //            Client c = Client.getInstance();
 //            Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
 //            System.out.println(peer);
 //            if (peer instanceof LWWindowPeer) {
 //                try {
+//                    
+//                    
+//                   
+//                    
 //                    Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformWindow");
 //                    System.out.println(Arrays.toString(cPlatformWindowClass.getMethods()));
 //                    Method getContentViewMethod = cPlatformWindowClass.getMethod("getContentView");
@@ -732,8 +765,7 @@ public class AquaUtils {
 //            }
 ////            c.sendProxy(new Pointer(window.), Pointer.NULL, args)
 //        }
-    }
-    
+//    }
     public static void setShouldUseScreenMenuBar(boolean useMenuBar) {
         System.setProperty("apple.laf.useScreenMenuBar", Boolean.toString(useMenuBar));
         UIManager.getInstalledLookAndFeels(); // Needed to prevent "java.lang.UnsatisfiedLinkError: com.apple.laf.ScreenMenu.addMenuListeners"
