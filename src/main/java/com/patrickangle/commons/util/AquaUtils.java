@@ -691,6 +691,10 @@ public class AquaUtils {
 //    }
     public static void setWindowStyleBits(final Window window, final int mask, final boolean value) {
         if (isMac()) {
+            if (!window.isDisplayable()) {
+                window.addNotify();
+            }
+            
             Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
             try {
 
@@ -710,62 +714,6 @@ public class AquaUtils {
         }
     }
 
-//    public static void tryWindowVisualEffectStyle(Window window) {
-//        if (isMac()) {
-//            Client c = Client.getInstance();
-//            Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
-//            System.out.println(peer);
-//            if (peer instanceof LWWindowPeer) {
-//                try {
-//                    
-//                    
-//                   
-//                    
-//                    Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformWindow");
-//                    System.out.println(Arrays.toString(cPlatformWindowClass.getMethods()));
-//                    Method getContentViewMethod = cPlatformWindowClass.getMethod("getContentView");
-//                    Object platformWindow = getContentViewMethod.invoke(((LWWindowPeer) peer).getPlatformWindow());
-//                    
-//                    Class cPlatformViewClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformView");
-//                    Method getAWTViewMethod = cPlatformViewClass.getMethod("getAWTView");
-//                    
-////                    long pointer = (long) getAWTViewMethod.invoke(platformWindow);
-////                    getAWTView returns a long
-//                    
-////                    long pointer = (long) getNativeViewPtr.invoke(null, ((LWWindowPeer) peer).getPlatformWindow());
-////                    System.out.println("window pointer?: " + pointer);
-//                    
-////                    System.out.println(c.send(new Pointer(pointer), "description"));
-//                    
-//                    Pointer awtView = new Pointer((long) getAWTViewMethod.invoke(platformWindow));
-//                    Proxy awtViewProxy = new Proxy(c, awtView);
-//                    System.out.println("Pointer created");
-//                    Object bounds = awtViewProxy.get("bounds");
-//                    System.out.println(bounds);
-//                    System.out.println(bounds.getClass().getName());
-//                    Proxy visualEffectView = c.sendProxy("NSVisualEffectView", "initWithFrame:", bounds);
-//                    System.out.println("Init done");
-//                    visualEffectView.send("setAutoresizingMask:", 2 | 16); // NSViewWidthSizable|NSViewHeightSizable
-//                    visualEffectView.send("setMaterial:", 1);
-//                    visualEffectView.send("setBlendingMode:", c.send("NSVisualEffectView", "NSVisualEffectBlendingModeBehindWindow"));
-//                    System.out.println("init done, time to crash?");
-//                    c.send(awtView, "addSubview:positioned:relativeTo:", visualEffectView.getPeer(), -1, null);
-//                    
-////                    c.send(new Pointer(pointer), "addSubview:", c.sendProxy("NSTextField", "labelWithString:", RuntimeUtils.str("LOLOLOLOLOLOLOLOLOLOLOLOLOLOL")));
-//                    
-//                    
-//                    // NSVisualEffectView *vibrant=[[vibrantClass alloc] initWithFrame:self.bounds];
-////        [vibrant setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
-////        [vibrant setBlendingMode:mode];
-////        [self addSubview:vibrant positioned:NSWindowBelow relativeTo:nil];
-//
-//                } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-//                    Logger.getLogger(AquaUtils.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-////            c.sendProxy(new Pointer(window.), Pointer.NULL, args)
-//        }
-//    }
     public static void setShouldUseScreenMenuBar(boolean useMenuBar) {
         System.setProperty("apple.laf.useScreenMenuBar", Boolean.toString(useMenuBar));
         UIManager.getInstalledLookAndFeels(); // Needed to prevent "java.lang.UnsatisfiedLinkError: com.apple.laf.ScreenMenu.addMenuListeners"
@@ -773,18 +721,6 @@ public class AquaUtils {
 
     public static boolean isWindowFullScreen(Window window) {
         return false;
-    }
-
-    public static void setWindowFullScreen(Window window, boolean fullscreen) {
-//final Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
-////        if (!(peer instanceof LWWindowPeer)) return;
-//        Object platformWindow = ((LWWindowPeer) peer).getPlatformWindow();
-//        if (!(platformWindow instanceof CPlatformWindow)) return;
-//        if (fullscreen) {
-//            ((CPlatformWindow) platformWindow).enterFullScreenMode();
-//        } else {
-//            ((CPlatformWindow) platformWindow).exitFullScreenMode();
-//        }
     }
 
     /**
@@ -799,44 +735,44 @@ public class AquaUtils {
     private static Font createSystemFont() {
         if (isMac()) {
             // Retrieve this from the file system does not work properly; we instead end up with a strange variant of the font when doing so.
-            Font f = new Font(".SFNS-Regular", 0, 0);
+            Font f = new Font(".AppleSystemUIFont", Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.KERNING, TextAttribute.KERNING_ON, TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
             if (f != null) {
                 return f;
             }
         }
-        return new Font(Font.DIALOG, Font.PLAIN, 1);
+        return new Font(Font.DIALOG, Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.KERNING, TextAttribute.KERNING_ON, TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
     }
 
     private static Font createSystemMonospaceFont() {
         if (isMac()) {
             // Retrieving this from the file system does not work properly, as we can only see the Light variant of the font when doing so.
-            Font f = new Font(".SFNSMono-Regular", 0, 0);
+            Font f = new Font(".SFNSMono-Regular", Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.KERNING, TextAttribute.KERNING_ON, TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
             if (f != null) {
                 return f;
             }
         }
-        return new Font(Font.MONOSPACED, Font.PLAIN, 1);
+        return new Font(Font.MONOSPACED, Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.KERNING, TextAttribute.KERNING_ON, TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
     }
 
     private static Font createSystemRoundedFont() {
         if (isMac()) {
             // This font is not currently available as a named font, so we explicitly load it from disk.
             try {
-                return Font.createFont(Font.TRUETYPE_FONT, new File("/System/Library/Fonts/SFNSRounded.ttf")).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR));
+                return Font.createFont(Font.TRUETYPE_FONT, new File("/System/Library/Fonts/SFNSRounded.ttf")).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
             } catch (FontFormatException | IOException ex) {
             }
         }
-        return new Font(Font.DIALOG, Font.PLAIN, 1);
+        return new Font(Font.DIALOG, Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
     }
 
     private static Font createSystemSerifFont() {
         if (isMac()) {
             // This font is not currently available as a named font, so we explicitly load it from disk.
             try {
-                return Font.createFont(Font.TRUETYPE_FONT, new File("/System/Library/Fonts/NewYork.ttf")).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR));
+                return Font.createFont(Font.TRUETYPE_FONT, new File("/System/Library/Fonts/NewYork.ttf")).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
             } catch (FontFormatException | IOException ex) {
             }
         }
-        return new Font(Font.SERIF, Font.PLAIN, 1);
+        return new Font(Font.SERIF, Font.PLAIN, 12).deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
     }
 }

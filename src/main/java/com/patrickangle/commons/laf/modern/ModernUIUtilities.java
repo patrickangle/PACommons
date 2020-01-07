@@ -21,11 +21,14 @@ import com.patrickangle.commons.laf.modern.keybindings.MacKeyBindings;
 import com.patrickangle.commons.laf.modern.keybindings.WindowsKeyBindings;
 import com.patrickangle.commons.laf.modern.ui.MacTearawayDialogUI;
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
+import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxMenuItemUI;
 import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernListUI;
+import com.patrickangle.commons.laf.modern.ui.ModernMenuItemUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
 import com.patrickangle.commons.laf.modern.ui.ModernPanelUI;
+import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonMenuItemUI;
 import com.patrickangle.commons.laf.modern.ui.ModernRadioButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernScrollBarUI;
 import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
@@ -247,6 +250,11 @@ public class ModernUIUtilities {
         ModernToolBarUI.installIntoDefaults(defaults);
 //        ModernRootPaneUI.installIntoDefaults(defaults);
         ModernSplitPaneUI.installIntoDefaults(defaults);
+        
+        ModernMenuItemUI.installIntoDefaults(defaults);
+        ModernCheckBoxMenuItemUI.installIntoDefaults(defaults);
+        ModernRadioButtonMenuItemUI.installIntoDefaults(defaults);
+        
         defaults.put("LabelUI", BasicLabelUI.class.getName());
 
         if (OperatingSystems.current() == OperatingSystems.Macintosh) {

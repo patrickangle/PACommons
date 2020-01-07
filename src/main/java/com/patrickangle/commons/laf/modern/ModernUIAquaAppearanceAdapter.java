@@ -17,10 +17,8 @@
 package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.logging.Logging;
+import com.patrickangle.commons.util.AquaUtils;
 import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  *
@@ -80,25 +78,7 @@ public class ModernUIAquaAppearanceAdapter {
     public static final Color mojaveDarkGraphiteHighContrastAccentColor = new Color(140, 140, 140);
     
     protected static Color systemAccentColor() {
-        try {
-            Class appearanceManagerClass = Class.forName("org.violetlib.aqua.AppearanceManager");
-            Method getCurrentAppearanceMethod = appearanceManagerClass.getMethod("getCurrentAppearance");
-            Object currentAppearance = getCurrentAppearanceMethod.invoke(null);
-            Method getColorsMethod = currentAppearance.getClass().getMethod("getColors");
-
-            Object colors = getColorsMethod.invoke(currentAppearance);
-
-            if (colors instanceof Map) {
-                if (((Map) colors).get("controlAccent") instanceof Color) {
-                    return (Color) ((Map) colors).get("controlAccent");
-                }
-            }
-
-            return null;
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logging.trace(ModernUIAquaAppearanceAdapter.class, "Unable to ascertain system accent color. Vaqua is not on the classpath, or is not supported on the current platform. " + ex.getMessage());
-            return null;
-        }
+        return AquaUtils.getAccentColor();
     }
     
     public static SystemColorScheme systemColorScheme() {
