@@ -88,7 +88,7 @@ public class ModernUIAquaAppearanceAdapter {
             return SystemColorScheme.Blue;
         }
         
-        Logging.trace(ModernUIAquaAppearanceAdapter.class, "System accent color is: " + sac);
+//        Logging.trace(ModernUIAquaAppearanceAdapter.class, "System accent color is: " + sac);
         
         if (sac.equals(mojaveLightBlueAccentColor) ||
                 sac.equals(mojaveDarkBlueAccentColor) ||

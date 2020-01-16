@@ -230,11 +230,16 @@ public class ModernMenuItemUI extends BasicMenuItemUI {
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("MenuItemUI", ModernMenuItemUI.class.getName());
         
-        defaults.put("MenuItem.font", AquaUtils.SYSTEM_FONT.deriveFont(13f));
+        defaults.put("MenuItem.font", AquaUtils.SYSTEM_FONT.deriveFont(14f));
         
         defaults.put("MenuItem.foreground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
         defaults.put("MenuItem.selectionBackground", defaults.getColor(ACCENT_HIGHLIGHT_COLOR_KEY));
         defaults.put("MenuItem.selectionForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        
+        defaults.put("MenuItem.acceleratorDelimiter", 0);
+        defaults.put("MenuItem.acceleratorFont", AquaUtils.SYSTEM_FONT.deriveFont(14f));
+        defaults.put("MenuItem.acceleratorFont", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
+        defaults.put("MenuItem.acceleratorSelectionForeground", defaults.getColor(PRIMARY_LIGHT_COLOR_KEY));
     }
     
 //    MenuItem.acceleratorDelimiter
