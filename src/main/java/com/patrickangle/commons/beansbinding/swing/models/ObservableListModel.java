@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.beansbinding.swing.models;
 
-import com.patrickangle.commons.observable.collections.ObservableCollections;
 import com.patrickangle.commons.observable.collections.ObservableCopyOnWriteArrayList;
 import com.patrickangle.commons.observable.collections.ObservableList;
 import com.patrickangle.commons.observable.interfaces.PropertyChangeObservable;

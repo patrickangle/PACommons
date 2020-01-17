@@ -55,9 +55,11 @@ public class ListDataSupport {
 
             @Override
             public void elementPropertyChanged(ObservableList list, int index, Object element, PropertyChangeEvent proeprtyChangeEvent) {
-                fireContentsChanged(index, index);
+                fireContentsChanged(index, index + 1);
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
+            
+            
         };
     }
     
