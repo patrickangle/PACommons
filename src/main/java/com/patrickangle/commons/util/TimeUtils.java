@@ -39,4 +39,8 @@ public class TimeUtils {
         c.roll(calendarField, amount);
         return c.getTime();
     }
+    
+    public static Date inFuture(int calendarField, int amount) {
+        return roll(new Date(), calendarField, amount);
+    }
 }

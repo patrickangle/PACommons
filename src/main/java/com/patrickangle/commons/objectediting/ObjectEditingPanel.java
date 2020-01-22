@@ -23,6 +23,8 @@ import com.patrickangle.commons.objectediting.annotations.ObjectEditingProperty;
 import com.patrickangle.commons.objectediting.util.ObjectEditingBindings;
 import com.patrickangle.commons.objectediting.util.ObjectFieldEditorFactory;
 import com.patrickangle.commons.util.Annotations;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -56,6 +58,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
 
     protected UndoManager undoManager = null;
 
+
     public ObjectEditingPanel() {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -69,9 +72,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         this.editingObject = editingObject;
         this.bindingGroup = new BindingGroup();
 
-        if (this.editingObject != null) {
-            build();
-        }
+        build();
     }
 
     public Object getEditingObject() {
@@ -84,9 +85,7 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
         this.editingObject = editingObject;
         this.firePropertyChange("editingObject", oldEditingObject, this.editingObject);
 
-        if (this.editingObject != null) {
-            build();
-        }
+        build();
     }
 
     public boolean isTreatAllAsMultilineEditor() {
@@ -128,6 +127,12 @@ public class ObjectEditingPanel extends JPanel implements Scrollable {
     }
 
     protected void build() {
+        if (this.editingObject != null) {
+            buildObject();
+        }
+    }
+    
+    protected void buildObject() {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         LinkedHashMap<String, JPanel> sectionPanels = new LinkedHashMap<>();
 
