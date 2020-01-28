@@ -215,6 +215,14 @@ public class Lists {
         return returnArray;
     }
     
+    public static List<Byte> fromArray(byte[] bytes) {
+        List<Byte> l = new ArrayList<>(bytes.length);
+        for (byte b : bytes) {
+            l.add(b);
+        }
+        return l;
+    }
+    
     public static List<Object> flatten(List<?> list) {
         List<Object> ret = new CopyOnWriteArrayList<>(); // It is possible for the flattenHelper to concurrently modify the element being iterated over, so we use a COWArrayList here
         flattenHelper(list, ret);

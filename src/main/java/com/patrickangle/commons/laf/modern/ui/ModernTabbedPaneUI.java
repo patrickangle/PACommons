@@ -1,14 +1,16 @@
-
 package com.patrickangle.commons.laf.modern.ui;
 
 //import com.bulenkov.iconloader.util.JBInsets;
 //import com.bulenkov.iconloader.util.JBUI;
 //import com.bulenkov.iconloader.util.SystemInfo;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
+import com.patrickangle.commons.util.AquaUtils;
+import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.CompatibleImageUtil;
 import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -76,7 +78,6 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //    public static final Color FOCUS_COLOR = new Color(0x3d4b5c); //JBColor.namedColor("TabbedPane.focusColor", 0xDAE4ED);
 //    public static final int TAB_HEIGHT = 32; //new JBValue.UIInteger("TabbedPane.tabHeight", 32);
 //    public static final int SELECTION_HEIGHT = 3; //new JBValue.UIInteger("TabbedPane.tabSelectionHeight", 3);
-
 //    TabbedPane.disabledForeground=777777
 //TabbedPane.tabAreaInsets=0,0,0,0
 //TabbedPane.tabInsets=0,12,0,12
@@ -164,10 +165,7 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
                 pressTab = -1;
                 tabPane.repaint();
             }
-            
-            
-            
-            
+
         };
 
         tabPane.addMouseListener(paneMouseListener);
@@ -209,24 +207,22 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //    protected Insets getTabAreaInsets(int tabPlacement) {
 //        return TAB_INSETS;
 //    }
-
     @Override
     protected Insets getSelectedTabPadInsets(int tabPlacement) {
-        return new Insets(0,0,0,0);
+        return new Insets(0, 0, 0, 0);
     }
 
     @Override
     protected Insets getTabAreaInsets(int tabPlacement) {
         return TAB_INSETS;
     }
-    
-    
-    
-    
-    
-    
+
     @Override
     protected void paintTabArea(Graphics g, int tabPlacement, int selectedIndex) {
+        Rectangle bounds = g.getClipBounds();
+        g.setColor(Color.BLACK);
+        g.fillRect(bounds.x, bounds.y + bounds.height - (int) OFFSET, bounds.x + bounds.width, (int) OFFSET);
+        g.drawLine(0, bounds.height - 1, bounds.width, bounds.height - 1);
 //        if (tabPane.getTabLayoutPolicy() == JTabbedPane.SCROLL_TAB_LAYOUT) {
 //            Rectangle bounds = g.getClipBounds();
 //            g.setColor(CONTENT_AREA_COLOR);
@@ -260,7 +256,7 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 
         Area compositeShape = new Area(tabShape);
         compositeShape.add(new Area(bottomCorners));
-        
+
         return compositeShape;
     }
 
@@ -270,51 +266,57 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         Graphics2D g = (Graphics2D) graphics.create();
         GraphicsHelpers.enableAntialiasing(g);
 
-        if (tabPane.isEnabled() && tabPane.isEnabledAt(tabIndex)) {
-            // Enabled
-            if (pressTab == tabIndex) {
-                // Enabled + Pressed
-                if (isSelected) {
-                    // Enabled + Pressed + Default or Selected
-                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-                } else if (tabPane.isFocusOwner()) {
-                    // Enabled + Pressed + In Focus
-                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-                } else {
-                    // Enabled + Pressed + Normal
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-                }
-            } else if (hoverTab == tabIndex) {
-                // Enabled + Hover
-                if (isSelected) {
-                    // Enabled + Hover + Default or Selected
-                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-                } else if (tabPane.isFocusOwner()) {
-                    // Enabled + Hover + In Focus
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-                } else {
-                    // Enabled + Hover + Normal
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-                }
-            } else {
-                // Enabled + Normal
-                if (isSelected) {
-                    // Enabled + Normal + Default or Selected
-                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-                } else if (tabPane.isFocusOwner()) {
-                    // Enabled + Normal + In Focus
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-                } else {
-                    // Enabled + Normal + Normal
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-                }
-            }
-        } else {
-            // Disabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }    
+//        if (tabPane.isEnabled() && tabPane.isEnabledAt(tabIndex)) {
+//            // Enabled
+//            if (pressTab == tabIndex) {
+//                // Enabled + Pressed
+//                if (isSelected) {
+//                    // Enabled + Pressed + Default or Selected
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
+//                } else if (tabPane.isFocusOwner()) {
+//                    // Enabled + Pressed + In Focus
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
+//                } else {
+//                    // Enabled + Pressed + Normal
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//                }
+//            } else if (hoverTab == tabIndex) {
+//                // Enabled + Hover
+//                if (isSelected) {
+//                    // Enabled + Hover + Default or Selected
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
+//                } else if (tabPane.isFocusOwner()) {
+//                    // Enabled + Hover + In Focus
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
+//                } else {
+//                    // Enabled + Hover + Normal
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
+//                }
+//            } else {
+//                // Enabled + Normal
+//                if (isSelected) {
+//                    // Enabled + Normal + Default or Selected
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+//                } else if (tabPane.isFocusOwner()) {
+//                    // Enabled + Normal + In Focus
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//                } else {
+//                    // Enabled + Normal + Normal
+//                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//                }
+//            }
+//        } else {
+//            // Disabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//        }
+//
+//        g.fill(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
+//        
+        if (isSelected) {
+            g.setColor(Colors.transparentColor(Color.WHITE, 0.3f));
+            g.fill(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
+        }
         
-        g.fill(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
         g.dispose();
 //        g.fillRect(x, y, w, h);
     }
@@ -334,12 +336,12 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
             BasicGraphicsUtils.drawStringUnderlineCharAt(tabPane, (Graphics2D) g, title, mnemIndex, textRect.x, textRect.y + metrics.getAscent());
         }
     }
-    
+
     protected void layoutLabel(int tabPlacement,
-                               FontMetrics metrics, int tabIndex,
-                               String title, Icon icon,
-                               Rectangle tabRect, Rectangle iconRect,
-                               Rectangle textRect, boolean isSelected ) {
+            FontMetrics metrics, int tabIndex,
+            String title, Icon icon,
+            Rectangle tabRect, Rectangle iconRect,
+            Rectangle textRect, boolean isSelected) {
         textRect.x = textRect.y = iconRect.x = iconRect.y = 0;
 
         View v = getTextViewForTab(tabIndex);
@@ -348,15 +350,15 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         }
 
         SwingUtilities.layoutCompoundLabel(tabPane,
-                                           metrics, title, icon,
-                                           SwingUtilities.CENTER,
-                                           SwingUtilities.CENTER,
-                                           SwingUtilities.TRAILING,
-                                           SwingUtilities.CENTER,
-                                           tabRect,
-                                           iconRect,
-                                           textRect,
-                                           textIconGap);
+                metrics, title, icon,
+                SwingUtilities.CENTER,
+                SwingUtilities.CENTER,
+                SwingUtilities.TRAILING,
+                SwingUtilities.CENTER,
+                tabRect,
+                iconRect,
+                textRect,
+                textIconGap);
 
         tabPane.putClientProperty("html", null);
 
@@ -370,31 +372,36 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 
     @Override
     protected void paintTabBorder(Graphics graphics, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
-        Graphics2D g = (Graphics2D) graphics.create();
-        GraphicsHelpers.enableAntialiasing(g);
-        
-        g.setStroke(new BasicStroke(0.5f));
+//        Graphics2D g = (Graphics2D) graphics.create();
+//        GraphicsHelpers.enableAntialiasing(g);
+//
+//        g.setStroke(new BasicStroke(0.5f));
+//
+//        if (tabPane.isEnabledAt(tabIndex)) {
+//            // Enabled
+//            if (isSelected) {
+//                // Enabled + Default or Selected
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+//            } else if (pressTab == tabIndex) {
+//                // Enabled + In Focus
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
+//            } else {
+//                // Enabled + Normal
+//                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
+//            }
+//        } else {
+//            // Disabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//        }
+//        
+//        if (isSelected) {
+//            g.setColor(Colors.transparentColor(Color.WHITE, 0.3f));
+//            g.draw(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
+//        }
+//
+////        g.draw(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
+//        g.dispose();
 
-        if (tabPane.isEnabledAt(tabIndex)) {
-            // Enabled
-            if (isSelected) {
-                // Enabled + Default or Selected
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            } else if (pressTab == tabIndex) {
-                // Enabled + In Focus
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
-            } else {
-                // Enabled + Normal
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-            }
-        } else {
-            // Disabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }
-        
-        g.draw(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
-        g.dispose();
-        
 //        if (isSelected && tabStyle == TabStyle.underline) {
 //            g.setColor(tabPane.isEnabled() ? ENABLED_SELECTED_COLOR : DISABLED_SELECTED_COLOR);
 //
@@ -466,35 +473,45 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //        }
     }
 
+    public Insets getTabInsets() {
+        return tabInsets;
+    }
+    
+    
+
     @Override
     protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
         Insets tabInsets = getTabInsets(tabPlacement, tabIndex);
         int width = tabInsets.left + tabInsets.right;
         Component tabComponent = tabPane.getTabComponentAt(tabIndex);
-        if (tabComponent != null) {
-            width += tabComponent.getPreferredSize().width;
-        } else {
+//        if (tabComponent != null) {
+//            width += tabComponent.getPreferredSize().width;
+//        } else {
             Icon icon = getIconForTab(tabIndex);
-            if (icon != null) {
-                width += icon.getIconWidth() + textIconGap;
-            }
+            int iconWidth = icon.getIconWidth();
+//            if (icon != null) {
+//                width += icon.getIconWidth() + textIconGap;
+//            }
             View v = getTextViewForTab(tabIndex);
+            int textWidth = 0;
             if (v != null) {
                 // html
-                width += (int) v.getPreferredSpan(View.X_AXIS);
+                textWidth = (int) v.getPreferredSpan(View.X_AXIS);
             } else {
                 // plain text
                 String title = tabPane.getTitleAt(tabIndex);
 
-                width += BasicGraphicsUtils.getStringWidth(tabPane, metrics, title);
+                textWidth = Math.round(BasicGraphicsUtils.getStringWidth(tabPane, metrics, title));
             }
-        }
-        return Math.max(width, 74);
+            
+            return width + Math.max(iconWidth, textWidth);
+//        }
+//        return width + 6;
     }
 
     @Override
     protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
-        return getIconForTab(tabIndex) != null ? 62 : 24;
+        return getIconForTab(tabIndex) != null ? 54 : 24;
 //        int height = 0;
 //        Component c = tabPane.getTabComponentAt(tabIndex);
 //        if (c != null) {
@@ -521,35 +538,31 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //        return Math.max(height, minHeight);
     }
 
-    protected Map<Icon, Icon> transformedIcons = new ConcurrentHashMap<>();
-    
+//    protected Map<Icon, Icon> transformedIcons = new ConcurrentHashMap<>();
     @Override
     protected Icon getIconForTab(int tabIndex) {
         Icon providedIcon = super.getIconForTab(tabIndex); //To change body of generated methods, choose Tools | Templates.
-        if (providedIcon == null) {
-            return null;
-        }
-        return transformedIcons.computeIfAbsent(providedIcon, (icon) -> {
-            return modifiedIconForTab(icon);
-        });
-        
-    }
-    
-    protected Icon modifiedIconForTab(Icon original) {
-        BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(32, 32, BufferedImage.TRANSLUCENT);
-        
-        Graphics2D g = bi.createGraphics();
-        g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
-        g.fillRect(0, 0, 32, 32);
-        g.setComposite(AlphaComposite.DstIn);
-        
-        original.paintIcon(tabPane, g, 0, 0);
-        return new ImageIcon(bi);
-    }
-    
-    
-    
+//        if (providedIcon == null) {
+//            return null;
+//        }
+//        return transformedIcons.computeIfAbsent(providedIcon, (icon) -> {
+//            return modifiedIconForTab(icon);
+//        });
+        return providedIcon;
 
+    }
+
+//    protected Icon modifiedIconForTab(Icon original) {
+//        BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(32, 32, BufferedImage.TRANSLUCENT);
+//        
+//        Graphics2D g = bi.createGraphics();
+//        g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
+//        g.fillRect(0, 0, 32, 32);
+//        g.setComposite(AlphaComposite.DstIn);
+//        
+//        original.paintIcon(tabPane, g, 0, 0);
+//        return new ImageIcon(bi);
+//    }
     @Override
     protected void paintContentBorderTopEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
     }
@@ -569,8 +582,6 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
     @Override
     protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
     }
-    
-    
 
     @Override
     protected void paintFocusIndicator(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect,
@@ -579,7 +590,8 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("TabbedPaneUI", ModernTabbedPaneUI.class.getName());
+        defaults.put("TabbedPane.font", AquaUtils.SYSTEM_FONT.deriveFont(11f));
         defaults.put("TabbedPane.foreground", defaults.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
-        defaults.put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+        defaults.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
     }
 }
