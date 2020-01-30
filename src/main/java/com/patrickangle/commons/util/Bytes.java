@@ -67,7 +67,7 @@ public class Bytes {
         return -1;
     }
     
-    public static int indexOfFirstOccurence(List<Byte> bytes, List<Byte> search) {
+    public static int indexOfFirstOccurence(List<Byte> bytes, List<Byte> search, byte escapeByte) {
         if (bytes == null || search == null || search.size() == 0) {
             return -1;
         }
@@ -76,6 +76,14 @@ public class Bytes {
         int searchStarted = -1;
 
         for (int i = 0; i < bytes.size(); i++) {
+            if (bytes.get(i) == escapeByte) {
+                // If we see the escapeByte, continue to the next iteration of
+                // the loop, and make sure the search index and searchStarted
+                // values are reset.
+                searchStarted = -1;
+                searchIndex = 0;
+                continue;
+            }
             if (bytes.get(i) == search.get(searchIndex)) {
                 if (searchIndex == 0) {
                     searchStarted = i;
@@ -114,8 +122,8 @@ public class Bytes {
         return Pair.makePair(Arrays.copyOf(bytes, mark), Arrays.copyOfRange(bytes, mark + separator.length, bytes.length));
     }
     
-    public static Pair<List<Byte>, List<Byte>> separateByBytes(List<Byte> bytes, List<Byte> separator) {
-        int mark = indexOfFirstOccurence(bytes, separator);
+    public static Pair<List<Byte>, List<Byte>> separateByBytes(List<Byte> bytes, List<Byte> separator, byte escapeByte) {
+        int mark = indexOfFirstOccurence(bytes, separator, escapeByte);
 
         if (mark == -1) {
             return null;

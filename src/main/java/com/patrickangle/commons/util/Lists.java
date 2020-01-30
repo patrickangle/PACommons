@@ -205,6 +205,16 @@ public class Lists {
         return true;
     }
     
+    public static char[] toCharArray(List<Character> arrayList) {
+        char[] returnArray = new char[arrayList.size()];
+
+        for (int i = 0; i < arrayList.size(); i++) {
+            returnArray[i] = arrayList.get(i);
+        }
+
+        return returnArray;
+    }
+    
     public static byte[] toArray(List<Byte> arrayList) {
         byte[] returnArray = new byte[arrayList.size()];
 
