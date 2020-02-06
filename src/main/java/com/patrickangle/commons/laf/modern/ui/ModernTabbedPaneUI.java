@@ -4,12 +4,11 @@ package com.patrickangle.commons.laf.modern.ui;
 //import com.bulenkov.iconloader.util.JBUI;
 //import com.bulenkov.iconloader.util.SystemInfo;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
+import com.patrickangle.commons.laf.modern.ui.util.GradientTexturePaint;
+import com.patrickangle.commons.laf.modern.ui.util.NoisePaint;
 import com.patrickangle.commons.util.AquaUtils;
 import com.patrickangle.commons.util.Colors;
-import com.patrickangle.commons.util.CompatibleImageUtil;
 import com.patrickangle.commons.util.GraphicsHelpers;
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -18,6 +17,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,12 +27,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -222,6 +218,22 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         Rectangle bounds = g.getClipBounds();
         g.setColor(Color.BLACK);
         g.fillRect(bounds.x, bounds.y + bounds.height - (int) OFFSET, bounds.x + bounds.width, (int) OFFSET);
+
+        // 
+        // Temporary code to paint texture.
+        // 
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setPaint(new GradientTexturePaint(bounds.x, bounds.y, Colors.transparentColor(Color.BLACK, 0f), bounds.x, bounds.y + bounds.height, Colors.transparentColor(Color.BLACK, 0.2f)));
+        g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.y + bounds.height);
+
+        g2.setPaint(new NoisePaint(Colors.grey(0.2f), 0.01f, 0.01f));
+        g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.y + bounds.height);
+
+        //
+        // Draw bottom line.
+        //
         g.drawLine(0, bounds.height - 1, bounds.width, bounds.height - 1);
 //        if (tabPane.getTabLayoutPolicy() == JTabbedPane.SCROLL_TAB_LAYOUT) {
 //            Rectangle bounds = g.getClipBounds();
@@ -316,7 +328,7 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
             g.setColor(Colors.transparentColor(Color.WHITE, 0.3f));
             g.fill(shapeForTabInBounds(tabIndex, new Rectangle(x, y, w, h)));
         }
-        
+
         g.dispose();
 //        g.fillRect(x, y, w, h);
     }
@@ -476,8 +488,6 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
     public Insets getTabInsets() {
         return tabInsets;
     }
-    
-    
 
     @Override
     protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
@@ -487,24 +497,24 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //        if (tabComponent != null) {
 //            width += tabComponent.getPreferredSize().width;
 //        } else {
-            Icon icon = getIconForTab(tabIndex);
-            int iconWidth = icon.getIconWidth();
+        Icon icon = getIconForTab(tabIndex);
+        int iconWidth = icon.getIconWidth();
 //            if (icon != null) {
 //                width += icon.getIconWidth() + textIconGap;
 //            }
-            View v = getTextViewForTab(tabIndex);
-            int textWidth = 0;
-            if (v != null) {
-                // html
-                textWidth = (int) v.getPreferredSpan(View.X_AXIS);
-            } else {
-                // plain text
-                String title = tabPane.getTitleAt(tabIndex);
+        View v = getTextViewForTab(tabIndex);
+        int textWidth = 0;
+        if (v != null) {
+            // html
+            textWidth = (int) v.getPreferredSpan(View.X_AXIS);
+        } else {
+            // plain text
+            String title = tabPane.getTitleAt(tabIndex);
 
-                textWidth = Math.round(BasicGraphicsUtils.getStringWidth(tabPane, metrics, title));
-            }
-            
-            return width + Math.max(iconWidth, textWidth);
+            textWidth = Math.round(BasicGraphicsUtils.getStringWidth(tabPane, metrics, title));
+        }
+
+        return width + Math.max(iconWidth, textWidth);
 //        }
 //        return width + 6;
     }

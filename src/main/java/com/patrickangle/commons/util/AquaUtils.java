@@ -19,6 +19,7 @@ package com.patrickangle.commons.util;
 import ca.weblite.objc.Client;
 import ca.weblite.objc.Proxy;
 import ca.weblite.objc.RuntimeUtils;
+import ca.weblite.objc.util.CocoaUtils;
 import com.sun.jna.Pointer;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,10 +29,11 @@ import java.awt.Window;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.UIManager;
@@ -45,6 +47,44 @@ import sun.awt.AWTAccessor;
  * @author patrickangle
  */
 public class AquaUtils {
+
+    /**
+     * These constants specify the style of a window.
+     */
+    public enum WindowStyle {
+        Borderless(0),
+        Titled(1),
+        Closable(2),
+        Miniaturizable(4),
+        Resizable(8),
+        UtilityWindow(16),
+        DocumentModalWindow(64),
+        NonActivatingPanel(128),
+        @Deprecated
+        Textured(256),
+        UnifiedTitleAndToolbar(4096),
+        HudWindow(8192),
+        FullScreen(16384),
+        FullSizeContentView(32768);
+
+        private final int mask;
+
+        private WindowStyle(int mask) {
+            this.mask = mask;
+        }
+
+        private int getMask() {
+            return this.mask;
+        }
+
+        public static int maskFor(WindowStyle... styles) {
+            int mask = 0;
+            for (WindowStyle style : styles) {
+                mask += style.getMask();
+            }
+            return mask;
+        }
+    }
 
     /**
      * An Appearance manages how AppKit renders your app's UI elements.
@@ -684,17 +724,12 @@ public class AquaUtils {
         }
     }
 
-//    public static long getNativeWindowPointer(Window window) {
-//        if (isMac()) {
-//            
-//        }
-//    }
-    public static void setWindowStyleBits(final Window window, final int mask, final boolean value) {
+    public static long getNativeWindowPointer(Window window) {
         if (isMac()) {
             if (!window.isDisplayable()) {
                 window.addNotify();
             }
-            
+
             Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
             try {
 
@@ -703,13 +738,81 @@ public class AquaUtils {
 
                 Object platformWindow = getPlatformWindowMethod.invoke(peer);
 
-                Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformWindow");
-                Method setStyleBitsMethod = cPlatformWindowClass.getDeclaredMethod("setStyleBits", Integer.TYPE, Boolean.TYPE);
-                setStyleBitsMethod.setAccessible(true);
-
-                setStyleBitsMethod.invoke(platformWindow, mask, value);
+                Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CFRetainedResource");
+                Field f = cPlatformWindowClass.getDeclaredField("ptr");
+                f.setAccessible(true);
+                return (long) f.get(platformWindow);
             } catch (Exception e) {
                 e.printStackTrace();
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+//    public static void otherthing(Window window) {
+//        if (isMac()) {
+//            if (!window.isDisplayable()) {
+//                window.addNotify();
+//            }
+//
+//            Object peer = AWTAccessor.getComponentAccessor().getPeer(window);
+//            try {
+//
+//                Class lwWindowPeerClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.LWWindowPeer");
+//                Method getPlatformWindowMethod = lwWindowPeerClass.getMethod("getPlatformWindow");
+//
+//                Object platformWindow = getPlatformWindowMethod.invoke(peer);
+//
+//                Method getPeerMethod = lwWindowPeerClass.getDeclaredMethod("setTextured", Boolean.TYPE);
+//                getPeerMethod.invoke(peer, true);
+//                
+//                 Class cPlatformWindowClass = AquaUtils.class.getClassLoader().loadClass("sun.lwawt.macosx.CPlatformWindow");
+//                Method setOpaqueMethod = cPlatformWindowClass.getDeclaredMethod("setOpaque", Boolean.TYPE);
+//                setOpaqueMethod.invoke(platformWindow, false);
+////                f.setAccessible(true);
+////                return (long) f.get(platformWindow);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+    // getPeer().setTextured(true)
+//    public static void tryIt(Window window) {
+//        long ptr = getNativeWindowPointer(window);
+//        System.out.println(ptr);
+//        if (ptr == -1) {
+//            return;
+//        }
+//        CocoaUtils.dispatch_sync(() -> {
+//            Proxy p = new Proxy(new Pointer(ptr));
+//            p.send("setTitlebarAppearsTransparent:", true);
+//            p.send("setStyleMask:", 0b0001000000001111);
+//            System.out.println(p.getProxy("styleMask"));
+//        });
+//    }
+
+    public static void setWindowStyle(Window window, WindowStyle... style) {
+        if (isMac()) {
+            long windowPointer = getNativeWindowPointer(window);
+            if (windowPointer != -1) {
+                CocoaUtils.dispatch_sync(() -> {
+                    Proxy windowProxy = new Proxy(new Pointer(windowPointer));
+                    windowProxy.send("setStyleMask:", WindowStyle.maskFor(style));
+                });
+            }
+        }
+    }
+
+    public static void setWindowTitlebarAppearsTransparent(Window window, boolean titlebarAppearsTransparent) {
+        if (isMac()) {
+            long windowPointer = getNativeWindowPointer(window);
+            if (windowPointer != -1) {
+                CocoaUtils.dispatch_sync(() -> {
+                    Proxy windowProxy = new Proxy(new Pointer(windowPointer));
+                    windowProxy.send("setTitlebarAppearsTransparent:", titlebarAppearsTransparent);
+                });
             }
         }
     }
@@ -717,10 +820,6 @@ public class AquaUtils {
     public static void setShouldUseScreenMenuBar(boolean useMenuBar) {
         System.setProperty("apple.laf.useScreenMenuBar", Boolean.toString(useMenuBar));
         UIManager.getInstalledLookAndFeels(); // Needed to prevent "java.lang.UnsatisfiedLinkError: com.apple.laf.ScreenMenu.addMenuListeners"
-    }
-
-    public static boolean isWindowFullScreen(Window window) {
-        return false;
     }
 
     /**
