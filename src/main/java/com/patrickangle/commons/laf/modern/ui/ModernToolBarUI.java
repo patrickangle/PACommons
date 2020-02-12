@@ -142,8 +142,8 @@ public class ModernToolBarUI extends BasicToolBarUI {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.fillRect(0, 0, c.getWidth(), c.getHeight());
 
-            g2.setPaint(new NoisePaint(Colors.grey(0.2f), 0.01f, 0.01f));
-            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+//            g2.setPaint(new NoisePaint(Colors.grey(0.2f), 0.01f, 0.01f));
+//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
 //            }
 //        }
 
