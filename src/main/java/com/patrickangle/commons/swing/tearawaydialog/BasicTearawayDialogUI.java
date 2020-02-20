@@ -16,6 +16,8 @@
  */
 package com.patrickangle.commons.swing.tearawaydialog;
 
+import com.patrickangle.commons.swing.util.ComponentMover;
+import com.patrickangle.commons.swing.util.ComponentResizer;
 import com.patrickangle.commons.swing.util.WindowMouseInputAdapter;
 import com.patrickangle.commons.util.OperatingSystems;
 import com.patrickangle.commons.util.Windows;
@@ -114,6 +116,14 @@ public class BasicTearawayDialogUI implements TearawayDialogUI {
         new WindowMouseInputAdapter(dialog, () -> {
             dialog.setAttached(false);
         });
+//dialog.setAttached(false);
+        
+        ComponentMover cm = new ComponentMover(dialog, dialog.getContentPane());
+        ComponentResizer cr = new ComponentResizer(new Insets(2, 5, 5, 5), dialog);
+        cm.setDragInsets(new Insets(2, 5, 5, 5));
+        
+        dialog.addMouseListener(cm);
+        dialog.addMouseListener(cr);
 
         dialog.addWindowFocusListener(focusListener);
         dialog.addPropertyChangeListener("title", titlePropertyChangeListener);

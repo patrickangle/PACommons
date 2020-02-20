@@ -504,10 +504,10 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
 //            width += tabComponent.getPreferredSize().width;
 //        } else {
         Icon icon = getIconForTab(tabIndex);
-        int iconWidth = icon.getIconWidth();
-//            if (icon != null) {
-//                width += icon.getIconWidth() + textIconGap;
-//            }
+        int iconWidth = 0;
+            if (icon != null) {
+                iconWidth += icon.getIconWidth();
+            }
         View v = getTextViewForTab(tabIndex);
         int textWidth = 0;
         if (v != null) {
