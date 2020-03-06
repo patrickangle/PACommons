@@ -52,6 +52,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
@@ -286,115 +287,115 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         return buttonRect;
     }
 
-    protected Shape getArrowAreaShape(JComponent c, int side, boolean zeroOrigin) {
-        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
-
-        int height = c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom;
-        int totalWidth = c.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right;
-
-        Shape buttonRect = new RoundRectangle2D.Double(
-                zeroOrigin ? 0 : buttonBorderInsets.left - BUTTON_INSETS.left + totalWidth - height + 2, // +2 on x to offset from edge to prevent jagged edge
-                zeroOrigin ? 0 : buttonBorderInsets.top - BUTTON_INSETS.top,
-                height - 2, // Offsets the +2 on the x.
-                height,
-                CORNER_DIAMETER,
-                CORNER_DIAMETER);
-
-        Shape addonRect3 = new Rectangle2D.Double(
-                buttonRect.getBounds().x,
-                buttonRect.getBounds().y,
-                buttonRect.getBounds().width / 2,
-                buttonRect.getBounds().height);
-
-        Area compositeShape3 = new Area(buttonRect);
-        compositeShape3.add(new Area(addonRect3));
-        buttonRect = compositeShape3;
-
-        switch (side) {
-            case SwingConstants.NORTH:
-                Shape southMask = new Rectangle2D.Double(
-                        buttonRect.getBounds().x,
-                        buttonRect.getBounds().y + (buttonRect.getBounds().height / 2),
-                        buttonRect.getBounds().width,
-                        buttonRect.getBounds().height / 2
-                );
-                Area southMasked = new Area(buttonRect);
-                southMasked.subtract(new Area(southMask));
-                buttonRect = southMasked;
-                break;
-            case SwingConstants.SOUTH:
-                Shape northMask = new Rectangle2D.Double(
-                        buttonRect.getBounds().x,
-                        buttonRect.getBounds().y,
-                        buttonRect.getBounds().width,
-                        buttonRect.getBounds().height / 2
-                );
-                Area northMasked = new Area(buttonRect);
-                northMasked.subtract(new Area(northMask));
-                if (zeroOrigin) {
-                    northMasked.transform(AffineTransform.getTranslateInstance(0, -buttonRect.getBounds().height / 2));
-                }
-                buttonRect = northMasked;
-                break;
-        }
-
-        return buttonRect;
-    }
+//    protected Shape getArrowAreaShape(JComponent c, int side, boolean zeroOrigin) {
+//        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
+//
+//        int height = c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom;
+//        int totalWidth = c.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right;
+//
+//        Shape buttonRect = new RoundRectangle2D.Double(
+//                zeroOrigin ? 0 : buttonBorderInsets.left - BUTTON_INSETS.left + totalWidth - height + 2, // +2 on x to offset from edge to prevent jagged edge
+//                zeroOrigin ? 0 : buttonBorderInsets.top - BUTTON_INSETS.top,
+//                height - 2, // Offsets the +2 on the x.
+//                height,
+//                CORNER_DIAMETER,
+//                CORNER_DIAMETER);
+//
+//        Shape addonRect3 = new Rectangle2D.Double(
+//                buttonRect.getBounds().x,
+//                buttonRect.getBounds().y,
+//                buttonRect.getBounds().width / 2,
+//                buttonRect.getBounds().height);
+//
+//        Area compositeShape3 = new Area(buttonRect);
+//        compositeShape3.add(new Area(addonRect3));
+//        buttonRect = compositeShape3;
+//
+//        switch (side) {
+//            case SwingConstants.NORTH:
+//                Shape southMask = new Rectangle2D.Double(
+//                        buttonRect.getBounds().x,
+//                        buttonRect.getBounds().y + (buttonRect.getBounds().height / 2),
+//                        buttonRect.getBounds().width,
+//                        buttonRect.getBounds().height / 2
+//                );
+//                Area southMasked = new Area(buttonRect);
+//                southMasked.subtract(new Area(southMask));
+//                buttonRect = southMasked;
+//                break;
+//            case SwingConstants.SOUTH:
+//                Shape northMask = new Rectangle2D.Double(
+//                        buttonRect.getBounds().x,
+//                        buttonRect.getBounds().y,
+//                        buttonRect.getBounds().width,
+//                        buttonRect.getBounds().height / 2
+//                );
+//                Area northMasked = new Area(buttonRect);
+//                northMasked.subtract(new Area(northMask));
+//                if (zeroOrigin) {
+//                    northMasked.transform(AffineTransform.getTranslateInstance(0, -buttonRect.getBounds().height / 2));
+//                }
+//                buttonRect = northMasked;
+//                break;
+//        }
+//
+//        return buttonRect;
+//    }
 
     public void paint(Graphics graphics, JComponent component) {
 //        final JSpinner comboBox = (JSpinner) component;
 
-        final Graphics2D g = (Graphics2D) graphics.create();
-        GraphicsHelpers.enableAntialiasing(g);
-        GraphicsHelpers.enableStrokeNormalization(g);
-
-        ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, getShape(component));
-        paintComponentBackgroundFill(g, spinner, getShape(component));
-        paintComponentBorderHighlight(g, spinner, getShape(component));
-
-        paintComponentArrowAreaBackgroundFill(g, spinner, getArrowAreaShape(component, NORTH, false), NORTH);
-        paintComponentArrowAreaBorderHighlight(g, spinner, getArrowAreaShape(component, NORTH, false), NORTH);
-        paintComponentDownArrow(g, component, getArrowAreaShape(component, NORTH, false), NORTH);
-
-        paintComponentArrowAreaBackgroundFill(g, spinner, getArrowAreaShape(component, SOUTH, false), SOUTH);
-        paintComponentArrowAreaBorderHighlight(g, spinner, getArrowAreaShape(component, SOUTH, false), SOUTH);
-        paintComponentDownArrow(g, component, getArrowAreaShape(component, SOUTH, false), SOUTH);
-
-        g.dispose();
+//        final Graphics2D g = (Graphics2D) graphics.create();
+//        GraphicsHelpers.enableAntialiasing(g);
+//        GraphicsHelpers.enableStrokeNormalization(g);
+//
+//        ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, getShape(component));
+//        paintComponentBackgroundFill(g, spinner, getShape(component));
+//        paintComponentBorderHighlight(g, spinner, getShape(component));
+//
+////        paintComponentArrowAreaBackgroundFill(g, spinner, getArrowAreaShape(component, NORTH, false), NORTH);
+////        paintComponentArrowAreaBorderHighlight(g, spinner, getArrowAreaShape(component, NORTH, false), NORTH);
+////        paintComponentDownArrow(g, component, getArrowAreaShape(component, NORTH, false), NORTH);
+////
+////        paintComponentArrowAreaBackgroundFill(g, spinner, getArrowAreaShape(component, SOUTH, false), SOUTH);
+////        paintComponentArrowAreaBorderHighlight(g, spinner, getArrowAreaShape(component, SOUTH, false), SOUTH);
+////        paintComponentDownArrow(g, component, getArrowAreaShape(component, SOUTH, false), SOUTH);
+//
+//        g.dispose();
     }
 
-    public static void paintComponentDownArrow(Graphics2D g, Component component, Shape bounds, int direction) {
-        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
-        final int xU = bounds.getBounds().height / 3;
-        final int yU = bounds.getBounds().height / 3;
-        final Path2D.Double path = new Path2D.Double();
-        path.moveTo(xU + 1, yU + 2);
-        path.lineTo(3 * xU + 1, yU + 2);
-        path.lineTo(2 * xU + 1, 3 * yU);
-        path.lineTo(xU + 1, yU + 2);
-        path.closePath();
-
-        if (component.isEnabled()) {
-            // Enabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
-        } else {
-            // Disabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        Graphics2D protectedGraphics = (Graphics2D) g.create();
-
-        if (direction == NORTH) {
-            path.transform(AffineTransform.getRotateInstance(Math.PI));
-            path.transform(AffineTransform.getTranslateInstance(path.getBounds().width + 8, path.getBounds().height + 10));
-        }
-
-        protectedGraphics.translate(bounds.getBounds().x + 2, bounds.getBounds().y - 2);
-
-        protectedGraphics.fill(path);
-
-        protectedGraphics.dispose();
-    }
+//    public static void paintComponentDownArrow(Graphics2D g, Component component, Shape bounds, int direction) {
+//        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+//        final int xU = bounds.getBounds().height / 3;
+//        final int yU = bounds.getBounds().height / 3;
+//        final Path2D.Double path = new Path2D.Double();
+//        path.moveTo(xU + 1, yU + 2);
+//        path.lineTo(3 * xU + 1, yU + 2);
+//        path.lineTo(2 * xU + 1, 3 * yU);
+//        path.lineTo(xU + 1, yU + 2);
+//        path.closePath();
+//
+//        if (component.isEnabled()) {
+//            // Enabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
+//        } else {
+//            // Disabled
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//        }
+//
+//        Graphics2D protectedGraphics = (Graphics2D) g.create();
+//
+//        if (direction == NORTH) {
+//            path.transform(AffineTransform.getRotateInstance(Math.PI));
+//            path.transform(AffineTransform.getTranslateInstance(path.getBounds().width + 8, path.getBounds().height + 10));
+//        }
+//
+//        protectedGraphics.translate(bounds.getBounds().x + 2, bounds.getBounds().y - 2);
+//
+//        protectedGraphics.fill(path);
+//
+//        protectedGraphics.dispose();
+//    }
 
     protected Rectangle rectangleForCurrentValue() {
         final Insets buttonBorderInsets = spinner.getBorder().getBorderInsets(spinner);
@@ -404,67 +405,67 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         return new Rectangle(buttonBorderInsets.left - BUTTON_INSETS.left + 2, buttonBorderInsets.top - BUTTON_INSETS.top + 2, totalWidth - height - 2, height - 4);
     }
 
-    private void paintComponentBackgroundFill(Graphics2D g, JSpinner comboBox, Shape buttonShape) {
-        if (comboBox.isEnabled()) {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }
-
-        g.fill(buttonShape);
-    }
-
-    private void paintComponentArrowAreaBackgroundFill(Graphics2D g, JSpinner comboBox, Shape buttonShape, int side) {
-        if (comboBox.isEnabled()) {
-            if (comboBoxPressed || (side == NORTH) ? buttonNorthPressed : buttonSouthPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-            } else if (comboBoxRollover || (side == NORTH) ? buttonNorthRollover : buttonSouthRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        g.fill(buttonShape);
-    }
-
-    private void paintComponentBorderHighlight(Graphics2D g, JSpinner comboBox, Shape buttonShape) {
-        g.setStroke(new BasicStroke(0.5f));
-
-        if (comboBox.isEnabled()) {
-            if (comboBoxPressed || buttonNorthPressed || buttonSouthPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            } else if (comboBoxRollover || buttonNorthRollover || buttonSouthRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_LIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }
-
-        g.draw(buttonShape);
-    }
-
-    private void paintComponentArrowAreaBorderHighlight(Graphics2D g, JSpinner comboBox, Shape buttonShape, int side) {
-        g.setStroke(new BasicStroke(0.5f));
-
-        if (comboBox.isEnabled()) {
-            if (comboBoxPressed || (side == NORTH) ? buttonNorthPressed : buttonSouthPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            } else if (comboBoxRollover || (side == NORTH) ? buttonNorthRollover : buttonSouthRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        g.draw(buttonShape);
-    }
+//    private void paintComponentBackgroundFill(Graphics2D g, JSpinner comboBox, Shape buttonShape) {
+//        if (comboBox.isEnabled()) {
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//        } else {
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//        }
+//
+//        g.fill(buttonShape);
+//    }
+//
+//    private void paintComponentArrowAreaBackgroundFill(Graphics2D g, JSpinner comboBox, Shape buttonShape, int side) {
+//        if (comboBox.isEnabled()) {
+//            if (comboBoxPressed || (side == NORTH) ? buttonNorthPressed : buttonSouthPressed || editorPressed) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
+//            } else if (comboBoxRollover || (side == NORTH) ? buttonNorthRollover : buttonSouthRollover || editorRollover) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
+//            } else {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+//            }
+//        } else {
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//        }
+//
+//        g.fill(buttonShape);
+//    }
+//
+//    private void paintComponentBorderHighlight(Graphics2D g, JSpinner comboBox, Shape buttonShape) {
+//        g.setStroke(new BasicStroke(0.5f));
+//
+//        if (comboBox.isEnabled()) {
+//            if (comboBoxPressed || buttonNorthPressed || buttonSouthPressed || editorPressed) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+//            } else if (comboBoxRollover || buttonNorthRollover || buttonSouthRollover || editorRollover) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_LIGHT_COLOR_KEY));
+//            } else {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
+//            }
+//        } else {
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
+//        }
+//
+//        g.draw(buttonShape);
+//    }
+//
+//    private void paintComponentArrowAreaBorderHighlight(Graphics2D g, JSpinner comboBox, Shape buttonShape, int side) {
+//        g.setStroke(new BasicStroke(0.5f));
+//
+//        if (comboBox.isEnabled()) {
+//            if (comboBoxPressed || (side == NORTH) ? buttonNorthPressed : buttonSouthPressed || editorPressed) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
+//            } else if (comboBoxRollover || (side == NORTH) ? buttonNorthRollover : buttonSouthRollover || editorRollover) {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
+//            } else {
+//                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
+//            }
+//        } else {
+//            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
+//        }
+//
+//        g.draw(buttonShape);
+//    }
 
     @Override
     protected JComponent createEditor() {
@@ -472,6 +473,7 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
 
         comboBoxEditor.setOpaque(false);
         comboBoxEditor.setBackground(Colors.transparentColor());
+        comboBoxEditor.setBorder(BorderFactory.createEmptyBorder());
 
         if (comboBoxEditor != null) {
             comboBoxEditor.addKeyListener(new KeyAdapter() {
@@ -528,7 +530,7 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
     @Override
     protected Component createPreviousButton() {
         if (previousButton == null) {
-            previousButton = createArrowButton(SwingConstants.SOUTH);
+            previousButton = createArrowButton(ModernButtonUI.Segment.Last);
             previousButton.setName("Spinner.previousButton");
             installPreviousButtonListeners(previousButton);
         }
@@ -538,18 +540,18 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
     @Override
     protected Component createNextButton() {
         if (nextButton == null) {
-            nextButton = createArrowButton(SwingConstants.NORTH);
+            nextButton = createArrowButton(ModernButtonUI.Segment.First);
             nextButton.setName("Spinner.nextButton");
             installNextButtonListeners(nextButton);
         }
         return nextButton;
     }
 
-    protected JButton createArrowButton(int side) {
+    protected JButton createArrowButton(ModernButtonUI.Segment segment) {
         JButton button = new JButton() {
-            @Override
-            public void paint(Graphics g) {
-            }
+//            @Override
+//            public void paint(Graphics g) {
+//            }
 
             @Override
             public Dimension getMinimumSize() {
@@ -570,12 +572,12 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                switch (side) {
-                    case NORTH:
+                switch (segment) {
+                    case First:
                         buttonNorthRollover = true;
                         buttonSouthRollover = false;
                         break;
-                    case SOUTH:
+                    case Last:
                         buttonSouthRollover = true;
                         buttonNorthRollover = false;
                         break;
@@ -585,11 +587,11 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
 
             @Override
             public void mouseExited(MouseEvent e) {
-                switch (side) {
-                    case NORTH:
+                switch (segment) {
+                    case First:
                         buttonNorthRollover = false;
                         break;
-                    case SOUTH:
+                    case Last:
                         buttonSouthRollover = false;
                         break;
                 }
@@ -598,12 +600,12 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
 
             @Override
             public void mousePressed(MouseEvent e) {
-                switch (side) {
-                    case NORTH:
+                switch (segment) {
+                    case First:
                         buttonNorthPressed = true;
                         buttonSouthPressed = false;
                         break;
-                    case SOUTH:
+                    case Last:
                         buttonSouthPressed = true;
                         buttonNorthPressed = false;
                         break;
@@ -613,24 +615,26 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                switch (side) {
-                    case NORTH:
+                switch (segment) {
+                    case First:
                         buttonNorthPressed = false;
                         break;
-                    case SOUTH:
+                    case Last:
                         buttonSouthPressed = false;
                         break;
                 }
                 spinner.repaint();
             }
         });
-        button.setUI(new ModernButtonUI() {
-            @Override
-            public Shape getShape(JComponent c) {
-                return getArrowAreaShape(spinner, side, true);
-
-            }
-        });
+        button.putClientProperty(ModernButtonUI.Style.Key, ModernButtonUI.Style.Attached);
+        button.putClientProperty(ModernButtonUI.Segment.Key, segment);
+//        button.setUI(new ModernButtonUI(button) {
+//            @Override
+//            public Shape getShape(JComponent c) {
+//                return getArrowAreaShape(spinner, side, true);
+//
+//            }
+//        });
 
         return button;
     }
@@ -664,12 +668,12 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
                 if (editor != null) {
                     editor.setBounds(rectangleForCurrentValue());
                 }
-                if (previousButton != null) {
-                    previousButton.setBounds(getArrowAreaShape(spinner, SwingConstants.SOUTH, false).getBounds());
-                }
-                if (nextButton != null) {
-                    nextButton.setBounds(getArrowAreaShape(spinner, SwingConstants.NORTH, false).getBounds());
-                }
+//                if (previousButton != null) {
+//                    previousButton.setBounds(getArrowAreaShape(spinner, SwingConstants.SOUTH, false).getBounds());
+//                }
+//                if (nextButton != null) {
+//                    nextButton.setBounds(getArrowAreaShape(spinner, SwingConstants.NORTH, false).getBounds());
+//                }
             }
         };
     }

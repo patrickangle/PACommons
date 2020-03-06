@@ -326,6 +326,6 @@ public class ModernUIUtilities {
     }
     
     public static boolean isDark() {
-        return !AquaUtils.isMac() || AquaUtils.getApplicationAppearance().isDark();
+        return true; //!AquaUtils.isMac() || AquaUtils.getApplicationAppearance().isDark();
     }
 }

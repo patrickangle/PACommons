@@ -16,32 +16,51 @@
  */
 package com.patrickangle.commons.laf.modern;
 
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JWindow;
+import com.patrickangle.commons.laf.modern.colors.AbstractModernColors;
+import com.patrickangle.commons.laf.modern.colors.MacModernColors;
+import com.patrickangle.commons.laf.modern.util.ModernColors;
+import com.patrickangle.commons.util.Colors;
+import com.patrickangle.commons.util.OperatingSystems;
+import java.awt.Color;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.basic.BasicLookAndFeel;
 
 /**
- * 
+ *
  * @author patrickangle
  */
 public final class ModernLookAndFeel extends BasicLookAndFeel {
 
+    public static ModernColors colors;
+
+    static {
+        switch (OperatingSystems.current()) {
+            case Macintosh:
+                colors = new MacModernColors();
+                break;
+            default:
+                colors = new AbstractModernColors() {
+                    @Override
+                    public Color accentColor() {
+                        return Colors.richBlue();
+                    }
+                };
+        }
+    }
+
     public static final String NAME = "Modern";
 
     public ModernLookAndFeel() {
-        JDialog.setDefaultLookAndFeelDecorated(true);
-    JFrame.setDefaultLookAndFeelDecorated(true);
+//        JDialog.setDefaultLookAndFeelDecorated(true);
+//    JFrame.setDefaultLookAndFeelDecorated(true);
     }
-
 
     @Override
     public UIDefaults getDefaults() {
-            final UIDefaults defaults = super.getDefaults();
-            ModernUIUtilities.installLafDefaults(defaults);
+        final UIDefaults defaults = super.getDefaults();
+        ModernUIUtilities.installLafDefaults(defaults);
 
-            return defaults;
+        return defaults;
     }
 
     @Override

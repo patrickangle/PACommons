@@ -17,16 +17,6 @@
 package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.Pair;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_DISABLED_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND;
-import static com.patrickangle.commons.laf.modern.ui.ModernButtonUI.CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND;
 import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.CompatibleImageUtil;
 import com.patrickangle.commons.util.GraphicsHelpers;
@@ -44,7 +34,6 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.AbstractButton;
-import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
@@ -77,111 +66,111 @@ public class ModernUIComponentPainting {
     private final static Map<Pair<Shape, Color>, BufferedImage> cachedFills = new WeakHashMap<>();
     private final static Map<Pair<Shape, Color>, BufferedImage> cachedBorders = new WeakHashMap<>();
 
-    public static void paintComponentBackgroundFill(Graphics2D g, AbstractButton button, Shape buttonShape) {
-        final ButtonModel buttonModel = button.getModel();
-
-        if (button.isEnabled()) {
-            // Enabled
-            if (buttonModel.isPressed()) {
-                // Enabled + Pressed
-                if (buttonIsDefaultOrSelected(button)) {
-
-                    // Enabled + Pressed + Default or Selected
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY)
-                    ));
-                } else if (button.isFocusOwner()) {
-                    // Enabled + Pressed + In Focus
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY)
-                    ));
-                } else {
-                    // Enabled + Pressed + Normal
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
-                    ));
-                }
-            } else if (buttonModel.isRollover()) {
-                // Enabled + Hover
-                if (buttonIsDefaultOrSelected(button)) {
-                    // Enabled + Hover + Default or Selected
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY)
-                    ));
-                } else if (button.isFocusOwner()) {
-                    // Enabled + Hover + In Focus
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY)
-                    ));
-                } else {
-                    // Enabled + Hover + Normal
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY)
-                    ));
-                }
-            } else {
-                // Enabled + Normal
-                if (buttonIsDefaultOrSelected(button)) {
-                    // Enabled + Normal + Default or Selected
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY)
-                    ));
-                } else if (button.isFocusOwner()) {
-                    // Enabled + Normal + In Focus
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY)
-                    ));
-                } else {
-                    // Enabled + Normal + Normal
-                    g.setColor(getClientPropertyOrDefault(
-                            button,
-                            CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND,
-                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY)
-                    ));
-                }
-            }
-        } else {
-            // Disabled
-            g.setColor(getClientPropertyOrDefault(
-                    button,
-                    CPK_BUTTON_DISABLED_BACKGROUND,
-                    UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
-            ));
-        }
-
-        BufferedImage fill = cachedFills.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
-            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(
-                    (int) (button.getWidth() * ModernUIUtilities.getDisplayScale()),
-                    (int) (button.getHeight() * ModernUIUtilities.getDisplayScale()),
-                    BufferedImage.TRANSLUCENT);
-            Graphics2D g2 = bi.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-            g2.transform(ModernUIUtilities.getDisplayScaleTransform());
-
-            g2.setColor(pair.b);
-            g2.fill(pair.a);
-
-            return bi;
-        });
-        g.drawImage(fill, ModernUIUtilities.getDisplayScaleInverseTransform(), button);
-    }
+//    public static void paintComponentBackgroundFill(Graphics2D g, AbstractButton button, Shape buttonShape) {
+//        final ButtonModel buttonModel = button.getModel();
+//
+//        if (button.isEnabled()) {
+//            // Enabled
+//            if (buttonModel.isPressed()) {
+//                // Enabled + Pressed
+//                if (buttonIsDefaultOrSelected(button)) {
+//
+//                    // Enabled + Pressed + Default or Selected
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY)
+//                    ));
+//                } else if (button.isFocusOwner()) {
+//                    // Enabled + Pressed + In Focus
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY)
+//                    ));
+//                } else {
+//                    // Enabled + Pressed + Normal
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
+//                    ));
+//                }
+//            } else if (buttonModel.isRollover()) {
+//                // Enabled + Hover
+//                if (buttonIsDefaultOrSelected(button)) {
+//                    // Enabled + Hover + Default or Selected
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY)
+//                    ));
+//                } else if (button.isFocusOwner()) {
+//                    // Enabled + Hover + In Focus
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY)
+//                    ));
+//                } else {
+//                    // Enabled + Hover + Normal
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY)
+//                    ));
+//                }
+//            } else {
+//                // Enabled + Normal
+//                if (buttonIsDefaultOrSelected(button)) {
+//                    // Enabled + Normal + Default or Selected
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY)
+//                    ));
+//                } else if (button.isFocusOwner()) {
+//                    // Enabled + Normal + In Focus
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY)
+//                    ));
+//                } else {
+//                    // Enabled + Normal + Normal
+//                    g.setColor(getClientPropertyOrDefault(
+//                            button,
+//                            CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND,
+//                            UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY)
+//                    ));
+//                }
+//            }
+//        } else {
+//            // Disabled
+//            g.setColor(getClientPropertyOrDefault(
+//                    button,
+//                    CPK_BUTTON_DISABLED_BACKGROUND,
+//                    UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY)
+//            ));
+//        }
+//
+//        BufferedImage fill = cachedFills.computeIfAbsent(Pair.makePair(buttonShape, g.getColor()), (pair) -> {
+//            BufferedImage bi = CompatibleImageUtil.compatibleBufferedImage(
+//                    (int) (button.getWidth() * ModernUIUtilities.getDisplayScale()),
+//                    (int) (button.getHeight() * ModernUIUtilities.getDisplayScale()),
+//                    BufferedImage.TRANSLUCENT);
+//            Graphics2D g2 = bi.createGraphics();
+//            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+//            g2.transform(ModernUIUtilities.getDisplayScaleTransform());
+//
+//            g2.setColor(pair.b);
+//            g2.fill(pair.a);
+//
+//            return bi;
+//        });
+//        g.drawImage(fill, ModernUIUtilities.getDisplayScaleInverseTransform(), button);
+//    }
 
     public static void paintComponentBorderHighlight(Graphics2D g, AbstractButton button, Shape buttonShape) {
 

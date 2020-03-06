@@ -130,17 +130,17 @@ public class ModernToolBarUI extends BasicToolBarUI {
         }
 
         // Paint gradient
-        Window w = SwingUtilities.getWindowAncestor(c);
-//        if (w != null && w.isFocused()) {
-            // Only active windows get this extra affordance
-//            if (c.getHeight() != cachedHeight || cachedPaint == null) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            cachedPaint = new GradientTexturePaint(0, 0, Colors.transparentColor(Color.BLACK, 0f), 0, c.getHeight(), Colors.transparentColor(Color.BLACK, 0.2f));
-            cachedHeight = c.getHeight();
-            g2.setPaint(cachedPaint);
-            g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+//        Window w = SwingUtilities.getWindowAncestor(c);
+////        if (w != null && w.isFocused()) {
+//            // Only active windows get this extra affordance
+////            if (c.getHeight() != cachedHeight || cachedPaint == null) {
+//            Graphics2D g2 = (Graphics2D) g.create();
+//            cachedPaint = new GradientTexturePaint(0, 0, Colors.transparentColor(Color.BLACK, 0f), 0, c.getHeight(), Colors.transparentColor(Color.BLACK, 0.2f));
+//            cachedHeight = c.getHeight();
+//            g2.setPaint(cachedPaint);
+//            g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+//            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
 
 //            g2.setPaint(new NoisePaint(Colors.grey(0.2f), 0.01f, 0.01f));
 //            g2.fillRect(0, 0, c.getWidth(), c.getHeight());

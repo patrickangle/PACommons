@@ -16,25 +16,22 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.laf.modern.ModernLookAndFeel;
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
-import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
-import com.patrickangle.commons.laf.modern.ModernUIUtilities;
-import com.patrickangle.commons.util.GraphicsHelpers;
+import com.patrickangle.commons.laf.modern.borders.ModernComponentShadowFocusBorder;
+import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
+import com.patrickangle.commons.laf.modern.util.PaintingUtils;
+import com.patrickangle.commons.laf.modern.util.ShapeUtils;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 import javax.swing.AbstractButton;
-import javax.swing.ButtonModel;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
-import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -43,234 +40,163 @@ import javax.swing.plaf.basic.BasicButtonUI;
  * @author patrickangle
  */
 public class ModernButtonUI extends BasicButtonUI implements ModernShapedComponentUI {
-    
-    public final static String CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_DEFAULTORSELECTED_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_INFOCUS_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_PRESSED_NORMAL_BACKGROUND";
 
-    public final static String CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_DEFAULTORSELECTED_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_INFOCUS_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_HOVER_NORMAL_BACKGROUND";
+    protected static final Border DEFAULT_BORDER = new ModernComponentShadowFocusBorder();
+    protected static final int MINIMUM_HEIGHT = 19;
+    protected static final int MINIMUM_LEADING_TRAILING_AREA = 15;
 
-    public final static String CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_DEFAULTORSELECTED_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_INFOCUS_BACKGROUND";
-    public final static String CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND = "CPK_BUTTON_ENABLED_NORMAL_NORMAL_BACKGROUND";
+    public static enum Style {
+        Normal, Toolbar, Attached;
 
-    public final static String CPK_BUTTON_DISABLED_BACKGROUND = "CPK_BUTTON_DISABLED_BACKGROUND";
+        public static final String Key = Style.class.getName();
 
-    public static final String JBUTTON_TYPE_KEY = "JButton.buttonType";
-    public static final String JBUTTON_TYPE_NORMAL_VALUE = "normal";
-    public static final String JBUTTON_TYPE_QUIET_VALUE = "quiet";
-    public static final String JBUTTON_TYPE_HELP_VALUE = "help";
-
-    public static final String JBUTTON_SEGMENT_POSITION_KEY = "JButton.segmentPosition";
-    public static final String JBUTTON_SEGMENT_POSITION_ONLY_VALUE = "only";
-    public static final String JBUTTON_SEGMENT_POSITION_FIRST_VALUE = "first";
-    public static final String JBUTTON_SEGMENT_POSITION_MIDDLE_VALUE = "middle";
-    public static final String JBUTTON_SEGMENT_POSITION_LAST_VALUE = "last";
-
-    private static final int CORNER_DIAMETER = 8;
-    private static final int GENERAL_PADDING = 4;
-    private static final int LEADING_AND_TRAILING_PADDING = 12;
-
-    private static final Insets BUTTON_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING + LEADING_AND_TRAILING_PADDING, GENERAL_PADDING, GENERAL_PADDING + LEADING_AND_TRAILING_PADDING);
-
-    @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
-    public static ComponentUI createUI(JComponent c) {
-        return new ModernButtonUI();
-    }
-
-    @Override
-    protected void installDefaults(AbstractButton b) {
-        super.installDefaults(b);
-
-        b.setRolloverEnabled(true);
-        b.setOpaque(false);
-    }
-
-    @Override
-    public void paint(Graphics graphics, JComponent component) {
-        paintShape(graphics, component, getShape(component));
-        super.paint(graphics, component);
-    }
-    
-    
-
-    @Override
-    protected void paintText(Graphics g, AbstractButton component, Rectangle textRect, String text) {
-        if (JBUTTON_TYPE_HELP_VALUE.equals(component.getClientProperty(JBUTTON_TYPE_KEY))) {
-            if (component.getFont().getSize() != 14 || !component.getFont().isBold()) {
-                // Help buttons have a bold ? mark, and no other text.
-                component.setFont(component.getFont().deriveFont(Font.BOLD, 14f));
+        public static Style from(JComponent c) {
+            Object style = c.getClientProperty(Key);
+            if (style instanceof Style) {
+                return (Style) style;
+            } else {
+                return Normal;
             }
-
-            ModernUIComponentPainting.paintComponentText(g, component, textRect, "?", getTextShiftOffset());
-        } else {
-            ModernUIComponentPainting.paintComponentText(g, component, textRect, text, getTextShiftOffset());
         }
     }
 
-    public void paintShape(Graphics graphics, JComponent component, Shape buttonRect) {
-        final AbstractButton button = (AbstractButton) component;
+    public static enum Segment {
+        Only, First, Middle, Last;
 
-        final Graphics2D g = (Graphics2D) graphics.create();
-        GraphicsHelpers.enableAntialiasing(g);
-        GraphicsHelpers.enableStrokeNormalization(g);
+        public static final String Key = Segment.class.getName();
 
-        final ButtonModel buttonModel = button.getModel();
-
-        switch ((String) ModernUIUtilities.clientPropertyOrDefault(component, JBUTTON_TYPE_KEY, JBUTTON_TYPE_NORMAL_VALUE)) {
-            case JBUTTON_TYPE_QUIET_VALUE:
-                if (button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
-                    ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
-                }
-                break;
-
-            case JBUTTON_TYPE_HELP_VALUE:
-                ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
-                ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
-                ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
-                break;
-
-            case JBUTTON_TYPE_NORMAL_VALUE:
-            default:
-                ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
-                ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
-                ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
-                break;
-
+        public static Segment from(JComponent c) {
+            Object segment = c.getClientProperty(Key);
+            if (segment instanceof Segment) {
+                return (Segment) segment;
+            } else {
+                return Only;
+            }
         }
+    }
 
-//        if ((component.getClientProperty(JBUTTON_TYPE_KEY) == null || (boolean) component.getClientProperty(JBUTTON_TYPE_KEY) == false)) {
-//            ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, buttonRect);
-//        }
-//        
-//        
-//        
-//        if ((component.getClientProperty(JBUTTON_TYPE_KEY) == null || component.getClientProperty(JBUTTON_TYPE_KEY).equals(g)) || button.isEnabled() && (buttonModel.isPressed() || buttonModel.isRollover())) {
-//            ModernUIComponentPainting.paintComponentBackgroundFill(g, button, buttonRect);
-//        }
-//        if (component.getClientProperty(JBUTTON_TYPE_KEY) == null || component.getClientProperty(JBUTTON_TYPE_KEY) == false) {
-//            ModernUIComponentPainting.paintComponentBorderHighlight(g, button, buttonRect);
-//        }
+    private final AbstractButton button;
+
+    public ModernButtonUI(AbstractButton button) {
+        this.button = button;
+    }
+
+    @Override
+    public void installUI(JComponent c) {
+        super.installUI(c);
+
+        button.setRolloverEnabled(true);
+        button.setOpaque(false);
+    }
+
+    @Override
+    public void uninstallUI(JComponent c) {
+        super.uninstallUI(c);
+    }
+
+    @Override
+    public void paint(Graphics graphics, JComponent c) {
+        if (((AbstractButton) c).isBorderPainted()) {
+            paintShape(graphics, (AbstractButton) c, getShape(c));
+        }
+        super.paint(graphics, c);
+    }
+
+    protected void paintText(Graphics graphics, AbstractButton button, Rectangle textRect, String text) {
+        Graphics2D g = GraphicsUtils.configureGraphics(graphics);
+
+        PaintingUtils.paintText(g, button, textRect, text, getTextShiftOffset());
+
         g.dispose();
     }
 
-    public static ModernBasicBorder getDefaultBorder() {
-        return new ModernBasicBorder(BUTTON_INSETS);
+    protected void paintShape(Graphics graphics, AbstractButton button, Shape shape) {
+        Graphics2D g = GraphicsUtils.configureGraphics(graphics);
+
+        // Paint fill
+        g.translate(button.getBorder().getBorderInsets(button).left, button.getBorder().getBorderInsets(button).top);
+        g.setPaint(ModernLookAndFeel.colors.componentPaint(button));
+        g.fill(shape);
+
+        g.dispose();
     }
-    
 
-//    @Override
-    protected int getTextShiftOffset(JComponent c) {
-        String segmentValue = (String) c.getClientProperty(JBUTTON_SEGMENT_POSITION_KEY);
-        if (segmentValue != null && !segmentValue.equals(JBUTTON_SEGMENT_POSITION_ONLY_VALUE)) {
-            switch (segmentValue) {
-                case JBUTTON_SEGMENT_POSITION_FIRST_VALUE:
-                    return super.getTextShiftOffset() + (BUTTON_INSETS.right / 2);
-                case JBUTTON_SEGMENT_POSITION_LAST_VALUE:
-                    return super.getTextShiftOffset() + (BUTTON_INSETS.left / 2);
-            }
+    public static Border getDefaultBorder() {
+        return DEFAULT_BORDER;
+    }
+
+    public Shape getShape(JComponent c) {
+        float width = c.getWidth() - c.getBorder().getBorderInsets(c).left - c.getBorder().getBorderInsets(c).right;
+        float height = c.getHeight() - c.getBorder().getBorderInsets(c).top - c.getBorder().getBorderInsets(c).bottom;
+
+        switch (Style.from(c)) {
+            case Attached:
+                switch (Segment.from(c)) {
+                    case First:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.TopRight));
+                    case Middle:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of());
+                    case Last:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.BottomRight));
+                    case Only:
+                    default:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.TopRight, ShapeUtils.Corner.BottomRight));
+                }
+            case Normal:
+            case Toolbar:
+            default:
+                switch (Segment.from(c)) {
+                    case First:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.TopLeft, ShapeUtils.Corner.BottomLeft));
+                    case Middle:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of());
+                    case Last:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.TopRight, ShapeUtils.Corner.BottomRight));
+                    case Only:
+                    default:
+                        return ShapeUtils.roundedRectangle(0, 0, width, height, 3);
+                }
         }
+    }
 
-        return super.getTextShiftOffset(); //To change body of generated methods, choose Tools | Templates.
+    @Override
+    public Dimension getMinimumSize(JComponent c) {
+        switch (Style.from(c)) {
+            case Attached:
+                return super.getMinimumSize(c);
+            case Normal:
+            case Toolbar:
+            default:
+                return new Dimension(
+                super.getMinimumSize(c).width + (MINIMUM_LEADING_TRAILING_AREA * 2),
+                Math.max(MINIMUM_HEIGHT, super.getMinimumSize(c).height) + c.getBorder().getBorderInsets(c).top + c.getBorder().getBorderInsets(c).bottom
+        );
+        }
+    }
+
+    @Override
+    public Dimension getPreferredSize(JComponent c) {
+        switch (Style.from(c)) {
+            case Attached:
+                return super.getPreferredSize(c);
+            case Normal:
+            case Toolbar:
+            default:
+                return new Dimension(
+                        super.getPreferredSize(c).width + (MINIMUM_LEADING_TRAILING_AREA * 2),
+                        Math.max(MINIMUM_HEIGHT, super.getPreferredSize(c).height) + c.getBorder().getBorderInsets(c).top + c.getBorder().getBorderInsets(c).bottom
+                );
+        }
+    }
+
+    public static ComponentUI createUI(JComponent component) {
+        return new ModernButtonUI((AbstractButton) component);
     }
 
     public static void installIntoDefaults(UIDefaults defaults) {
         defaults.put("ButtonUI", ModernButtonUI.class.getName());
         defaults.put("ToggleButtonUI", ModernButtonUI.class.getName());
-        defaults.put("Button.border", ModernButtonUI.getDefaultBorder());
-    }
-
-    @Override
-    public Shape getShape(JComponent c) {
-        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
-
-        Shape buttonRect = new RoundRectangle2D.Double(
-                buttonBorderInsets.left - BUTTON_INSETS.left,
-                buttonBorderInsets.top - BUTTON_INSETS.top,
-                c.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right,
-                c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom,
-                CORNER_DIAMETER,
-                CORNER_DIAMETER);
-
-        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
-            int dims = Math.min(c.getWidth(), c.getHeight());
-            int insetDiffs = Math.max(-buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right, -buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom);
-            int origin = Math.max(buttonBorderInsets.left - BUTTON_INSETS.left, buttonBorderInsets.top - BUTTON_INSETS.top);
-            int originX = origin + ((c.getWidth() - dims) / 2);
-            buttonRect = new RoundRectangle2D.Double(
-                    originX, origin,
-                    dims + insetDiffs, dims + insetDiffs,
-                    dims, dims
-            );
-        } else {
-
-            String segmentValue = (String) c.getClientProperty(JBUTTON_SEGMENT_POSITION_KEY);
-            if (segmentValue != null && !segmentValue.equals(JBUTTON_SEGMENT_POSITION_ONLY_VALUE)) {
-                switch (segmentValue) {
-                    case JBUTTON_SEGMENT_POSITION_FIRST_VALUE:
-                        Shape addonRect = new Rectangle2D.Double(
-                                buttonRect.getBounds().x + (buttonRect.getBounds().width / 2),
-                                buttonRect.getBounds().y,
-                                (buttonRect.getBounds().width / 2) + buttonBorderInsets.right,
-                                buttonRect.getBounds().height);
-
-                        Area compositeShape = new Area(buttonRect);
-                        compositeShape.add(new Area(addonRect));
-
-                        buttonRect = compositeShape;
-
-                        break;
-                    case JBUTTON_SEGMENT_POSITION_MIDDLE_VALUE:
-                        Shape addonRect2 = new Rectangle2D.Double(
-                                buttonRect.getBounds().x - buttonBorderInsets.left,
-                                buttonRect.getBounds().y,
-                                buttonRect.getBounds().width + buttonBorderInsets.left + buttonBorderInsets.right,
-                                buttonRect.getBounds().height);
-
-                        Area compositeShape2 = new Area(buttonRect);
-                        compositeShape2.add(new Area(addonRect2));
-
-                        buttonRect = compositeShape2;
-                        break;
-                    case JBUTTON_SEGMENT_POSITION_LAST_VALUE:
-                        Shape addonRect3 = new Rectangle2D.Double(
-                                buttonRect.getBounds().x - buttonBorderInsets.left,
-                                buttonRect.getBounds().y,
-                                (buttonRect.getBounds().width / 2) + buttonBorderInsets.left,
-                                buttonRect.getBounds().height);
-
-                        Area compositeShape3 = new Area(buttonRect);
-                        compositeShape3.add(new Area(addonRect3));
-
-                        buttonRect = compositeShape3;
-                        break;
-                }
-            } else {
-                // Do nothing, the shape is already correct.
-            }
-        }
-        return buttonRect;
-    }
-
-//    @Override
-//    public Dimension getPreferredSize(JComponent c) {
-////        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
-////            return new Dimension (28, 28);
-////        } else {
-////        return new Dimension(super.getPreferredSize(c).width, 28);
-////        }
-//return super.getPreferredSize(c);
-//    }
-
-    @Override
-    public Dimension getMinimumSize(JComponent c) {
-//        if (JBUTTON_TYPE_HELP_VALUE.equals(c.getClientProperty(JBUTTON_TYPE_KEY))) {
-//            return new Dimension (28, 28);
-//        } else {
-        return new Dimension(super.getMinimumSize(c).width, 28);
-//        }
-
+        defaults.put("Button.border", DEFAULT_BORDER);
+        defaults.put("ToggleButton.border", DEFAULT_BORDER);
     }
 }

@@ -48,8 +48,8 @@ public class LafTest extends javax.swing.JFrame {
 
         this.getRootPane().setDoubleBuffered(true);
 
-        jToggleButton3.putClientProperty(ModernButtonUI.JBUTTON_SEGMENT_POSITION_KEY, ModernButtonUI.JBUTTON_SEGMENT_POSITION_FIRST_VALUE);
-        jToggleButton4.putClientProperty(ModernButtonUI.JBUTTON_SEGMENT_POSITION_KEY, ModernButtonUI.JBUTTON_SEGMENT_POSITION_LAST_VALUE);
+//        jToggleButton3.putClientProperty(ModernButtonUI.JBUTTON_SEGMENT_POSITION_KEY, ModernButtonUI.JBUTTON_SEGMENT_POSITION_FIRST_VALUE);
+//        jToggleButton4.putClientProperty(ModernButtonUI.JBUTTON_SEGMENT_POSITION_KEY, ModernButtonUI.JBUTTON_SEGMENT_POSITION_LAST_VALUE);
 
         HelpPopoverEntry.assign(jToggleButton3, "My fabulous tip", "This is where you learn about the thing!", null);
         HelpPopoverEntry.assign(jToggleButton4, "My other good tip", "This is where you learn about the thing!", "");
