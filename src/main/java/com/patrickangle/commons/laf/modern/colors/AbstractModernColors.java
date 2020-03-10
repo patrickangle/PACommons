@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.laf.modern.colors;
 
-import com.patrickangle.commons.laf.modern.util.ModernColors;
 import com.patrickangle.commons.util.Colors;
 import java.awt.Color;
 import java.awt.GradientPaint;

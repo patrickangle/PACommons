@@ -16,40 +16,33 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
-import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
-import com.patrickangle.commons.laf.modern.icons.ModernCheckIcon;
+import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import javax.swing.AbstractButton;
+import java.awt.Graphics2D;
 import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicCheckBoxUI;
+import javax.swing.plaf.basic.BasicLabelUI;
 
 /**
  *
  * @author patrickangle
  */
-public class ModernCheckBoxUI extends BasicCheckBoxUI {
-    @SuppressWarnings("MethodOverridesStaticMethodOfSuperclass")
-    public static ComponentUI createUI(JComponent c) {
-        return new ModernCheckBoxUI();
+public class ModernLabelUI extends BasicLabelUI {
+    public static ComponentUI createUI(JComponent component) {
+        return new ModernLabelUI();
     }
 
     @Override
-    protected void installDefaults(AbstractButton b) {
-        super.installDefaults(b);
-        b.setRolloverEnabled(true);
-        icon = new ModernCheckIcon();        
-        b.setOpaque(false);
-    }
-
-    @Override
-    protected void paintText(Graphics g, AbstractButton b, Rectangle textRect, String text) {
-        ModernUIComponentPainting.paintComponentText(g, b, textRect, text, getTextShiftOffset());
+    public void paint(Graphics graphics, JComponent c) {
+        Graphics2D g = GraphicsUtils.configureGraphics(graphics);
+        super.paint(g, c);
+        g.dispose();
     }
     
+    
+
     public static void installIntoDefaults(UIDefaults defaults) {
-        defaults.put("CheckBoxUI", ModernCheckBoxUI.class.getName());
+        defaults.put("LabelUI", ModernLabelUI.class.getName());
     }
 }

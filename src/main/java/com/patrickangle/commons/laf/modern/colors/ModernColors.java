@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.laf.modern.util;
+package com.patrickangle.commons.laf.modern.colors;
 
+import com.patrickangle.commons.laf.modern.util.SwingUtilities;
 import java.awt.Color;
 import java.awt.Paint;
 import javax.swing.AbstractButton;

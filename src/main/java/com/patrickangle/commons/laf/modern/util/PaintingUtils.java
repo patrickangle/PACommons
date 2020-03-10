@@ -20,7 +20,6 @@ import com.patrickangle.commons.awt.strokes.EdgeStroke;
 import com.patrickangle.commons.laf.modern.ModernLookAndFeel;
 import com.patrickangle.commons.util.Colors;
 import java.awt.FontMetrics;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -34,6 +33,7 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
  */
 public class PaintingUtils {
     public static final int FOCUSABLE_COMPONENT_INSET_SIZE = 3;
+    
 
     public static void paintShadow(Graphics2D g, JComponent c, Shape shape) {
         float alpha = (float) ModernLookAndFeel.colors.componentShadowColor(c).getAlpha() / 255f / (float) FOCUSABLE_COMPONENT_INSET_SIZE;
@@ -45,7 +45,11 @@ public class PaintingUtils {
     }
 
     public static void paintText(Graphics2D g, JComponent c, Rectangle textRect, String text, int textShiftOffset) {
-        g.setPaint(ModernLookAndFeel.colors.componentNormalTextPaint(c));
+        if (c.isEnabled()) {
+            g.setPaint(ModernLookAndFeel.colors.componentNormalTextPaint(c));
+        } else {
+            g.setPaint(ModernLookAndFeel.colors.componentDisabledTextPaint(c));
+        }
         FontMetrics metrics = c.getFontMetrics(c.getFont());
         BasicGraphicsUtils.drawString(c, g, text, textRect.x + textShiftOffset, textRect.y + textShiftOffset + metrics.getAscent());
     }

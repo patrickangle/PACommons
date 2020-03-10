@@ -19,7 +19,7 @@ package com.patrickangle.commons.laf.modern.ui;
 import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
 import com.patrickangle.commons.laf.modern.ModernUIColors;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
-import com.patrickangle.commons.laf.modern.ui.icon.TemplateImageIcon;
+import com.patrickangle.commons.laf.modern.icons.TemplateImageIcon;
 import com.patrickangle.commons.laf.modern.ui.util.BackgroundTextPair;
 import com.patrickangle.commons.laf.modern.ui.util.LightDarkPair;
 import com.patrickangle.commons.util.AquaUtils;

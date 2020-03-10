@@ -18,8 +18,10 @@ package com.patrickangle.commons.laf.modern.borders;
 
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
+import com.patrickangle.commons.laf.modern.ui.ModernSpinnerUI;
 import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
 import com.patrickangle.commons.laf.modern.util.PaintingUtils;
+import com.patrickangle.commons.laf.modern.util.SwingUtilities;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +30,10 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
+import static javax.swing.Spring.height;
+import static javax.swing.Spring.width;
 import javax.swing.border.Border;
 
 /**
@@ -58,7 +64,7 @@ public class ModernComponentShadowFocusBorder implements Border {
         }
         g.translate(x + INSETS.left, y + INSETS.top);
 
-        if (c.isFocusOwner()) {
+        if (c.isFocusOwner() || (c instanceof JSpinner && SwingUtilities.spinnerIsFocusedOrSelected((JSpinner) c))) {
             // The component is the focus owner, so draw the focus ring.
             PaintingUtils.paintFocusRing(g, component, shape);
         } else if (c instanceof AbstractButton) {
@@ -79,4 +85,6 @@ public class ModernComponentShadowFocusBorder implements Border {
     public boolean isBorderOpaque() {
         return false;
     }
+    
+    
 }

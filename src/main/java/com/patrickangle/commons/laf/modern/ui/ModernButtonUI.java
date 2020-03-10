@@ -22,8 +22,7 @@ import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
 import com.patrickangle.commons.laf.modern.borders.ModernComponentShadowFocusBorder;
 import static com.patrickangle.commons.laf.modern.ui.ToolbarButtonUI.getTextColor;
-import com.patrickangle.commons.laf.modern.ui.icon.TemplateImageIcon;
-import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
+import com.patrickangle.commons.laf.modern.icons.TemplateImageIcon;
 import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
 import com.patrickangle.commons.laf.modern.util.PaintingUtils;
 import com.patrickangle.commons.laf.modern.util.ShapeUtils;
@@ -35,20 +34,16 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.Window;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.WeakHashMap;
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -59,16 +54,13 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class ModernButtonUI extends BasicButtonUI implements ModernShapedComponentUI {
 
     protected static final Border DEFAULT_BORDER = new ModernComponentShadowFocusBorder();
+    protected static final Border TOOLBAR_BORDER = new EmptyBorder(0, 4, 0, 4);
     protected static final int MINIMUM_HEIGHT = 19;
     protected static final int MINIMUM_LEADING_TRAILING_AREA = 15;
 
-    protected static final int TOOLBAR_BUTTON_AREA_HEIGHT = 24;
+    protected static final int TOOLBAR_BUTTON_AREA_HEIGHT = 21;
 
-    private WindowAdapter windowFocusListener;
 
-    private HierarchyListener buttonHierarchyListener;
-
-    protected Window currentWindow;
 
     public static enum Style {
         Normal, Toolbar, Attached;
@@ -92,7 +84,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         public static IconStyle from(JComponent c) {
             Object style = c.getClientProperty(Key);
-            if (style instanceof Style) {
+            if (style instanceof IconStyle) {
                 return (IconStyle) style;
             } else {
                 return Normal;
@@ -107,7 +99,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         public static DropdownStyle from(JComponent c) {
             Object style = c.getClientProperty(Key);
-            if (style instanceof Style) {
+            if (style instanceof DropdownStyle) {
                 return (DropdownStyle) style;
             } else {
                 return None;
@@ -138,34 +130,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
     @Override
     public void installUI(JComponent c) {
-        windowFocusListener = new WindowAdapter() {
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                c.repaint();
-            }
-
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                c.repaint();
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                c.repaint();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                c.repaint();
-            }
-        };
-
-        buttonHierarchyListener = new HierarchyListener() {
-            @Override
-            public void hierarchyChanged(HierarchyEvent e) {
-                updateFocusListener(button);
-            }
-        };
+        
 
         super.installUI(c);
 
@@ -179,41 +144,11 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     }
 
     @Override
-    protected void installListeners(AbstractButton b) {
-        super.installListeners(b);
-        b.addHierarchyListener(buttonHierarchyListener);
-    }
-
-    @Override
-    protected void uninstallListeners(AbstractButton b) {
-        super.uninstallListeners(b);
-        uninstallFocusListener();
-        b.removeHierarchyListener(buttonHierarchyListener);
-    }
-
-    protected void updateFocusListener(AbstractButton b) {
-        uninstallFocusListener();
-
-        Window w = javax.swing.SwingUtilities.getWindowAncestor(b);
-        if (w != null) {
-            this.currentWindow = w;
-            w.addWindowListener(windowFocusListener);
-        }
-    }
-
-    protected void uninstallFocusListener() {
-        if (currentWindow != null) {
-            currentWindow.removeWindowListener(windowFocusListener);
-        }
-    }
-
-    @Override
     public void update(Graphics g, JComponent c) {
         if (Style.from(c) == Style.Toolbar) {
-            System.out.println("Toolbar!");
-            boolean segmented = Segment.from(c) != Segment.Only;
-            c.setBorder(BorderFactory.createEmptyBorder(4, segmented ? 0 : 8, 4, segmented ? 0 : 8));
+            c.setBorder(TOOLBAR_BORDER);
             ((AbstractButton) c).setVerticalAlignment(SwingConstants.CENTER);
+            ((AbstractButton) c).setVerticalTextPosition(SwingConstants.CENTER);
             c.setFont(UIManager.getFont("Button.font").deriveFont(12f));
         }
         super.update(g, c);
@@ -264,7 +199,6 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         Graphics2D g = GraphicsUtils.configureGraphics(graphics);
 
         // Paint fill
-        g.translate(button.getBorder().getBorderInsets(button).left, button.getBorder().getBorderInsets(button).top);
         g.setPaint(ModernLookAndFeel.colors.componentToolbarPaint(button));
         g.fill(shape);
 
@@ -306,10 +240,19 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         if (icon != null) {
             int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
             int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
+            
+//            if (Style.from(component) == Style.Attached) {
+//                x = (component.getWidth() - icon.getIconWidth()) / 2;
+//                y = (component.getHeight()- icon.getIconHeight()) / 2;
+//            }
 
             icon.paintIcon(component, graphics, x, y);
         }
     }
+    
+    protected static WeakHashMap<Icon, Icon> cachedSelectedTemplateIcons = new WeakHashMap<>();
+    protected static WeakHashMap<Icon, Icon> cachedEnabledTemplateIcons = new WeakHashMap<>();
+    protected static WeakHashMap<Icon, Icon> cachedDisabledTemplateIcons = new WeakHashMap<>();
 
     protected static Icon getIcon(AbstractButton button) {
         Icon icon = button.getIcon();
@@ -319,11 +262,17 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         if (IconStyle.from(button) == IconStyle.Template) {
             if (SwingUtilities.buttonIsDefaultOrSelected(button)) {
-                return new TemplateImageIcon(icon, ModernLookAndFeel.colors.componentSelectedPaint(button));
+                return cachedSelectedTemplateIcons.computeIfAbsent(icon, (t) -> {
+                    return new TemplateImageIcon(t, ModernLookAndFeel.colors.componentSelectedPaint(button));
+                });
             } else if (button.isEnabled()) {
-                return new TemplateImageIcon(icon, ModernLookAndFeel.colors.componentNormalTextPaint(button));
+                return cachedEnabledTemplateIcons.computeIfAbsent(icon, (t) -> {
+                    return new TemplateImageIcon(t, ModernLookAndFeel.colors.componentNormalTextPaint(button));
+                });
             } else {
-                return new TemplateImageIcon(icon, ModernLookAndFeel.colors.componentDisabledTextPaint(button));
+                return cachedDisabledTemplateIcons.computeIfAbsent(icon, (t) -> {
+                    return new TemplateImageIcon(t, ModernLookAndFeel.colors.componentDisabledTextPaint(button));
+                });
             }
         } else {
             return icon;
@@ -344,6 +293,11 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     public Shape getShape(JComponent c) {
         float width = c.getWidth() - c.getBorder().getBorderInsets(c).left - c.getBorder().getBorderInsets(c).right;
         float height = c.getHeight() - c.getBorder().getBorderInsets(c).top - c.getBorder().getBorderInsets(c).bottom;
+        
+        if (Style.from(c) == Style.Toolbar) {
+            width = c.getWidth();
+            height = c.getHeight();
+        }
 
         switch (Style.from(c)) {
             case Attached:

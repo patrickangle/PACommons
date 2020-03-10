@@ -17,7 +17,7 @@
 package com.patrickangle.commons.laf.modern.ui;
 
 import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
-import com.patrickangle.commons.laf.modern.ui.icon.ModernRadioIcon;
+import com.patrickangle.commons.laf.modern.icons.ModernRadioIcon;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.AbstractButton;

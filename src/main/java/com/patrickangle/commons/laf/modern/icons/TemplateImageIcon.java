@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.patrickangle.commons.laf.modern.ui.icon;
+package com.patrickangle.commons.laf.modern.icons;
 
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
 import com.patrickangle.commons.util.CompatibleImageUtil;
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -42,7 +43,11 @@ public class TemplateImageIcon implements Icon {
         
         templateImage = CompatibleImageUtil.compatibleBufferedImage((int) (icon.getIconWidth() * ModernUIUtilities.getDisplayScale()), (int) (icon.getIconHeight() * ModernUIUtilities.getDisplayScale()), BufferedImage.TRANSLUCENT);
         Graphics2D g = templateImage.createGraphics();
-        g.setPaint(paint);
+        if (paint instanceof Color) {
+            g.setColor((Color) paint);
+        } else {
+            g.setPaint(paint);
+        }
         g.scale(ModernUIUtilities.getDisplayScale(), ModernUIUtilities.getDisplayScale());
         g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
         g.setComposite(AlphaComposite.DstIn);

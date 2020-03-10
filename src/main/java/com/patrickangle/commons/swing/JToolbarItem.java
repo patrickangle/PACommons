@@ -17,11 +17,14 @@
 package com.patrickangle.commons.swing;
 
 import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
-import com.patrickangle.commons.laf.modern.ui.ToolbarButtonUI;
-import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
+import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
+import com.patrickangle.commons.laf.modern.util.SwingUtilities;
 import com.patrickangle.commons.util.Colors;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,33 +46,41 @@ import javax.swing.border.EmptyBorder;
  */
 public class JToolbarItem extends JPanel {
     private static final Color LABEL_COLOR_ACTIVE = Colors.grey(0.7f);
-    private static final Color LABEL_COLOR_INACTIVE = Colors.grey(0.43f);
     private static final float LABEL_FONT_SIZE = 10f;
     
     private AbstractButton button;
     private JLabel label;
     
     public JToolbarItem(Action action) {
-        this(action, ToolbarConstants.ButtonUIStyle.Default);
+        this(action, false);
     }
-    
-    public JToolbarItem(Action action, boolean toggleable) {
-        this(action, false, ToolbarConstants.ButtonUIStyle.Default);
-    }
-    
+
     public JToolbarItem(Icon icon, String label, ActionListener actionListener) {
-        this(icon, label, actionListener, ToolbarConstants.ButtonUIStyle.Default);
+        this(icon, label, actionListener, false);
+    }
+    
+    public JToolbarItem(Icon icon, String label, ActionListener actionListener, ModernButtonUI.Segment segment) {
+        this(icon, label, actionListener, false, segment);
     }
     
     public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable) {
-        this(icon, label, actionListener, toggleable, ToolbarConstants.ButtonUIStyle.Default);
+        this(icon, label, actionListener, toggleable, ModernButtonUI.Segment.Only);
     }
     
-    public JToolbarItem(Action action, ToolbarConstants.ButtonUIStyle style) {
-        this(action, false, style);
+    public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable, ModernButtonUI.Segment segment) {
+        this(new AbstractAction(label, icon) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actionListener.actionPerformed(e);
+            }
+        }, toggleable, segment);
     }
     
-    public JToolbarItem(Action action, boolean toggleable, ToolbarConstants.ButtonUIStyle style) {
+    public JToolbarItem(Action action, boolean toggleable) {
+        this(action, toggleable, ModernButtonUI.Segment.Only);
+    }
+    
+    public JToolbarItem(Action action, boolean toggleable, ModernButtonUI.Segment segment) {
         super();
         
         this.setOpaque(false);
@@ -79,45 +90,20 @@ public class JToolbarItem extends JPanel {
         action.putValue(Action.NAME, "");
         
         this.button = toggleable ? new JToggleButton(action) : new JButton(action);
-//        this.button.putClientProperty(ToolbarConstants.ButtonUIStyle.KEY, style);
-//        this.button.setUI(new ToolbarButtonUI());
-        if (style == ToolbarConstants.ButtonUIStyle.Dropdown) {
-            this.button.putClientProperty(ModernButtonUI.DropdownStyle.Key, ModernButtonUI.DropdownStyle.Dropdown);
-        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedFirst) {
-            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.First);
-        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedMiddle) {
-            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.Middle);
-        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedLast) {
-            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.Last);
-        }
         this.button.putClientProperty(ModernButtonUI.Style.Key, ModernButtonUI.Style.Toolbar);
-        this.button.putClientProperty(ModernButtonUI.IconStyle.Key, ModernButtonUI.IconStyle.Template);
+        this.button.putClientProperty(ModernButtonUI.Segment.Key, segment);
         this.button.setFocusable(false);
-//        button.setText(actionName);
         this.label = new JLabel(actionName);
         this.label.setFocusable(false);
         this.label.setForeground(LABEL_COLOR_ACTIVE);
         this.label.setFont(this.label.getFont().deriveFont(LABEL_FONT_SIZE));
         
-        this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, (style == ToolbarConstants.ButtonUIStyle.SegmentedFirst || style == ToolbarConstants.ButtonUIStyle.SegmentedMiddle || style == ToolbarConstants.ButtonUIStyle.SegmentedLast || style == ToolbarConstants.ButtonUIStyle.Dropdown) ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(4, 0, 0, 0), 0, 0));
+        this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, ((segment != ModernButtonUI.Segment.Only) ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE), new Insets(0, 0, 0, 0), 0, 0));
+        this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         
         this.setMaximumSize(this.getLayout().minimumLayoutSize(this));
         this.setSize(this.getLayout().minimumLayoutSize(this));
-        this.setBorder(new EmptyBorder(2, 6, 2, 6));
-    }
-    
-    public JToolbarItem(Icon icon, String label, ActionListener actionListener, ToolbarConstants.ButtonUIStyle style) {
-        this(icon, label, actionListener, false, style);
-    }
-    
-    public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable, ToolbarConstants.ButtonUIStyle style) {
-        this(new AbstractAction(label, icon) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actionListener.actionPerformed(e);
-            }
-        }, toggleable, style);
+        this.setBorder(((segment != ModernButtonUI.Segment.Only) ? new EmptyBorder(2, 0, 2, 0) : new EmptyBorder(2, 6, 2, 6)));
     }
 
     public AbstractButton getButton() {
@@ -130,4 +116,18 @@ public class JToolbarItem extends JPanel {
         this.setMinimumSize(new Dimension(width, this.getMinimumSize().height));
         this.setPreferredSize(new Dimension(width, this.getPreferredSize().height));
     }
+
+    @Override
+    public void paint(Graphics graphics) {
+        Graphics2D g = GraphicsUtils.configureGraphics(graphics);
+        
+        if (!SwingUtilities.componentIsEnabledAndWindowInFocus(this)) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+        
+        super.paint(g);
+        g.dispose();
+    }
+    
+    
 }

@@ -24,6 +24,7 @@ import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxMenuItemUI;
 import com.patrickangle.commons.laf.modern.ui.ModernCheckBoxUI;
 import com.patrickangle.commons.laf.modern.ui.ModernComboBoxUI;
+import com.patrickangle.commons.laf.modern.ui.ModernLabelUI;
 import com.patrickangle.commons.laf.modern.ui.ModernListUI;
 import com.patrickangle.commons.laf.modern.ui.ModernMenuItemUI;
 import com.patrickangle.commons.laf.modern.ui.ModernOptionPaneUI;
@@ -255,7 +256,9 @@ public class ModernUIUtilities {
         ModernCheckBoxMenuItemUI.installIntoDefaults(defaults);
         ModernRadioButtonMenuItemUI.installIntoDefaults(defaults);
         
-        defaults.put("LabelUI", BasicLabelUI.class.getName());
+        ModernLabelUI.installIntoDefaults(defaults);
+        
+//        defaults.put("LabelUI", BasicLabelUI.class.getName());
 
         if (OperatingSystems.current() == OperatingSystems.Macintosh) {
 //            defaults.put("RootPaneUI", "com.apple.laf.AquaRootPaneUI");

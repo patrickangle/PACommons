@@ -18,7 +18,7 @@ package com.patrickangle.commons.laf.modern;
 
 import com.patrickangle.commons.laf.modern.colors.AbstractModernColors;
 import com.patrickangle.commons.laf.modern.colors.MacModernColors;
-import com.patrickangle.commons.laf.modern.util.ModernColors;
+import com.patrickangle.commons.laf.modern.colors.ModernColors;
 import com.patrickangle.commons.util.Colors;
 import com.patrickangle.commons.util.OperatingSystems;
 import java.awt.Color;

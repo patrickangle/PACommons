@@ -25,8 +25,16 @@ import java.awt.Color;
  * @author patrickangle
  */
 public class MacModernColors extends AbstractModernColors {
+    private static int lastUpdate = 0;
+    private static Color accentColor;
+    
     @Override
     public Color accentColor() {
-        return Colors.withBrightness(AquaUtils.getAccentColor(), 0.7f);
+        // There is a cost associated with this call, so we actually cache the result and update the color if it has been more than 5 seconds since the last update. Not perfect, but better than hundreds of times a second.
+        if (accentColor == null || (lastUpdate + 5000) < System.currentTimeMillis()) {
+            accentColor = Colors.withBrightness(AquaUtils.getAccentColor(), 0.7f);
+        }
+        
+        return accentColor;
     }
 }
