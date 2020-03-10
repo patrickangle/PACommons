@@ -17,6 +17,7 @@
 package com.patrickangle.commons.laf.modern.borders;
 
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
+import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
 import com.patrickangle.commons.laf.modern.util.PaintingUtils;
 import java.awt.Component;
@@ -39,6 +40,12 @@ public class ModernComponentShadowFocusBorder implements Border {
     @Override
     public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
         JComponent component = (JComponent) c;
+        
+        if (c instanceof AbstractButton && ModernButtonUI.Style.from(component) == ModernButtonUI.Style.Toolbar) {
+            // Toolbar buttons don't get their border painted, instead we just use it for size. TODO: can this be done by removing the border from the button?
+            return;
+        }
+        
         Graphics2D g = GraphicsUtils.configureGraphics(graphics);
 
         // The shape will have an origin at [0, 0]. We will translate accordingly.

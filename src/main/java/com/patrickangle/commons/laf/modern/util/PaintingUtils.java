@@ -57,7 +57,7 @@ public class PaintingUtils {
             }
         }
         g.setPaint(ModernLookAndFeel.colors.componentFocusRingPaint(c));
-        g.setStroke(new EdgeStroke(FOCUSABLE_COMPONENT_INSET_SIZE - 1, EdgeStroke.Align.Outside, EdgeStroke.Cap.Round, EdgeStroke.Join.Round));
+        g.setStroke(new EdgeStroke(FOCUSABLE_COMPONENT_INSET_SIZE, EdgeStroke.Align.Outside, EdgeStroke.Cap.Round, EdgeStroke.Join.Round));
         g.draw(shape);
     }
 }

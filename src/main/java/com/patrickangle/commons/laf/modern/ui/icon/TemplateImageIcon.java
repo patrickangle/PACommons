@@ -19,10 +19,10 @@ package com.patrickangle.commons.laf.modern.ui.icon;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
 import com.patrickangle.commons.util.CompatibleImageUtil;
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.image.BufferedImage;
 import javax.swing.Icon;
 
@@ -32,17 +32,17 @@ import javax.swing.Icon;
  */
 public class TemplateImageIcon implements Icon {
     private final Icon icon;
-    private final Color color;
+    private final Paint paint;
     
     private final BufferedImage templateImage;
     
-    public TemplateImageIcon(Icon icon, Color color) {
+    public TemplateImageIcon(Icon icon, Paint paint) {
         this.icon = icon;
-        this.color = color;
+        this.paint = paint;
         
         templateImage = CompatibleImageUtil.compatibleBufferedImage((int) (icon.getIconWidth() * ModernUIUtilities.getDisplayScale()), (int) (icon.getIconHeight() * ModernUIUtilities.getDisplayScale()), BufferedImage.TRANSLUCENT);
         Graphics2D g = templateImage.createGraphics();
-        g.setColor(color);
+        g.setPaint(paint);
         g.scale(ModernUIUtilities.getDisplayScale(), ModernUIUtilities.getDisplayScale());
         g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
         g.setComposite(AlphaComposite.DstIn);

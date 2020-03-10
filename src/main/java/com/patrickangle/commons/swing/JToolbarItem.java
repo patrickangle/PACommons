@@ -16,6 +16,7 @@
  */
 package com.patrickangle.commons.swing;
 
+import com.patrickangle.commons.laf.modern.ui.ModernButtonUI;
 import com.patrickangle.commons.laf.modern.ui.ToolbarButtonUI;
 import com.patrickangle.commons.laf.modern.ui.util.ToolbarConstants;
 import com.patrickangle.commons.util.Colors;
@@ -78,9 +79,21 @@ public class JToolbarItem extends JPanel {
         action.putValue(Action.NAME, "");
         
         this.button = toggleable ? new JToggleButton(action) : new JButton(action);
-        this.button.putClientProperty(ToolbarConstants.ButtonUIStyle.KEY, style);
-        this.button.setUI(new ToolbarButtonUI());
+//        this.button.putClientProperty(ToolbarConstants.ButtonUIStyle.KEY, style);
+//        this.button.setUI(new ToolbarButtonUI());
+        if (style == ToolbarConstants.ButtonUIStyle.Dropdown) {
+            this.button.putClientProperty(ModernButtonUI.DropdownStyle.Key, ModernButtonUI.DropdownStyle.Dropdown);
+        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedFirst) {
+            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.First);
+        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedMiddle) {
+            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.Middle);
+        } else if (style == ToolbarConstants.ButtonUIStyle.SegmentedLast) {
+            this.button.putClientProperty(ModernButtonUI.Segment.Key, ModernButtonUI.Segment.Last);
+        }
+        this.button.putClientProperty(ModernButtonUI.Style.Key, ModernButtonUI.Style.Toolbar);
+        this.button.putClientProperty(ModernButtonUI.IconStyle.Key, ModernButtonUI.IconStyle.Template);
         this.button.setFocusable(false);
+//        button.setText(actionName);
         this.label = new JLabel(actionName);
         this.label.setFocusable(false);
         this.label.setForeground(LABEL_COLOR_ACTIVE);

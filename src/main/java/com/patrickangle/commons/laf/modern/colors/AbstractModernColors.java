@@ -24,7 +24,7 @@ import java.awt.Paint;
 import javax.swing.JComponent;
 
 /**
- *
+ * TODO: Convert most of the properties to be static final members that are returned, instead of creating the colors every time a method is called.
  * @author patrickangle
  */
 public abstract class AbstractModernColors implements ModernColors {
@@ -36,6 +36,11 @@ public abstract class AbstractModernColors implements ModernColors {
     @Override
     public Paint componentFocusRingPaint(JComponent c) {
         return Colors.transparentColor(accentColor(), 0.5f);
+    }
+
+    @Override
+    public Paint componentToolbarRimPaint(JComponent c) {
+        return new GradientPaint(0, 0, Colors.transparentColor(Color.white, 0.4f), 0, 2f, Colors.transparentColor());
     }
 
     @Override

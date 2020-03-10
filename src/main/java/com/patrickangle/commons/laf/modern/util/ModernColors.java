@@ -31,6 +31,8 @@ public interface ModernColors {
     public Color componentShadowColor(JComponent c);
 
     public Paint componentFocusRingPaint(JComponent c);
+    
+    public Paint componentToolbarRimPaint(JComponent c);
 
     public Paint componentNormalPaint(JComponent c);
 
@@ -51,23 +53,23 @@ public interface ModernColors {
     public Paint componentSelectedTextPaint(JComponent c);
 
     public Paint componentDisabledTextPaint(JComponent c);
-    
+
     public Color textAreaNormalTextColor();
-    
+
     public Color textAreaDisabledTextColor();
-    
+
     public Paint textAreaNormalBackgroundPaint(JComponent c);
-    
+
     public Paint textAreaDisabledBackgroundPaint(JComponent c);
-    
+
     public Paint textAreaNormalBaselinePaint(JComponent c);
-    
+
     public Paint textAreaDisabledBaselinePaint(JComponent c);
-    
+
     public Paint textAreaNormalBorderPaint(JComponent c);
-    
+
     public Paint textAreaDisabledBorderPaint(JComponent c);
-    
+
     public Color textAreaSelectionHighlightColor();
 
     public Paint windowBackgroundPaint(JComponent c);
@@ -75,7 +77,7 @@ public interface ModernColors {
     public Paint panelBackgroundPaint(JComponent c);
 
     public Paint workspaceBackgroundPaint(JComponent c);
-    
+
     public default Paint componentPaint(JComponent c) {
         if (c instanceof AbstractButton) {
             return componentPaint((AbstractButton) c);
@@ -122,6 +124,46 @@ public interface ModernColors {
                     // Enabled + Normal + Normal
                     return componentNormalPaint(button);
                 }
+            }
+        } else {
+            // Disabled
+            return componentDisabledPaint(button);
+        }
+    }
+
+    public default Paint componentToolbarPaint(JComponent c) {
+        if (c instanceof AbstractButton) {
+            return componentToolbarPaint((AbstractButton) c);
+        }
+
+        if (c.isEnabled()) {
+            // Enabled
+            return componentNormalPaint(c);
+        } else {
+            // Disabled
+            return componentDisabledPaint(c);
+        }
+    }
+
+    /**
+     * Get the color to paint the component's background in it's current state.
+     * For toolbars, we don't use any of the selected state, as that is handled
+     * at the icon level
+     *
+     * @param button
+     * @return
+     */
+    public default Paint componentToolbarPaint(AbstractButton button) {
+        final ButtonModel buttonModel = button.getModel();
+
+        if (button.isEnabled()) {
+            // Enabled
+            if (buttonModel.isPressed()) {
+                // Enabled + Pressed
+                return componentRolloverPaint(button);
+            } else {
+                // Enabled + Normal
+                return componentNormalPaint(button);
             }
         } else {
             // Disabled
