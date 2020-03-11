@@ -28,8 +28,13 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -45,12 +50,43 @@ import javax.swing.border.EmptyBorder;
  * @author patrickangle
  */
 public class JToolbarItem extends JPanel {
+
     private static final Color LABEL_COLOR_ACTIVE = Colors.grey(0.7f);
     private static final float LABEL_FONT_SIZE = 10f;
+
+    private final AbstractButton button;
+    private final JLabel label;
+
+    private Window parent;
     
-    private AbstractButton button;
-    private JLabel label;
+    private final WindowAdapter windowFocusListener = new WindowAdapter() {
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+            JToolbarItem.this.repaint();
+        }
+
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+            JToolbarItem.this.repaint();
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+            JToolbarItem.this.repaint();
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+            JToolbarItem.this.repaint();
+        }
+    };
+
+    private final HierarchyListener windowHierarchyListener = (e) -> {
+        updateFocusListener();
+    };
+
     
+
     public JToolbarItem(Action action) {
         this(action, false);
     }
@@ -58,15 +94,15 @@ public class JToolbarItem extends JPanel {
     public JToolbarItem(Icon icon, String label, ActionListener actionListener) {
         this(icon, label, actionListener, false);
     }
-    
+
     public JToolbarItem(Icon icon, String label, ActionListener actionListener, ModernButtonUI.Segment segment) {
         this(icon, label, actionListener, false, segment);
     }
-    
+
     public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable) {
         this(icon, label, actionListener, toggleable, ModernButtonUI.Segment.Only);
     }
-    
+
     public JToolbarItem(Icon icon, String label, ActionListener actionListener, boolean toggleable, ModernButtonUI.Segment segment) {
         this(new AbstractAction(label, icon) {
             @Override
@@ -75,20 +111,20 @@ public class JToolbarItem extends JPanel {
             }
         }, toggleable, segment);
     }
-    
+
     public JToolbarItem(Action action, boolean toggleable) {
         this(action, toggleable, ModernButtonUI.Segment.Only);
     }
-    
+
     public JToolbarItem(Action action, boolean toggleable, ModernButtonUI.Segment segment) {
         super();
-        
+
         this.setOpaque(false);
-        
+
         this.setLayout(new GridBagLayout());
         String actionName = (String) action.getValue(Action.NAME);
         action.putValue(Action.NAME, "");
-        
+
         this.button = toggleable ? new JToggleButton(action) : new JButton(action);
         this.button.putClientProperty(ModernButtonUI.Style.Key, ModernButtonUI.Style.Toolbar);
         this.button.putClientProperty(ModernButtonUI.Segment.Key, segment);
@@ -97,19 +133,22 @@ public class JToolbarItem extends JPanel {
         this.label.setFocusable(false);
         this.label.setForeground(LABEL_COLOR_ACTIVE);
         this.label.setFont(this.label.getFont().deriveFont(LABEL_FONT_SIZE));
-        
+
         this.add(this.button, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, ((segment != ModernButtonUI.Segment.Only) ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE), new Insets(0, 0, 0, 0), 0, 0));
         this.add(this.label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        
+
         this.setMaximumSize(this.getLayout().minimumLayoutSize(this));
         this.setSize(this.getLayout().minimumLayoutSize(this));
         this.setBorder(((segment != ModernButtonUI.Segment.Only) ? new EmptyBorder(2, 0, 2, 0) : new EmptyBorder(2, 6, 2, 6)));
+        
+        this.addHierarchyListener(windowHierarchyListener);
+        updateFocusListener();
     }
 
     public AbstractButton getButton() {
         return button;
     }
-    
+
     public void setWidth(int width) {
         this.setMaximumSize(new Dimension(width, this.getMaximumSize().height));
         this.setSize(new Dimension(width, this.getMinimumSize().height));
@@ -120,14 +159,23 @@ public class JToolbarItem extends JPanel {
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = GraphicsUtils.configureGraphics(graphics);
-        
+
         if (!SwingUtilities.componentIsEnabledAndWindowInFocus(this)) {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         }
-        
+
         super.paint(g);
         g.dispose();
     }
     
-    
+    private void updateFocusListener() {
+        if (parent != null) {
+            parent.removeWindowListener(windowFocusListener);
+        }
+        parent = SwingUtilities.windowAncestor(this);
+        if (parent != null) {
+            parent.addWindowListener(windowFocusListener);
+        }
+    }
+
 }

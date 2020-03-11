@@ -49,11 +49,7 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
     protected static final int MINIMUM_HEIGHT = 19;
     
     protected JTextComponent editor;
-//    protected static final int MINIMUM_LEADING_TRAILING_AREA = 15;
 
-//    private static final int GENERAL_PADDING = 4;
-//
-//    private static final Insets TEXT_FIELD_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING);
     private final FocusListener focusListener = new FocusAdapter() {
         @Override
         public void focusGained(FocusEvent e) {
@@ -144,12 +140,6 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         g.clip(shape);
         g.drawLine(shape.getBounds().x, shape.getBounds().height, shape.getBounds().width, shape.getBounds().height);
 
-//        if (component.isEnabled()) {
-//            g.setPaint(ModernLookAndFeel.colors.textAreaNormalPaint(component));
-//        } else {
-//            g.setPaint(ModernLookAndFeel.colors.textAreaDisabledBaselinePaint(component));
-//        }
-//        
         g.dispose();
     }
 
@@ -157,32 +147,6 @@ public class ModernTextFieldUI extends BasicTextFieldUI implements ModernShapedC
         return DEFAULT_BORDER;
     }
 
-//    public static void paintComponentBackgroundFill(Graphics2D g, JTextComponent component, Shape buttonShape) {
-//        if (component.isEnabled()) {
-//            // Component is enabled
-//            g.setColor(UIManager.getColor(PRIMARY_DARK_COLOR_KEY));
-//        } else {
-//            // Component is disabled
-//            g.setColor(UIManager.getColor(PRIMARY_ULTRA_DARK_COLOR_KEY));
-//        }
-//
-//        g.fill(buttonShape);
-//    }
-//
-//    public static void paintComponentBorderHighlight(Graphics2D g, JTextComponent component, Shape buttonShape) {
-//        g.setStroke(new BasicStroke(0.25f));
-//
-//        if (component.hasFocus()) {
-//            g.setColor(UIManager.getColor(ACCENT_HIGHLIGHT_COLOR_KEY));
-//            g.draw(buttonShape);
-//        } else {
-//            g.setColor(UIManager.getColor(PRIMARY_MEDIUM_COLOR_KEY));
-//            g.draw(buttonShape);
-//        }
-//    }
-//    public static boolean isSearchField(Component c) {
-//        return c instanceof JTextField && "search".equals(((JTextField) c).getClientProperty("JTextField.variant"));
-//    }
     @Override
     public Shape getShape(JComponent c) {
         float width = c.getWidth() - c.getBorder().getBorderInsets(c).left - c.getBorder().getBorderInsets(c).right;

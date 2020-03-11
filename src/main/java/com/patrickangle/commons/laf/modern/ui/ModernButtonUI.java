@@ -16,7 +16,6 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
-import com.patrickangle.commons.awt.strokes.EdgeStroke;
 import com.patrickangle.commons.laf.modern.ModernLookAndFeel;
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
@@ -29,6 +28,7 @@ import com.patrickangle.commons.laf.modern.util.ShapeUtils;
 import com.patrickangle.commons.laf.modern.util.SwingUtilities;
 import java.awt.BasicStroke;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -55,12 +55,11 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
     protected static final Border DEFAULT_BORDER = new ModernComponentShadowFocusBorder();
     protected static final Border TOOLBAR_BORDER = new EmptyBorder(0, 4, 0, 4);
+    protected static final Font TOOLBAR_FONT = UIManager.getFont("Button.font").deriveFont(12f);
     protected static final int MINIMUM_HEIGHT = 19;
     protected static final int MINIMUM_LEADING_TRAILING_AREA = 15;
 
     protected static final int TOOLBAR_BUTTON_AREA_HEIGHT = 21;
-
-
 
     public static enum Style {
         Normal, Toolbar, Attached;
@@ -130,7 +129,6 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
     @Override
     public void installUI(JComponent c) {
-        
 
         super.installUI(c);
 
@@ -146,10 +144,19 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     @Override
     public void update(Graphics g, JComponent c) {
         if (Style.from(c) == Style.Toolbar) {
-            c.setBorder(TOOLBAR_BORDER);
-            ((AbstractButton) c).setVerticalAlignment(SwingConstants.CENTER);
-            ((AbstractButton) c).setVerticalTextPosition(SwingConstants.CENTER);
-            c.setFont(UIManager.getFont("Button.font").deriveFont(12f));
+            // Each of these things will invalidate the button and force us into a repaint loop, so make sure the value actually needs set before doing so.
+            if (c.getBorder() != TOOLBAR_BORDER) {
+                c.setBorder(TOOLBAR_BORDER);
+            }
+            if (((AbstractButton) c).getVerticalAlignment() != SwingConstants.CENTER) {
+                ((AbstractButton) c).setVerticalAlignment(SwingConstants.CENTER);
+            }
+            if (((AbstractButton) c).getVerticalTextPosition() != SwingConstants.CENTER) {
+                ((AbstractButton) c).setVerticalTextPosition(SwingConstants.CENTER);
+            }
+            if (c.getFont() != TOOLBAR_FONT) {
+                c.setFont(TOOLBAR_FONT);
+            }
         }
         super.update(g, c);
     }
@@ -189,9 +196,12 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         // Paint fill
         g.translate(button.getBorder().getBorderInsets(button).left, button.getBorder().getBorderInsets(button).top);
-        g.setPaint(ModernLookAndFeel.colors.componentPaint(button));
+        if (Style.from(button) == Style.Attached) {
+            g.setPaint(ModernLookAndFeel.colors.componentAttachedPaint(button));
+        } else {
+            g.setPaint(ModernLookAndFeel.colors.componentPaint(button));
+        }
         g.fill(shape);
-
         g.dispose();
     }
 
@@ -204,7 +214,8 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
 
         // Paint the edge stroke, which in the standard color set is a top highlight.
         g.setPaint(ModernLookAndFeel.colors.componentToolbarRimPaint(button));
-        g.setStroke(new EdgeStroke(0.5f, EdgeStroke.Align.Inside));
+        g.clip(shape);
+        g.setStroke(new BasicStroke(1.0f));
         g.draw(shape);
 
         g.dispose();
@@ -240,16 +251,15 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
         if (icon != null) {
             int x = iconRect.x + ((iconRect.width - icon.getIconWidth()) / 2);
             int y = iconRect.y + ((iconRect.height - icon.getIconHeight()) / 2);
-            
+
 //            if (Style.from(component) == Style.Attached) {
 //                x = (component.getWidth() - icon.getIconWidth()) / 2;
 //                y = (component.getHeight()- icon.getIconHeight()) / 2;
 //            }
-
             icon.paintIcon(component, graphics, x, y);
         }
     }
-    
+
     protected static WeakHashMap<Icon, Icon> cachedSelectedTemplateIcons = new WeakHashMap<>();
     protected static WeakHashMap<Icon, Icon> cachedEnabledTemplateIcons = new WeakHashMap<>();
     protected static WeakHashMap<Icon, Icon> cachedDisabledTemplateIcons = new WeakHashMap<>();
@@ -293,7 +303,7 @@ public class ModernButtonUI extends BasicButtonUI implements ModernShapedCompone
     public Shape getShape(JComponent c) {
         float width = c.getWidth() - c.getBorder().getBorderInsets(c).left - c.getBorder().getBorderInsets(c).right;
         float height = c.getHeight() - c.getBorder().getBorderInsets(c).top - c.getBorder().getBorderInsets(c).bottom;
-        
+
         if (Style.from(c) == Style.Toolbar) {
             width = c.getWidth();
             height = c.getHeight();

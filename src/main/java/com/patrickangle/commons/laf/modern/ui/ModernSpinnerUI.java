@@ -20,7 +20,6 @@ import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
 import com.patrickangle.commons.laf.modern.borders.ModernComponentShadowFocusBorder;
 import com.patrickangle.commons.laf.modern.icons.ModernCompactButtonArrowIcon;
 import com.patrickangle.commons.laf.modern.util.ShapeUtils;
-import com.patrickangle.commons.laf.modern.util.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -28,12 +27,9 @@ import java.awt.Shape;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.List;
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
-import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -132,10 +128,6 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         if (previousButton == null) {
             previousButton = createArrowButton(ModernButtonUI.Segment.Last);
             previousButton.setIcon(new ModernCompactButtonArrowIcon(false));
-//            previousButton.setHorizontalAlignment(SwingConstants.CENTER);
-//            previousButton.setVerticalAlignment(SwingConstants.CENTER);
-//            previousButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-//            previousButton.setHorizontalTextPosition(SwingConstants.CENTER);
             previousButton.setName(COMPONENT_NAME_PREVIOUS_BUTTON);
             installPreviousButtonListeners(previousButton);
         }
@@ -147,8 +139,6 @@ public class ModernSpinnerUI extends BasicSpinnerUI implements ModernShapedCompo
         if (nextButton == null) {
             nextButton = createArrowButton(ModernButtonUI.Segment.First);
             nextButton.setIcon(new ModernCompactButtonArrowIcon(true));
-//            nextButton.setHorizontalAlignment(SwingConstants.CENTER);
-//            nextButton.setVerticalAlignment(SwingConstants.CENTER);
             nextButton.setName(COMPONENT_NAME_NEXT_BUTTON);
             installNextButtonListeners(nextButton);
         }

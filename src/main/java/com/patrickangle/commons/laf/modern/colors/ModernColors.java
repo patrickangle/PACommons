@@ -131,6 +131,24 @@ public interface ModernColors {
             return componentDisabledPaint(button);
         }
     }
+    
+    public default Paint componentAttachedPaint(AbstractButton button) {
+        if (button.isEnabled()) {
+            // Enabled
+                if (SwingUtilities.buttonIsDefaultOrSelected(button)) {
+                    // Enabled + Default or Selected
+                    return componentPressedSelectedPaint(button);
+                } else {
+                    // Enabled + Normal
+                    return componentSelectedPaint(button);
+                }
+        } else {
+            // Disabled
+            return componentDisabledPaint(button);
+        }
+    }
+    
+    
 
     public default Paint componentToolbarPaint(JComponent c) {
         if (c instanceof AbstractButton) {

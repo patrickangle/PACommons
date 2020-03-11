@@ -16,18 +16,19 @@
  */
 package com.patrickangle.commons.laf.modern.ui;
 
+import com.patrickangle.commons.laf.modern.ModernLookAndFeel;
 import com.patrickangle.commons.laf.modern.ModernShapedComponentUI;
-import com.patrickangle.commons.laf.modern.ModernUIComponentPainting;
 import com.patrickangle.commons.laf.modern.ModernUIUtilities;
+import com.patrickangle.commons.laf.modern.borders.ModernComponentShadowFocusBorder;
+import com.patrickangle.commons.laf.modern.icons.ModernCompactDoubleButtonArrowIcon;
+import com.patrickangle.commons.laf.modern.util.GraphicsUtils;
+import com.patrickangle.commons.laf.modern.util.ShapeUtils;
 import com.patrickangle.commons.util.Colors;
-import com.patrickangle.commons.util.GraphicsHelpers;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.FocusAdapter;
@@ -36,10 +37,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Area;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 import javax.swing.ComboBoxEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -48,6 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicComboBoxUI;
@@ -58,13 +57,26 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
  */
 public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedComponentUI {
 
+    protected static final Border DEFAULT_BORDER = new ModernComponentShadowFocusBorder();
+    protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
+
     private final JComboBox comboBox;
 
-    private static final int CORNER_DIAMETER = 8;
-    private static final int GENERAL_PADDING = 4;
-    private static final int LEADING_PADDING = 8;
+//    private static final int CORNER_DIAMETER = 8;
+//    private static final int GENERAL_PADDING = 4;
+//    private static final int LEADING_PADDING = 8;
+//    private static final Insets BUTTON_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING);
+    private final FocusAdapter repaintFocusAdapter = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            comboBox.repaint();
+        }
 
-    private static final Insets BUTTON_INSETS = new Insets(GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING, GENERAL_PADDING);
+        @Override
+        public void focusLost(FocusEvent e) {
+            comboBox.repaint();
+        }
+    };
 
     private final MouseAdapter hoverListener = new MouseAdapter() {
         @Override
@@ -132,20 +144,14 @@ public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedCom
     protected JButton createArrowButton() {
         JButton button = new JButton() {
             @Override
-            public void paint(Graphics g) {
-            }
-
-            @Override
             public Dimension getPreferredSize() {
-                return new Dimension(0, 0);
+                return new Dimension(16,32);
             }
-
-            @Override
-            public Dimension getMaximumSize() {
-                return new Dimension(0, 0);
-            }
+            
         };
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
+        button.putClientProperty(ModernButtonUI.Style.Key, ModernButtonUI.Style.Attached);
+        button.setBorder(EMPTY_BORDER);
+        button.setIcon(new ModernCompactDoubleButtonArrowIcon());
 
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -178,119 +184,60 @@ public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedCom
 
     @Override
     public Shape getShape(JComponent c) {
-
-        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
-
-        Shape buttonRect = new RoundRectangle2D.Double(
-                buttonBorderInsets.left - BUTTON_INSETS.left,
-                buttonBorderInsets.top - BUTTON_INSETS.top,
-                c.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right,
-                c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom,
-                CORNER_DIAMETER,
-                CORNER_DIAMETER);
+        float width = c.getWidth() - c.getBorder().getBorderInsets(c).left - c.getBorder().getBorderInsets(c).right;
+        float height = c.getHeight() - c.getBorder().getBorderInsets(c).top - c.getBorder().getBorderInsets(c).bottom;
 
         if (comboBox.isEditable()) {
-            Shape addonRect3 = new Rectangle2D.Double(
-                    buttonRect.getBounds().x,
-                    buttonRect.getBounds().y,
-                    buttonRect.getBounds().width / 2,
-                    buttonRect.getBounds().height);
-
-            Area compositeShape3 = new Area(buttonRect);
-            compositeShape3.add(new Area(addonRect3));
-
-            buttonRect = compositeShape3;
+            return ShapeUtils.roundedRectangle(0, 0, width, height, 3, List.of(ShapeUtils.Corner.TopRight, ShapeUtils.Corner.BottomRight));
+        } else {
+            return ShapeUtils.roundedRectangle(0, 0, width, height, 3);
         }
-
-        return buttonRect;
-    }
-
-    protected Shape getArrowAreaShape(JComponent c) {
-        final Insets buttonBorderInsets = c.getBorder().getBorderInsets(c);
-
-        int height = c.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom;
-        int totalWidth = c.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right;
-
-        Shape buttonRect = new RoundRectangle2D.Double(
-                buttonBorderInsets.left - BUTTON_INSETS.left + totalWidth - height + 2, // +2 on x to offset from edge to prevent jagged edge
-                buttonBorderInsets.top - BUTTON_INSETS.top,
-                height - 2, // Offsets the +2 on the x.
-                height,
-                CORNER_DIAMETER,
-                CORNER_DIAMETER);
-
-        Shape addonRect3 = new Rectangle2D.Double(
-                buttonRect.getBounds().x,
-                buttonRect.getBounds().y,
-                buttonRect.getBounds().width / 2,
-                buttonRect.getBounds().height);
-
-        Area compositeShape3 = new Area(buttonRect);
-        compositeShape3.add(new Area(addonRect3));
-
-        buttonRect = compositeShape3;
-
-        return buttonRect;
     }
 
     @Override
     public void paint(Graphics graphics, JComponent component) {
         final JComboBox comboBox = (JComboBox) component;
+        final 
 
-        final Graphics2D g = (Graphics2D) graphics.create();
-        GraphicsHelpers.enableAntialiasing(g);
-        GraphicsHelpers.enableStrokeNormalization(g);
+        Graphics2D g = GraphicsUtils.configureGraphics(graphics);
 
-        ModernUIComponentPainting.paintComponentShadowOrFocus(g, component, getShape(component));
-        paintComponentBackgroundFill(g, comboBox, getShape(component));
-        paintComponentBorderHighlight(g, comboBox, getShape(component));
+        if (!comboBox.isEditable()) {
+            g.translate(comboBox.getBorder().getBorderInsets(comboBox).left, comboBox.getBorder().getBorderInsets(comboBox).top);
+            g.setPaint(ModernLookAndFeel.colors.componentPaint(comboBox));
+            g.fill(getShape(comboBox));
+        } else {
+            g.setStroke(new BasicStroke(0.5f));
+            g.translate(component.getBorder().getBorderInsets(component).left, component.getBorder().getBorderInsets(component).top);
+            if (component.isEnabled()) {
+                g.setPaint(ModernLookAndFeel.colors.textAreaNormalBackgroundPaint(component));
+            } else {
+                g.setPaint(ModernLookAndFeel.colors.textAreaDisabledBackgroundPaint(component));
+            }
 
-        paintComponentArrowAreaBackgroundFill(g, comboBox, getArrowAreaShape(component));
-        paintComponentArrowAreaBorderHighlight(g, comboBox, getArrowAreaShape(component));
+            g.fill(rectangleForCurrentValue());
 
-//        ModernUIComponentPainting.paintComponentDownArrow(g, editor);
-        paintComponentDownArrow(g, component, getArrowAreaShape(component));
+            if (component.isEnabled()) {
+                g.setPaint(ModernLookAndFeel.colors.textAreaNormalBorderPaint(component));
+            } else {
+                g.setPaint(ModernLookAndFeel.colors.textAreaDisabledBorderPaint(component));
+            }
+
+            g.draw(rectangleForCurrentValue());
+
+            if (component.isEnabled()) {
+                g.setPaint(ModernLookAndFeel.colors.textAreaNormalBaselinePaint(component));
+            } else {
+                g.setPaint(ModernLookAndFeel.colors.textAreaDisabledBaselinePaint(component));
+            }
+            g.clip(rectangleForCurrentValue());
+            g.drawLine(rectangleForCurrentValue().getBounds().x, rectangleForCurrentValue().getBounds().height, rectangleForCurrentValue().getBounds().width, rectangleForCurrentValue().getBounds().height);
+        }
 
         g.dispose();
 
         paintCurrentValue(graphics, rectangleForCurrentValue(), hasFocus);
     }
 
-    public static void paintComponentDownArrow(Graphics2D g, Component component, Shape bounds) {
-        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
-        final int xU = bounds.getBounds().width / 5;
-        final int yU = bounds.getBounds().width / 5;
-        final Path2D.Double path = new Path2D.Double();
-        path.moveTo(xU + 1, yU + 2);
-        path.lineTo(3 * xU + 1, yU + 2);
-        path.lineTo(2 * xU + 1, 3 * yU);
-        path.lineTo(xU + 1, yU + 2);
-        path.closePath();
-
-        if (component.isEnabled()) {
-            // Enabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_LIGHT_COLOR_KEY));
-        } else {
-            // Disabled
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        Graphics2D protectedGraphics = (Graphics2D) g.create();
-
-        protectedGraphics.translate(bounds.getBounds().x + 2, bounds.getBounds().y + 4);
-        protectedGraphics.fill(path);
-
-        protectedGraphics.dispose();
-    }
-
-    @Override
-    protected Rectangle rectangleForCurrentValue() {
-        final Insets buttonBorderInsets = comboBox.getBorder().getBorderInsets(comboBox);
-        int height = comboBox.getHeight() - buttonBorderInsets.top - buttonBorderInsets.bottom + BUTTON_INSETS.top + BUTTON_INSETS.bottom;
-        int totalWidth = comboBox.getWidth() - buttonBorderInsets.left - buttonBorderInsets.right + BUTTON_INSETS.left + BUTTON_INSETS.right;
-
-        return new Rectangle(buttonBorderInsets.left - BUTTON_INSETS.left + 2, buttonBorderInsets.top - BUTTON_INSETS.top + 2, totalWidth - height - 2, height - 4);
-    }
 
     public void paintCurrentValue(Graphics g, Rectangle bounds, boolean hasFocus) {
         ListCellRenderer renderer = comboBox.getRenderer();
@@ -303,78 +250,6 @@ public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedCom
         c.setFont(comboBox.getFont());
 
         currentValuePane.paintComponent(g, c, comboBox, bounds.x, bounds.y, bounds.width, bounds.height, c instanceof JPanel);
-    }
-
-    private void paintComponentBackgroundFill(Graphics2D g, JComboBox comboBox, Shape buttonShape) {
-        if (comboBox.isEnabled()) {
-            if (comboBox.isEditable()) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-            } else {
-                if (comboBox.isPopupVisible() || comboBoxPressed || buttonPressed || editorPressed) {
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-                } else if (comboBoxRollover || buttonRollover || editorRollover) {
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-                } else {
-                    g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-                }
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }
-
-        g.fill(buttonShape);
-    }
-
-    private void paintComponentArrowAreaBackgroundFill(Graphics2D g, JComboBox comboBox, Shape buttonShape) {
-        if (comboBox.isEnabled()) {
-            if (comboBox.isPopupVisible() || comboBoxPressed || buttonPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_DARK_COLOR_KEY));
-            } else if (comboBoxRollover || buttonRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        g.fill(buttonShape);
-    }
-
-    private void paintComponentBorderHighlight(Graphics2D g, JComboBox comboBox, Shape buttonShape) {
-        g.setStroke(new BasicStroke(0.5f));
-
-        if (comboBox.isEnabled()) {
-            if (comboBox.isPopupVisible() || comboBoxPressed || buttonPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            } else if (comboBoxRollover || buttonRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_LIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_DARK_COLOR_KEY));
-        }
-
-        g.draw(buttonShape);
-    }
-
-    private void paintComponentArrowAreaBorderHighlight(Graphics2D g, JComboBox comboBox, Shape buttonShape) {
-        g.setStroke(new BasicStroke(0.5f));
-
-        if (comboBox.isEnabled()) {
-            if (comboBox.isPopupVisible() || comboBoxPressed || buttonPressed || editorPressed) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_MEDIUM_COLOR_KEY));
-            } else if (comboBoxRollover || buttonRollover || editorRollover) {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_HIGHLIGHT_COLOR_KEY));
-            } else {
-                g.setColor(UIManager.getColor(ModernUIUtilities.ACCENT_LIGHT_COLOR_KEY));
-            }
-        } else {
-            g.setColor(UIManager.getColor(ModernUIUtilities.PRIMARY_MEDIUM_DARK_COLOR_KEY));
-        }
-
-        g.draw(buttonShape);
     }
 
     protected ComboBoxEditor createEditor() {
@@ -435,11 +310,9 @@ public class ModernComboBoxUI extends BasicComboBoxUI implements ModernShapedCom
     public Dimension getMinimumSize(JComponent c) {
         return new Dimension(super.getMinimumSize(c).width, 28);
     }
-    
-    
-    
-    public static ModernBasicBorder getDefaultBorder() {
-        return new ModernBasicBorder(BUTTON_INSETS);
+
+    public static Border getDefaultBorder() {
+        return DEFAULT_BORDER;
     }
 
     public static void installIntoDefaults(UIDefaults defaults) {
