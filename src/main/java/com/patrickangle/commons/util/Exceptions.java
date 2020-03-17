@@ -31,7 +31,7 @@ import javax.swing.border.EmptyBorder;
  * @author patrickangle
  */
 public class Exceptions {
-    private static final int MAXIMUM_STACK_TRACE_DEPTH = 100;
+    private static final int MAXIMUM_STACK_TRACE_DEPTH = 500;
     private static final int MAXIMUM_LINES_PER_CAUSE = 100;
     
     public static final Thread.UncaughtExceptionHandler GUI_UNCAUGHT_EXCEPTION_HANDLER = (Thread thread, Throwable throwable) -> {
@@ -116,7 +116,7 @@ public class Exceptions {
         }
         Throwable cause = throwable.getCause();
         if (cause != null) {
-            humanReadableThrowableBuilder(builder, throwable, currentDepth + 1);
+            humanReadableThrowableBuilder(builder, cause, currentDepth + 1);
         } else {
             builder.append(throwable.getClass().getSimpleName());
             builder.append(": ");
